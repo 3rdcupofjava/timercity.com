@@ -118,11 +118,11 @@
         }, 1000);
 
         var width = (clockRadius+margin)*2,// replace global definition in function scope.
-                height = (clockRadius+margin)*2,
-                secondTickStart = clockRadius,
-                hourTickStart = clockRadius,
-                secondLabelRadius = clockRadius + 16,
-                hourLabelRadius = clockRadius - 40
+            height = (clockRadius+margin)*2,
+            secondTickStart = clockRadius,
+            hourTickStart = clockRadius,
+            secondLabelRadius = clockRadius + 16,
+            hourLabelRadius = clockRadius - 40
 
         var svg = d3.select("body").append("svg")
                 .attr("width", width)
@@ -239,15 +239,23 @@
 
     function updateData(offset){
         offset = offset || 0;
+
         var t = new Date();
-        handData[0].value = (t.getHours() % 12) + t.getMinutes()/60 + offset ;
-        handData[1].value = t.getMinutes();
-        handData[2].value = t.getSeconds();
+        var localTime = t.getTime();
+        var localOffset = t.getTimezoneOffset() * 60000;
+        var utc = localTime + localOffset;
+        var result = utc + (3600000*offset);
+        var nd = new Date(result);
+
+        handData[0].value = (nd.getHours() % 12) + nd.getMinutes()/60;
+        handData[1].value = nd.getMinutes();
+        handData[2].value = nd.getSeconds();
     }
 
-    drawClock(300, -3, 'London');
-    drawClock(200, 2, 'New_York');
-    drawClock(200, 1, 'Kiev');
+    drawClock(200, -7, 'London');
+    drawClock(200, -2, 'New_York');
+    drawClock(200, 2, 'Kiev');
+    drawClock(200, 0, 'Moscow');
 
     d3.select(self.frameElement).style("height", height + "px");
 </script>
