@@ -109,8 +109,16 @@ var handData = [
 	}
 ];
 
-function drawClock(){ //create all the clock elements
+function drawClock(clockRadius){ //create all the clock elements
 	updateData();	//draw them in the correct starting position
+
+    var width = (clockRadius+margin)*2,// replace global definition in function scope.
+        height = (clockRadius+margin)*2,
+        secondTickStart = clockRadius,
+        hourTickStart = clockRadius,
+        secondLabelRadius = clockRadius + 16,
+        hourLabelRadius = clockRadius - 40
+
 	var svg = d3.select("body").append("svg")
 	    .attr("width", width)
 	    .attr("height", height);
@@ -223,7 +231,7 @@ function updateData(){
 	handData[2].value = t.getSeconds();
 }
 
-drawClock();
+drawClock(300);
 
 setInterval(function(){
 	updateData();
