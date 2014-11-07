@@ -227,14 +227,6 @@
                 .attr('transform',function(d){
                     return 'rotate('+ d.scale(d.value) +')';
                 });
-
-        d3.select('#clock-hands'+area).selectAll('line')
-                .data(handData)
-                .transition()
-                .attr('transform',function(d){
-                    return 'rotate('+ d.scale(d.value) +')';
-                });
-
     }
 
     function updateData(offset){
