@@ -58,8 +58,8 @@
 </style>
 <body>
 <div style="margin-left: 80%; margin-top: 5%;">
-    <button onclick="startTimerOnClick('Lon1');">Start</button>
-    <button onclick="stopTimerOnClick('Lon1');">Stop</button>
+    <button onclick="startTimerOnClick('Lon');">Start</button>
+    <button onclick="stopTimerOnClick('Lon');">Stop</button>
 </div>
 
 <script src="js/d3.js"></script>
@@ -399,9 +399,6 @@ function updateTimer(counter) { // set step to 10 for testing
     }
 }
 
-drawClock(200, -7, 'London');
-drawTimer(200, 'Lon1');
-
 /*
  * variables for start and end of time counter
  * */
@@ -422,7 +419,7 @@ function startTimerOnClick(guid) {
     beforeTimeMinutes = new Date().getMinutes();
     beforeTimeSeconds = new Date().getSeconds();
 
-    interval = setInterval(function(){
+    window[guid] = setInterval(function(){
         updateTimer();
         moveTimerHands(guid);
     }, 1000);
@@ -433,12 +430,15 @@ function stopTimerOnClick(guid) {
     afterTimeMinutes = new Date().getMinutes();
     afterTimeSeconds = new Date().getSeconds();
 
-    clearInterval(interval);
+    clearInterval(window[guid]);
 
     alert((afterTimeHours - beforeTimeHours)
     + 'h : ' + (afterTimeMinutes - beforeTimeMinutes)
     + 'm : ' +(afterTimeSeconds - beforeTimeSeconds) + 's');
 }
+
+drawClock(200, -7, 'London');
+drawTimer(200, 'Lon');
 
 d3.select(self.frameElement).style("height", height + "px");
 </script>
