@@ -60,6 +60,11 @@
 <div style="margin-left: 80%; margin-top: 5%;">
     <button onclick="startTimerOnClick('Lon');">Start</button>
     <button onclick="stopTimerOnClick('Lon');">Stop</button>
+    <button onclick="resetTimer('Lon')">Reset</button>
+
+    <p><button onclick="startTimerOnClick('Lon1');">Start</button>
+    <button onclick="stopTimerOnClick('Lon1');">Stop</button>
+    <button onclick="resetTimer('Lon1')">Reset</button></p>
 </div>
 
 <script src="js/d3.js"></script>
@@ -437,8 +442,16 @@ function stopTimerOnClick(guid) {
     + 'm : ' +(afterTimeSeconds - beforeTimeSeconds) + 's');
 }
 
-drawClock(200, -7, 'London');
+function resetTimer(guid) {
+    timerData[2].value=0;
+    timerData[1].value=0;
+    timerData[0].value=60;
+    moveTimerHands(guid);
+}
+
+//drawClock(200, -7, 'London');
 drawTimer(200, 'Lon');
+drawTimer(200, 'Lon1');
 
 d3.select(self.frameElement).style("height", height + "px");
 </script>
