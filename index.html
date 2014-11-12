@@ -398,6 +398,9 @@ function moveCountDownHands(area){
             .data(countData)
             .transition()
             .attr('transform',function(d){
+                if(countData[2].value === 0) {
+                    stopCountDownOnClick();
+                }
                 return 'rotate('+ -1 * ( d.scale(d.value) ) +')';
             });
 }
@@ -647,7 +650,7 @@ function drawCountDown(time, clockRadius, guid){ //create all the clock elements
     moveCountDownHands('countdown');
 }
 
-drawCountDown(3730); // always time - 1;
+drawCountDown(5); // always time - 1;
 //drawClock(200, -7, 'London');
 //drawTimer(200, 'Lon');
 
