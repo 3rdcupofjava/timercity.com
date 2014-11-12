@@ -137,6 +137,28 @@ var timerData = [
     }
 ];
 
+var countData = [
+    {
+        type:'hour',
+        value:0,
+        length:-hourHandLength,
+        scale:hourScale
+    },
+    {
+        type:'minute',
+        value:0,
+        length:-minuteHandLength,
+        scale:minuteScale
+    },
+    {
+        type:'second',
+        value:0,
+        length:-secondHandLength,
+        scale:secondScale,
+        balance:secondHandBalance
+    }
+];
+
 function drawClock(clockRadius, offset, guid){ //create all the clock elements
     //updateData(offset);	//draw them in the correct starting position
 
@@ -374,7 +396,7 @@ function moveTimerHands(area){
 
 function moveCountDownHands(area){
     d3.select('#clock-hands'+area).selectAll('line')
-            .data(timerData)
+            .data(countData)
             .transition()
             .attr('transform',function(d){
                 return 'rotate('+ -1 * ( d.scale(d.value) ) +')';
@@ -416,12 +438,12 @@ function updateCountDown(counter) { // set step to 10 for testing
         counter +=1;
     }
     if(counter > 0) {
-        timerData[2].value +=1;
+        countData[2].value +=1;
 
-        if(timerData[2].value === 60) {
-            timerData[2].value = 0;
-            timerData[1].value +=1;
-            timerData[0].value = timerData[1].value/60;
+        if(countData[2].value === 60) {
+            countData[2].value = 0;
+            countData[1].value +=1;
+            countData[0].value = countData[1].value/60;
         }
     }
 }
