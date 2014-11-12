@@ -58,13 +58,9 @@
 </style>
 <body>
 <div style="margin-left: 80%; margin-top: 5%;">
-    <button onclick="startTimerOnClick('Lon');">Start</button>
-    <button onclick="stopTimerOnClick('Lon');">Stop</button>
-    <button onclick="resetTimer('Lon')">Reset</button>
-
-    <p><button onclick="startTimerOnClick('Lon1');">Start</button>
-    <button onclick="stopTimerOnClick('Lon1');">Stop</button>
-    <button onclick="resetTimer('Lon1')">Reset</button></p>
+    <button onclick="startCountDownOnClick('countdown');">Start</button>
+    <button onclick="stopCountDownOnClick('countdown');">Stop</button>
+    <!--<button onclick="resetTimer('Lon')">Reset</button>-->
 </div>
 
 <script src="js/d3.js"></script>
@@ -366,12 +362,22 @@ function moveHands(area){
                 return 'rotate('+ d.scale(d.value) +')';
             });
 }
+
 function moveTimerHands(area){
     d3.select('#clock-hands'+area).selectAll('line')
             .data(timerData)
             .transition()
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value) +')';
+            });
+}
+
+function moveCountDownHands(area){
+    d3.select('#clock-hands'+area).selectAll('line')
+            .data(timerData)
+            .transition()
+            .attr('transform',function(d){
+                return 'rotate('+ -1 * ( d.scale(d.value) ) +')';
             });
 }
 
@@ -389,6 +395,22 @@ function updateData(offset){
 }
 
 function updateTimer(counter) { // set step to 10 for testing
+    counter = typeof counter !== 'undefined' ? counter : 0;
+    if(counter === 0) {
+        counter +=1;
+    }
+    if(counter > 0) {
+        timerData[2].value +=1;
+
+        if(timerData[2].value === 60) {
+            timerData[2].value = 0;
+            timerData[1].value +=1;
+            timerData[0].value = timerData[1].value/60;
+        }
+    }
+}
+
+function updateCountDown(counter) { // set step to 10 for testing
     counter = typeof counter !== 'undefined' ? counter : 0;
     if(counter === 0) {
         counter +=1;
@@ -430,7 +452,30 @@ function startTimerOnClick(guid) {
     }, 1000);
 }
 
+function startCountDownOnClick(guid) {
+    beforeTimeHours = new Date().getHours();
+    beforeTimeMinutes = new Date().getMinutes();
+    beforeTimeSeconds = new Date().getSeconds();
+
+    window[guid] = setInterval(function(){
+        updateCountDown();
+        moveCountDownHands(guid);
+    }, 1000);
+}
+
 function stopTimerOnClick(guid) {
+    afterTimeHours = new Date().getHours();
+    afterTimeMinutes = new Date().getMinutes();
+    afterTimeSeconds = new Date().getSeconds();
+
+    clearInterval(window[guid]);
+
+    alert((afterTimeHours - beforeTimeHours)
+    + 'h : ' + (afterTimeMinutes - beforeTimeMinutes)
+    + 'm : ' +(afterTimeSeconds - beforeTimeSeconds) + 's');
+}
+
+function stopCountDownOnClick(guid) {
     afterTimeHours = new Date().getHours();
     afterTimeMinutes = new Date().getMinutes();
     afterTimeSeconds = new Date().getSeconds();
@@ -449,9 +494,117 @@ function resetTimer(guid) {
     moveTimerHands(guid);
 }
 
+function drawCountDown(clockRadius, guid){ //create all the clock elements
+
+    clockRadius = 200;
+    guid = 'countdown';
+
+    var width = (clockRadius+margin)*2,// replace global definition in function scope.
+            height = (clockRadius+margin)*2,
+            secondTickStart = clockRadius,
+            hourTickStart = clockRadius,
+            secondLabelRadius = clockRadius + 16,
+            hourLabelRadius = clockRadius - 40;
+
+    var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    var face = svg.append('g')
+            .attr('id','clock-face')
+            .attr('transform','translate(' + (clockRadius + margin) + ',' + (clockRadius + margin) + ')');
+
+    //add marks for seconds
+    face.selectAll('.second-tick')
+            .data(d3.range(0,60)).enter()
+            .append('line')
+            .attr('class', 'second-tick')
+            .attr('x1',0)
+            .attr('x2',0)
+            .attr('y1',secondTickStart)
+            .attr('y2',secondTickStart + secondTickLength)
+            .attr('transform',function(d){
+                return 'rotate(' + secondScale(d) + ')';
+            });
+    //and labels
+
+    face.selectAll('.second-label')
+            .data(d3.range(5,61,5))
+            .enter()
+            .append('text')
+            .attr('class', 'second-label')
+            .attr('text-anchor','middle')
+            .attr('x',function(d){
+                return secondLabelRadius*Math.sin(secondScale(d)*radians);
+            })
+            .attr('y',function(d){
+                return -secondLabelRadius*Math.cos(secondScale(d)*radians) + secondLabelYOffset;
+            })
+            .text(function(d){
+                return d;
+            });
+
+    //... and hours
+    face.selectAll('.hour-tick')
+            .data(d3.range(0,12)).enter()
+            .append('line')
+            .attr('class', 'hour-tick')
+            .attr('x1',0)
+            .attr('x2',0)
+            .attr('y1',hourTickStart)
+            .attr('y2',hourTickStart + hourTickLength)
+            .attr('transform',function(d){
+                return 'rotate(' + hourScale(d) + ')';
+            });
+
+    face.selectAll('.hour-label')
+            .data(d3.range(3,13,3))
+            .enter()
+            .append('text')
+            .attr('class', 'hour-label')
+            .attr('text-anchor','middle')
+            .attr('x',function(d){
+                return hourLabelRadius*Math.sin(hourScale(d)*radians);
+            })
+            .attr('y',function(d){
+                return -hourLabelRadius*Math.cos(hourScale(d)*radians) + hourLabelYOffset;
+            })
+            .text(function(d){
+                return d;
+            });
+
+
+    var hands = face.append('g').attr('id','clock-hands' + guid);
+
+    face.append('g').attr('id','face-overlay')
+            .append('circle').attr('class','hands-cover')
+            .attr('x',0)
+            .attr('y',0)
+            .attr('r',clockRadius/20);
+
+    hands.selectAll('line')
+            .data(handData)
+            .enter()
+            .append('line')
+            .attr('class', function(d){
+                return d.type + '-hand';
+            })
+            .attr('x1',0)
+            .attr('y1',function(d){
+                return d.balance ? d.balance : 0;
+            })
+            .attr('x2',0)
+            .attr('y2',function(d){
+                return d.length;
+            })
+            .attr('transform',function(d){
+                return 'rotate('+ d.scale(d.value) +')';
+            });
+}
+
+drawCountDown(360);
 //drawClock(200, -7, 'London');
-drawTimer(200, 'Lon');
-drawTimer(200, 'Lon1');
+//drawTimer(200, 'Lon');
 
 d3.select(self.frameElement).style("height", height + "px");
 </script>
