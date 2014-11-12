@@ -58,8 +58,8 @@
 </style>
 <body>
 <div style="margin-left: 80%; margin-top: 5%;">
-    <button onclick="startCountDownOnClick('countdown');">Start</button>
-    <button onclick="stopCountDownOnClick('countdown');">Stop</button>
+    <button onclick="startCountDownOnClick();">Start</button>
+    <button onclick="stopCountDownOnClick();">Stop</button>
     <!--<button onclick="resetTimer('Lon')">Reset</button>-->
 </div>
 
@@ -474,14 +474,14 @@ function startTimerOnClick(guid) {
     }, 1000);
 }
 
-function startCountDownOnClick(guid) {
+function startCountDownOnClick() {
     beforeTimeHours = new Date().getHours();
     beforeTimeMinutes = new Date().getMinutes();
     beforeTimeSeconds = new Date().getSeconds();
 
-    window[guid] = setInterval(function(){
+    window['countdown'] = setInterval(function(){
         updateCountDown();
-        moveCountDownHands(guid);
+        moveCountDownHands('countdown');
     }, 1000);
 }
 
@@ -497,14 +497,14 @@ function stopTimerOnClick(guid) {
     + 'm : ' +(afterTimeSeconds - beforeTimeSeconds) + 's');
 }
 
-function stopCountDownOnClick(guid) {
+function stopCountDownOnClick() {
     afterTimeHours = new Date().getHours();
     afterTimeMinutes = new Date().getMinutes();
     afterTimeSeconds = new Date().getSeconds();
 
-    clearInterval(window[guid]);
+    clearInterval(window['countdown']);
 
-    alert((afterTimeHours - beforeTimeHours)
+    console.log((afterTimeHours - beforeTimeHours)
     + 'h : ' + (afterTimeMinutes - beforeTimeMinutes)
     + 'm : ' +(afterTimeSeconds - beforeTimeSeconds) + 's');
 }
@@ -516,10 +516,14 @@ function resetTimer(guid) {
     moveTimerHands(guid);
 }
 
-function drawCountDown(clockRadius, guid){ //create all the clock elements
+function drawCountDown(time, clockRadius, guid){ //create all the clock elements
 
     clockRadius = 200;
     guid = 'countdown';
+
+    countData[2].value = time;
+    countData[1].value = 0;
+    countData[0].value = 0;
 
     var width = (clockRadius+margin)*2,// replace global definition in function scope.
             height = (clockRadius+margin)*2,
@@ -622,9 +626,12 @@ function drawCountDown(clockRadius, guid){ //create all the clock elements
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value) +')';
             });
+
+    updateCountDown();
+    moveCountDownHands('countdown');
 }
 
-drawCountDown(360);
+drawCountDown(49); // always time - 1;
 //drawClock(200, -7, 'London');
 //drawTimer(200, 'Lon');
 
