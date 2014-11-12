@@ -398,7 +398,7 @@ function moveCountDownHands(area){
             .data(countData)
             .transition()
             .attr('transform',function(d){
-                if(countData[2].value === 0) {
+                if(countData[0].value === 0 && countData[1].value === 0 && countData[2].value === 0) {
                     stopCountDownOnClick();
                 }
                 return 'rotate('+ -1 * ( d.scale(d.value) ) +')';
