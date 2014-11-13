@@ -378,7 +378,9 @@ function drawTimer(clockRadius, guid){ //create all the clock elements
 
     $('#btns').append(' \
         <button onclick="startTimerOnClick(\'' + guid + '\');">Start</button> \
-        <button onclick="stopTimerOnClick(\'' + guid + '\');">Stop</button>');
+        <button onclick="stopTimerOnClick(\'' + guid + '\');">Stop</button> \
+        <button onclick="resetTimer(\'' + guid + '\');">Reset</button> \
+        <button onclick="splitTimerOnClick(\'' + guid + '\');">Split</button>');
 }
 
 function moveHands(area){
@@ -459,33 +461,48 @@ function updateCountDown(counter) { // set step to 10 for testing
 /*
  * variables for start and end of time counter
  * */
-var beforeTimeHours,
-        beforeTimeMinutes,
-        beforeTimeSeconds;
-var afterTimeHours,
-        afterTimeMinutes,
-        afterTimeSeconds;
+var before = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+};
+
+var after = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+};
+
+var tmp = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+};
+
 var interval;
+var splitter = 0;
 
 /*
  * this function called when start button pressed
  * and take guid from drawTimer as parameter
  * */
 function startTimerOnClick(guid) {
-    beforeTimeHours = new Date().getHours();
-    beforeTimeMinutes = new Date().getMinutes();
-    beforeTimeSeconds = new Date().getSeconds();
+    before.hours = new Date().getHours();
+    before.minutes = new Date().getMinutes();
+    before.seconds = new Date().getSeconds();
+    splitter = 0;
 
     window[guid] = setInterval(function(){
         updateTimer();
         moveTimerHands(guid);
+        splitter += 1;
     }, 1000);
 }
 
 function startCountDownOnClick() {
-    beforeTimeHours = new Date().getHours();
-    beforeTimeMinutes = new Date().getMinutes();
-    beforeTimeSeconds = new Date().getSeconds();
+    before.hours = new Date().getHours();
+    before.minutes = new Date().getMinutes();
+    before.seconds = new Date().getSeconds();
 
     window['countdown'] = setInterval(function(){
         updateCountDown();
@@ -494,27 +511,35 @@ function startCountDownOnClick() {
 }
 
 function stopTimerOnClick(guid) {
-    afterTimeHours = new Date().getHours();
-    afterTimeMinutes = new Date().getMinutes();
-    afterTimeSeconds = new Date().getSeconds();
+    after.hours = new Date().getHours();
+    after.minutes = new Date().getMinutes();
+    after.seconds = new Date().getSeconds();
 
     clearInterval(window[guid]);
 
-    alert((afterTimeHours - beforeTimeHours)
-    + 'h : ' + (afterTimeMinutes - beforeTimeMinutes)
-    + 'm : ' +(afterTimeSeconds - beforeTimeSeconds) + 's');
+    alert((after.hours - before.hours)
+    + 'h : ' + (after.minutes - before.minutes)
+    + 'm : ' +(after.seconds - before.seconds) + 's');
+}
+
+/*
+* works only with one timer presented
+* */
+function splitTimerOnClick() {
+    alert('You successfully split ' + splitter + ' seconds');
+    splitter = 0;
 }
 
 function stopCountDownOnClick() {
-    afterTimeHours = new Date().getHours();
-    afterTimeMinutes = new Date().getMinutes();
-    afterTimeSeconds = new Date().getSeconds();
+    after.hours = new Date().getHours();
+    after.minutes = new Date().getMinutes();
+    after.seconds = new Date().getSeconds();
 
     clearInterval(window['countdown']);
 
-    console.log((afterTimeHours - beforeTimeHours)
-    + 'h : ' + (afterTimeMinutes - beforeTimeMinutes)
-    + 'm : ' +(afterTimeSeconds - beforeTimeSeconds) + 's');
+    alert((after.hours - before.hours)
+    + 'h : ' + (after.minutes - before.minutes)
+    + 'm : ' +(after.seconds - before.seconds) + 's');
 }
 
 function resetTimer(guid) {
