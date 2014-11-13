@@ -459,12 +459,18 @@ function updateCountDown(counter) { // set step to 10 for testing
 /*
  * variables for start and end of time counter
  * */
-var beforeTimeHours,
-        beforeTimeMinutes,
-        beforeTimeSeconds;
-var afterTimeHours,
-        afterTimeMinutes,
-        afterTimeSeconds;
+var before = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+};
+
+var after = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+};
+
 var interval;
 
 /*
@@ -472,9 +478,9 @@ var interval;
  * and take guid from drawTimer as parameter
  * */
 function startTimerOnClick(guid) {
-    beforeTimeHours = new Date().getHours();
-    beforeTimeMinutes = new Date().getMinutes();
-    beforeTimeSeconds = new Date().getSeconds();
+    before.hours = new Date().getHours();
+    before.minutes = new Date().getMinutes();
+    before.seconds = new Date().getSeconds();
 
     window[guid] = setInterval(function(){
         updateTimer();
@@ -494,15 +500,15 @@ function startCountDownOnClick() {
 }
 
 function stopTimerOnClick(guid) {
-    afterTimeHours = new Date().getHours();
-    afterTimeMinutes = new Date().getMinutes();
-    afterTimeSeconds = new Date().getSeconds();
+    after.hours = new Date().getHours();
+    after.minutes = new Date().getMinutes();
+    after.seconds = new Date().getSeconds();
 
     clearInterval(window[guid]);
 
-    alert((afterTimeHours - beforeTimeHours)
-    + 'h : ' + (afterTimeMinutes - beforeTimeMinutes)
-    + 'm : ' +(afterTimeSeconds - beforeTimeSeconds) + 's');
+    alert((after.hours - before.hours)
+    + 'h : ' + (after.minutes - before.minutes)
+    + 'm : ' +(after.seconds - before.seconds) + 's');
 }
 
 function stopCountDownOnClick() {
