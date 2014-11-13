@@ -55,14 +55,17 @@
             font-size: 24px;
         }
 
+        #txts {
+            background-color: #ffffff;
+            border: solid;
+        }
 
     </style>
 
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
 <body>
-<div id="btns" style="margin-left: 80%; margin-top: 5%;">
-</div>
+<div id="btns" style="margin-left: 80%; margin-top: 5%;"></div>
 
 <script src="js/d3.js"></script>
 <script>
@@ -380,7 +383,7 @@ function drawTimer(clockRadius, guid){ //create all the clock elements
         <button onclick="startTimerOnClick(\'' + guid + '\');">Start</button> \
         <button onclick="stopTimerOnClick(\'' + guid + '\');">Stop</button> \
         <button onclick="resetTimer(\'' + guid + '\');">Reset</button> \
-        <button onclick="splitTimerOnClick(\'' + guid + '\');">Split</button>');
+        <p style="text-align: left;"><button onclick="splitTimerOnClick(\'' + guid + '\');">[ lap ]</button></p>');
 }
 
 function moveHands(area){
@@ -526,7 +529,7 @@ function stopTimerOnClick(guid) {
 * works only with one timer presented
 * */
 function splitTimerOnClick() {
-    alert('You successfully split ' + splitter + ' seconds');
+    $('#txts').append('You successfully split ' + splitter + ' seconds' + '<hr />');
     splitter = 0;
 }
 
@@ -687,5 +690,8 @@ drawTimer(200, 'Lon');
 
 d3.select(self.frameElement).style("height", height + "px");
 </script>
+
+
+<div id="txts" style="margin-left: 80%; margin-top: 5%;"></div>
 </body>
 </html>
