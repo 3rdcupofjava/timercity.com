@@ -985,17 +985,18 @@ function drawLapTimer(clockRadius, guid){
         <button onclick="stopLapTimerOnClick(\'' + guid + '\');">Stop</button></p>');
 }
 
-drawClock(50, 0, 'London');
-drawTimer(50, 'lon_t');
-drawLapTimer(50, 'lon_s');
-drawCountDown(50, 11480, 'lon_c');
+var person = { 'timezone': 0, 'city': 'London', 'clockSize': 200, 'startsCountDown': 11480 };
+localStorage.setItem('person', JSON.stringify(person));
 
-document.write('<hr />');
+var tmp = JSON.parse(localStorage.person);
+var t_guid = tmp.city.toLowerCase().slice(0,2) + '_t';
+var s_guid = tmp.city.toLowerCase().slice(0,2) + '_s';
+var c_guid = tmp.city.toLowerCase().slice(0,2) + '_c';
 
-drawClock(50, 3, 'Paris');
-drawTimer(50, 'par_t');
-drawLapTimer(50, 'par_s');
-drawCountDown(50, 3670, 'par_c');
+drawClock(tmp.clockSize, tmp.timezone, tmp.city);
+drawTimer(tmp.clockSize, t_guid);
+drawLapTimer(tmp.clockSize, s_guid);
+drawCountDown(tmp.clockSize, tmp.startsCountDown, c_guid);
 
 d3.select(self.frameElement).style("height", height + "px");
 </script>
