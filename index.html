@@ -597,12 +597,21 @@ var after = {
 
 var interval;
 var splitter = 0;
+var timerStarted = [],
+        lapTimerStarted = [],
+        countDownStarted = [];
+
 
 /*
  * this function called when start button pressed
  * and take guid from drawTimer as parameter
  * */
 function startTimerOnClick(guid) {
+    if(timerStarted[guid] === true) {
+        return 1;
+    }
+    timerStarted[guid] = true;
+
     before.hours = new Date().getHours();
     before.minutes = new Date().getMinutes();
     before.seconds = new Date().getSeconds();
@@ -618,6 +627,11 @@ function startTimerOnClick(guid) {
  * and take guid from drawTimer as parameter
  * */
 function startLapTimerOnClick(guid) {
+    if(lapTimerStarted[guid] === true) {
+        return 1;
+    }
+    lapTimerStarted[guid] = true;
+
     before.hours = new Date().getHours();
     before.minutes = new Date().getMinutes();
     before.seconds = new Date().getSeconds();
@@ -631,6 +645,11 @@ function startLapTimerOnClick(guid) {
 }
 
 function startCountDownOnClick(guid) {
+    if(countDownStarted[guid] === true) {
+        return 1;
+    }
+    countDownStarted[guid] = true;
+
     before.hours = new Date().getHours();
     before.minutes = new Date().getMinutes();
     before.seconds = new Date().getSeconds();
@@ -642,6 +661,7 @@ function startCountDownOnClick(guid) {
 }
 
 function stopTimerOnClick(guid) {
+    timerStarted[guid] = false;
     after.hours = new Date().getHours();
     after.minutes = new Date().getMinutes();
     after.seconds = new Date().getSeconds();
@@ -654,6 +674,7 @@ function stopTimerOnClick(guid) {
 }
 
 function stopLapTimerOnClick(guid) {
+    lapTimerStarted[guid] = false;
     after.hours = new Date().getHours();
     after.minutes = new Date().getMinutes();
     after.seconds = new Date().getSeconds();
@@ -674,6 +695,7 @@ function splitTimerOnClick() {
 }
 
 function stopCountDownOnClick(guid) {
+    countDownStarted[guid] = false;
     after.hours = new Date().getHours();
     after.minutes = new Date().getMinutes();
     after.seconds = new Date().getSeconds();
