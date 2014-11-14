@@ -63,11 +63,10 @@
     </style>
 
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="js/d3.js"></script>
 </head>
 <body>
 <div id="btns" style="margin-left: 80%; margin-top: 5%;"></div>
-
-<script src="js/d3.js"></script>
 <script>
 
 var radians = 0.0174532925,
@@ -120,6 +119,28 @@ var handData = [
 ];
 
 var timerData = [
+    {
+        type:'hour',
+        value:0,
+        length:-hourHandLength,
+        scale:hourScale
+    },
+    {
+        type:'minute',
+        value:0,
+        length:-minuteHandLength,
+        scale:minuteScale
+    },
+    {
+        type:'second',
+        value:0,
+        length:-secondHandLength,
+        scale:secondScale,
+        balance:secondHandBalance
+    }
+];
+
+var lapTimerData = [
     {
         type:'hour',
         value:0,
@@ -380,10 +401,8 @@ function drawTimer(clockRadius, guid){ //create all the clock elements
             });
 
     $('#btns').append(' \
-        <button onclick="startTimerOnClick(\'' + guid + '\');">Start</button> \
-        <button onclick="stopTimerOnClick(\'' + guid + '\');">Stop</button> \
-        <button onclick="resetTimer(\'' + guid + '\');">Reset</button> \
-        <p style="text-align: left;"><button onclick="splitTimerOnClick(\'' + guid + '\');">[ lap ]</button></p>');
+        <p><button onclick="startTimerOnClick(\'' + guid + '\');">Start</button> \
+        <button onclick="stopTimerOnClick(\'' + guid + '\');">Stop</button></p>');
 }
 
 function moveHands(area){
@@ -398,6 +417,15 @@ function moveHands(area){
 function moveTimerHands(area){
     d3.select('#clock-hands'+area).selectAll('line')
             .data(timerData)
+            .transition()
+            .attr('transform',function(d){
+                return 'rotate('+ d.scale(d.value) +')';
+            });
+}
+
+function moveLapTimerHands(area){
+    d3.select('#clock-hands'+area).selectAll('line')
+            .data(lapTimerData)
             .transition()
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value) +')';
@@ -441,6 +469,22 @@ function updateTimer(counter) { // set step to 10 for testing
             timerData[2].value = 0;
             timerData[1].value +=1;
             timerData[0].value = timerData[1].value/60;
+        }
+    }
+}
+
+function updatelapTimer(counter) { // set step to 10 for testing
+    counter = typeof counter !== 'undefined' ? counter : 0;
+    if(counter === 0) {
+        counter +=1;
+    }
+    if(counter > 0) {
+        lapTimerData[2].value +=1;
+
+        if(lapTimerData[2].value === 60) {
+            lapTimerData[2].value = 0;
+            lapTimerData[1].value +=1;
+            lapTimerData[0].value = lapTimerData[1].value/60;
         }
     }
 }
@@ -493,27 +537,54 @@ function startTimerOnClick(guid) {
     before.hours = new Date().getHours();
     before.minutes = new Date().getMinutes();
     before.seconds = new Date().getSeconds();
-    splitter = 0;
 
     window[guid] = setInterval(function(){
         updateTimer();
         moveTimerHands(guid);
+    }, 1000);
+}
+
+/*
+ * this function called when start button pressed
+ * and take guid from drawTimer as parameter
+ * */
+function startLapTimerOnClick(guid) {
+    before.hours = new Date().getHours();
+    before.minutes = new Date().getMinutes();
+    before.seconds = new Date().getSeconds();
+    splitter = 0;
+
+    window[guid] = setInterval(function(){
+        updatelapTimer();
+        moveLapTimerHands(guid);
         splitter += 1;
     }, 1000);
 }
 
-function startCountDownOnClick() {
+function startCountDownOnClick(guid) {
     before.hours = new Date().getHours();
     before.minutes = new Date().getMinutes();
     before.seconds = new Date().getSeconds();
 
-    window['countdown'] = setInterval(function(){
+    window[guid] = setInterval(function(){
         updateCountDown();
-        moveCountDownHands('countdown');
+        moveCountDownHands(guid);
     }, 1000);
 }
 
 function stopTimerOnClick(guid) {
+    after.hours = new Date().getHours();
+    after.minutes = new Date().getMinutes();
+    after.seconds = new Date().getSeconds();
+
+    clearInterval(window[guid]);
+
+    alert((after.hours - before.hours)
+    + 'h : ' + (after.minutes - before.minutes)
+    + 'm : ' +(after.seconds - before.seconds) + 's');
+}
+
+function stopLapTimerOnClick(guid) {
     after.hours = new Date().getHours();
     after.minutes = new Date().getMinutes();
     after.seconds = new Date().getSeconds();
@@ -533,12 +604,12 @@ function splitTimerOnClick() {
     splitter = 0;
 }
 
-function stopCountDownOnClick() {
+function stopCountDownOnClick(guid) {
     after.hours = new Date().getHours();
     after.minutes = new Date().getMinutes();
     after.seconds = new Date().getSeconds();
 
-    clearInterval(window['countdown']);
+    clearInterval(window[guid]);
 
     alert((after.hours - before.hours)
     + 'h : ' + (after.minutes - before.minutes)
@@ -571,10 +642,10 @@ function initCountDownTimer(time) {
         countData[0].value = -( ( time - ( time % 3600 ) ) / 3600 );
     }
 }
-function drawCountDown(time, clockRadius, guid){ //create all the clock elements
 
-    clockRadius = 200;
-    guid = 'countdown';
+function drawCountDown(clockRadius, time, guid){ //create all the clock elements
+
+    clockRadius = clockRadius || 200;
 
     initCountDownTimer(time);
 
@@ -680,17 +751,131 @@ function drawCountDown(time, clockRadius, guid){ //create all the clock elements
                 return 'rotate('+ d.scale(d.value) +')';
             });
 
+    $('#btns').append(' \
+        <p><button onclick="startCountDownOnClick(\'' + guid + '\');">Start</button> \
+        <button onclick="stopCountDownOnClick(\'' + guid + '\');">Stop</button></p>');
+
     updateCountDown();
-    moveCountDownHands('countdown');
+    moveCountDownHands(guid);
 }
 
-//drawCountDown(43205);
-//drawClock(200, -7, 'London');
-drawTimer(200, 'Lon');
+function drawLapTimer(clockRadius, guid){
+
+    var width = (clockRadius+margin)*2,// replace global definition in function scope.
+            height = (clockRadius+margin)*2,
+            secondTickStart = clockRadius,
+            hourTickStart = clockRadius,
+            secondLabelRadius = clockRadius + 16,
+            hourLabelRadius = clockRadius - 40;
+
+    var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    var face = svg.append('g')
+            .attr('id','clock-face')
+            .attr('transform','translate(' + (clockRadius + margin) + ',' + (clockRadius + margin) + ')');
+
+    //add marks for seconds
+    face.selectAll('.second-tick')
+            .data(d3.range(0,60)).enter()
+            .append('line')
+            .attr('class', 'second-tick')
+            .attr('x1',0)
+            .attr('x2',0)
+            .attr('y1',secondTickStart)
+            .attr('y2',secondTickStart + secondTickLength)
+            .attr('transform',function(d){
+                return 'rotate(' + secondScale(d) + ')';
+            });
+    //and labels
+
+    face.selectAll('.second-label')
+            .data(d3.range(5,61,5))
+            .enter()
+            .append('text')
+            .attr('class', 'second-label')
+            .attr('text-anchor','middle')
+            .attr('x',function(d){
+                return secondLabelRadius*Math.sin(secondScale(d)*radians);
+            })
+            .attr('y',function(d){
+                return -secondLabelRadius*Math.cos(secondScale(d)*radians) + secondLabelYOffset;
+            })
+            .text(function(d){
+                return d;
+            });
+
+    //... and hours
+    face.selectAll('.hour-tick')
+            .data(d3.range(0,12)).enter()
+            .append('line')
+            .attr('class', 'hour-tick')
+            .attr('x1',0)
+            .attr('x2',0)
+            .attr('y1',hourTickStart)
+            .attr('y2',hourTickStart + hourTickLength)
+            .attr('transform',function(d){
+                return 'rotate(' + hourScale(d) + ')';
+            });
+
+    face.selectAll('.hour-label')
+            .data(d3.range(3,13,3))
+            .enter()
+            .append('text')
+            .attr('class', 'hour-label')
+            .attr('text-anchor','middle')
+            .attr('x',function(d){
+                return hourLabelRadius*Math.sin(hourScale(d)*radians);
+            })
+            .attr('y',function(d){
+                return -hourLabelRadius*Math.cos(hourScale(d)*radians) + hourLabelYOffset;
+            })
+            .text(function(d){
+                return d;
+            });
+
+
+    var hands = face.append('g').attr('id','clock-hands' + guid);
+
+    face.append('g').attr('id','face-overlay')
+            .append('circle').attr('class','hands-cover')
+            .attr('x',0)
+            .attr('y',0)
+            .attr('r',clockRadius/20);
+
+    hands.selectAll('line')
+            .data(handData)
+            .enter()
+            .append('line')
+            .attr('class', function(d){
+                return d.type + '-hand';
+            })
+            .attr('x1',0)
+            .attr('y1',function(d){
+                return d.balance ? d.balance : 0;
+            })
+            .attr('x2',0)
+            .attr('y2',function(d){
+                return d.length;
+            })
+            .attr('transform',function(d){
+                return 'rotate('+ d.scale(d.value) +')';
+            });
+
+    $('#btns').append(' \
+        <p><button onclick="startLapTimerOnClick(\'' + guid + '\');">Start</button> \
+        <button onclick="splitTimerOnClick(\'' + guid + '\');">[ lap ]</button> \
+        <button onclick="stopLapTimerOnClick(\'' + guid + '\');">Stop</button></p>');
+}
+
+drawClock(100, 0, 'London');
+drawTimer(100, 'lon_t');
+drawCountDown(100, 11480, 'lon_c');
+drawLapTimer(100, 'lon_s');
 
 d3.select(self.frameElement).style("height", height + "px");
 </script>
-
 
 <div id="txts" style="margin-left: 80%; margin-top: 5%;"></div>
 </body>
