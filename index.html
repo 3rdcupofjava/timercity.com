@@ -414,30 +414,30 @@ function moveHands(area){
             });
 }
 
-function moveTimerHands(area){
+function moveTimerHands(guid, area){
     d3.select('#clock-hands'+area).selectAll('line')
-            .data(timerData)
+            .data(window[guid])
             .transition()
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value) +')';
             });
 }
 
-function moveLapTimerHands(area){
+function moveLapTimerHands(guid, area){
     d3.select('#clock-hands'+area).selectAll('line')
-            .data(lapTimerData)
+            .data(window[guid])
             .transition()
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value) +')';
             });
 }
 
-function moveCountDownHands(area){
+function moveCountDownHands(guid, area){
     d3.select('#clock-hands'+area).selectAll('line')
-            .data(countData)
+            .data(window[guid])
             .transition()
             .attr('transform',function(d){
-                if(countData[0].value === 0 && countData[1].value === 0 && countData[2].value === 0) {
+                if(window[guid][0].value === 0 && window[guid][1].value === 0 && window[guid][2].value === 0) {
                     stopCountDownOnClick();
                 }
                 return 'rotate('+ -1 * ( d.scale(d.value) ) +')';
@@ -457,50 +457,125 @@ function updateData(offset){
     handData[2].value = nd.getSeconds();
 }
 
-function updateTimer(counter) {
+function updateTimer(guid, counter) {
+
+    if(typeof window[guid] === 'undefined') {
+        window[guid] = [
+            {
+                type:'hour',
+                value:0,
+                length:-hourHandLength,
+                scale:hourScale
+            },
+            {
+                type:'minute',
+                value:0,
+                length:-minuteHandLength,
+                scale:minuteScale
+            },
+            {
+                type:'second',
+                value:0,
+                length:-secondHandLength,
+                scale:secondScale,
+                balance:secondHandBalance
+            }
+        ];
+    }
+
     counter = typeof counter !== 'undefined' ? counter : 0;
     if(counter === 0) {
         counter +=1;
     }
     if(counter > 0) {
-        timerData[2].value +=1;
+        window[guid][2].value +=1;
 
-        if(timerData[2].value === 60) {
-            timerData[2].value = 0;
-            timerData[1].value +=1;
-            timerData[0].value = timerData[1].value/60;
+        if(window[guid][2].value === 60) {
+            window[guid][2].value = 0;
+            window[guid][1].value +=1;
+            window[guid][0].value = window[guid][1].value/60;
         }
     }
 }
 
-function updateLapTimer(counter) { // set step to 10 for testing
+function updateLapTimer(guid, counter) {
+
+    if(typeof window[guid] === 'undefined') {
+        window[guid] = [
+            {
+                type:'hour',
+                value:0,
+                length:-hourHandLength,
+                scale:hourScale
+            },
+            {
+                type:'minute',
+                value:0,
+                length:-minuteHandLength,
+                scale:minuteScale
+            },
+            {
+                type:'second',
+                value:0,
+                length:-secondHandLength,
+                scale:secondScale,
+                balance:secondHandBalance
+            }
+        ];
+    }
+
     counter = typeof counter !== 'undefined' ? counter : 0;
     if(counter === 0) {
         counter +=1;
     }
     if(counter > 0) {
-        lapTimerData[2].value +=1;
+        window[guid][2].value +=1;
 
-        if(lapTimerData[2].value === 60) {
-            lapTimerData[2].value = 0;
-            lapTimerData[1].value +=1;
-            lapTimerData[0].value = lapTimerData[1].value/60;
+        if(window[guid][2].value === 60) {
+            window[guid][2].value = 0;
+            window[guid][1].value +=1;
+            window[guid][0].value = window[guid][1].value/60;
         }
     }
 }
 
-function updateCountDown(counter) { // set step to 10 for testing
+function updateCountDown(guid, counter) {
+
+    if(typeof window[guid] === 'undefined') {
+        window[guid] = [
+            {
+                type:'hour',
+                value:0,
+                length:-hourHandLength,
+                scale:hourScale
+            },
+            {
+                type:'minute',
+                value:0,
+                length:-minuteHandLength,
+                scale:minuteScale
+            },
+            {
+                type:'second',
+                value:0,
+                length:-secondHandLength,
+                scale:secondScale,
+                balance:secondHandBalance
+            }
+        ];
+    }
+
     counter = typeof counter !== 'undefined' ? counter : 0;
     if(counter === 0) {
         counter +=1;
     }
     if(counter > 0) {
-        countData[2].value +=1;
+        window[guid][2].value +=1;
 
-        if(countData[2].value === 60) {
-            countData[2].value = 0;
-            countData[1].value +=1;
-            countData[0].value = countData[1].value/60;
+        if(window[guid][2].value === 60) {
+            window[guid][2].value = 0;
+            window[guid][1].value +=1;
+            window[guid][0].value = window[guid][1].value/60;
         }
     }
 }
@@ -532,9 +607,9 @@ function startTimerOnClick(guid) {
     before.minutes = new Date().getMinutes();
     before.seconds = new Date().getSeconds();
 
-    window[guid] = setInterval(function(){
-        updateTimer();
-        moveTimerHands(guid);
+    window[guid+'tmr'] = setInterval(function(){
+        updateTimer(guid);
+        moveTimerHands(guid, guid);
     }, 1000);
 }
 
@@ -548,9 +623,9 @@ function startLapTimerOnClick(guid) {
     before.seconds = new Date().getSeconds();
     splitter = 0;
 
-    window[guid] = setInterval(function(){
-        updateLapTimer();
-        moveLapTimerHands(guid);
+    window[guid+'lap'] = setInterval(function(){
+        updateTimer(guid);
+        moveTimerHands(guid, guid);
         splitter += 1;
     }, 1000);
 }
@@ -560,9 +635,9 @@ function startCountDownOnClick(guid) {
     before.minutes = new Date().getMinutes();
     before.seconds = new Date().getSeconds();
 
-    window[guid] = setInterval(function(){
-        updateCountDown();
-        moveCountDownHands(guid);
+    window[guid+'count'] = setInterval(function(){
+        updateCountDown(guid);
+        moveCountDownHands(guid, guid);
     }, 1000);
 }
 
@@ -571,7 +646,7 @@ function stopTimerOnClick(guid) {
     after.minutes = new Date().getMinutes();
     after.seconds = new Date().getSeconds();
 
-    clearInterval(window[guid]);
+    clearInterval(window[guid+'tmr']);
 
     alert((after.hours - before.hours)
     + 'h : ' + (after.minutes - before.minutes)
@@ -583,7 +658,7 @@ function stopLapTimerOnClick(guid) {
     after.minutes = new Date().getMinutes();
     after.seconds = new Date().getSeconds();
 
-    clearInterval(window[guid]);
+    clearInterval(window[guid+'lap']);
 
     alert((after.hours - before.hours)
     + 'h : ' + (after.minutes - before.minutes)
@@ -603,7 +678,7 @@ function stopCountDownOnClick(guid) {
     after.minutes = new Date().getMinutes();
     after.seconds = new Date().getSeconds();
 
-    clearInterval(window[guid]);
+    clearInterval(window[guid+'count']);
 
     alert((after.hours - before.hours)
     + 'h : ' + (after.minutes - before.minutes)
@@ -617,23 +692,48 @@ function resetTimer(guid) {
     moveTimerHands(guid);
 }
 
-function initCountDownTimer(time) {
+function initCountDownTimer(guid, time) {
+
+    if(typeof window[guid] === 'undefined') {
+        window[guid] = [
+            {
+                type:'hour',
+                value:0,
+                length:-hourHandLength,
+                scale:hourScale
+            },
+            {
+                type:'minute',
+                value:0,
+                length:-minuteHandLength,
+                scale:minuteScale
+            },
+            {
+                type:'second',
+                value:0,
+                length:-secondHandLength,
+                scale:secondScale,
+                balance:secondHandBalance
+            }
+        ];
+    }
+
     if (time < 60) {
-        countData[2].value = -(time + 1); // - | + for correct view set up
-        countData[1].value = 0;
-        countData[0].value = 0;
+        window[guid][2].value = -(time + 1); // - | + for correct view set up
+        window[guid][1].value = 0;
+        window[guid][0].value = 0;
     }
 
     if (time >= 60 && time < 3600) {
-        countData[2].value = -( (time % 60) ) - 1;
-        countData[1].value = -( ( time - (time % 60) ) / 60 );
-        countData[0].value = 0;
+        window[guid][2].value = -( (time % 60) ) - 1;
+        window[guid][1].value = -( ( time - (time % 60) ) / 60 );
+        window[guid][0].value = 0;
     }
 
     if (time >= 3600) {
-        countData[2].value = -( ( ( time % 3600 ) % 60 ) + 1 );
-        countData[1].value = -( ( time - ( time - ( time % 3600 ) ) - ( ( time % 3600 ) % 60 ) ) / 60 );
-        countData[0].value = -( ( time - ( time % 3600 ) ) / 3600 );
+        window[guid][2].value = -( ( ( time % 3600 ) % 60 ) + 1 );
+        window[guid][1].value = -( ( time - ( time - ( time % 3600 ) ) - ( ( time % 3600 ) % 60 ) ) / 60 );
+        window[guid][0].value = -( ( time - ( time % 3600 ) ) / 3600 );
     }
 }
 
@@ -641,7 +741,7 @@ function drawCountDown(clockRadius, time, guid){ //create all the clock elements
 
     clockRadius = clockRadius || 200;
 
-    initCountDownTimer(time);
+    initCountDownTimer(guid, time);
 
     var width = (clockRadius+margin)*2,// replace global definition in function scope.
             height = (clockRadius+margin)*2,
@@ -865,14 +965,14 @@ function drawLapTimer(clockRadius, guid){
 
 drawClock(50, 0, 'London');
 drawTimer(50, 'lon_t');
-drawCountDown(50, 11480, 'lon_c');
+//drawCountDown(50, 11480, 'lon_c');
 drawLapTimer(50, 'lon_s');
 
 document.write('<hr />');
 
 drawClock(50, 0, 'Paris');
 drawTimer(50, 'par_t');
-drawCountDown(50, 11480, 'par_c');
+//drawCountDown(50, 11480, 'par_c');
 drawLapTimer(50, 'par_s');
 
 d3.select(self.frameElement).style("height", height + "px");
