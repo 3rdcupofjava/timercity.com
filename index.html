@@ -438,7 +438,7 @@ function moveCountDownHands(guid, area){
             .transition()
             .attr('transform',function(d){
                 if(window[guid][0].value === 0 && window[guid][1].value === 0 && window[guid][2].value === 0) {
-                    stopCountDownOnClick();
+                    stopCountDownOnClick(guid);
                 }
                 return 'rotate('+ -1 * ( d.scale(d.value) ) +')';
             });
@@ -970,10 +970,10 @@ drawCountDown(50, 11480, 'lon_c');
 
 document.write('<hr />');
 
-drawClock(50, 0, 'Paris');
+drawClock(50, 3, 'Paris');
 drawTimer(50, 'par_t');
 drawLapTimer(50, 'par_s');
-drawCountDown(50, 11480, 'par_c');
+drawCountDown(50, 3670, 'par_c');
 
 d3.select(self.frameElement).style("height", height + "px");
 </script>
