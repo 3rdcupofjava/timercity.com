@@ -596,7 +596,7 @@ var after = {
 };
 
 var interval;
-var splitter = 0;
+var splitter = [];
 var timerStarted = [],
         lapTimerStarted = [],
         countDownStarted = [];
@@ -635,12 +635,12 @@ function startLapTimerOnClick(guid) {
     before.hours = new Date().getHours();
     before.minutes = new Date().getMinutes();
     before.seconds = new Date().getSeconds();
-    splitter = 0;
+    splitter[guid] = 0;
 
     window[guid+'lap'] = setInterval(function(){
         updateTimer(guid);
         moveTimerHands(guid, guid);
-        splitter += 1;
+        splitter[guid] += 1;
     }, 1000);
 }
 
@@ -689,9 +689,9 @@ function stopLapTimerOnClick(guid) {
 /*
 * works only with one timer presented
 * */
-function splitTimerOnClick() {
-    $('#txts').append('You successfully split ' + splitter + ' seconds' + '<hr />');
-    splitter = 0;
+function splitTimerOnClick(guid) {
+    $('#txts').append('You successfully split ' + splitter[guid] + ' seconds' + '<hr />');
+    splitter[guid] = 0;
 }
 
 function stopCountDownOnClick(guid) {
@@ -993,9 +993,13 @@ if(localStorage.getItem('person') !== null) {
     var c_guid = tmp.city.toLowerCase().slice(0,2) + '_c';
 
     drawClock(tmp.clockSize, tmp.timezone, tmp.city);
+    drawClock(tmp.clockSize, -1, 'Paris');
     drawTimer(tmp.clockSize, t_guid);
+    drawTimer(tmp.clockSize, 'pari_t');
     drawLapTimer(tmp.clockSize, s_guid);
+    drawLapTimer(tmp.clockSize, 'pari_s');
     drawCountDown(tmp.clockSize, tmp.startsCountDown, c_guid);
+    drawCountDown(tmp.clockSize, 3670, 'pari_c');
 } else {
     drawClock(100, 0, 'London');
     drawTimer(100, 'lon_t');
