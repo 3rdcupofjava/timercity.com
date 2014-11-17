@@ -992,11 +992,14 @@ if(localStorage.getItem('person') !== null) {
     var s_guid = tmp.city.toLowerCase().slice(0,2) + '_s';
     var c_guid = tmp.city.toLowerCase().slice(0,2) + '_c';
 
-//    drawClock(tmp.clockSize, tmp.timezone, tmp.city);
-//    drawTimer(tmp.clockSize, t_guid);
+    drawClock(tmp.clockSize, tmp.timezone, tmp.city);
+    drawClock(tmp.clockSize, -1, 'Paris');
+    drawTimer(tmp.clockSize, t_guid);
+    drawTimer(tmp.clockSize, 'pari_t');
     drawLapTimer(tmp.clockSize, s_guid);
     drawLapTimer(tmp.clockSize, 'pari_s');
     drawCountDown(tmp.clockSize, tmp.startsCountDown, c_guid);
+    drawCountDown(tmp.clockSize, 3670, 'pari_c');
 } else {
     drawClock(100, 0, 'London');
     drawTimer(100, 'lon_t');
