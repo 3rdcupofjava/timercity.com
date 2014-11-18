@@ -63,7 +63,7 @@
     </style>
 
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script src="js/d3.js"></script>
+    <script src="/js/d3.js"></script>
 </head>
 <body>
 <div id="btns" style="margin-left: 80%; margin-top: 5%;"></div>
