@@ -3,30 +3,30 @@
         <!-- <<< LEFT COLUMN <<< -->
         <div class="col-md-3" style="background-color:#f5f5f5; padding-top: 1em; height:100%;">
 
-            <form role="form">
+            <form id="myForm" role="form">
               <div class="form-group">
                   
-                <div class="btn-group" data-toggle="buttons">
+                <div id="checkboxes" class="btn-group" data-toggle="buttons">
                   <label class="btn btn-default active">
-                    <input type="radio" name="options" id="option1" autocomplete="off" checked> Clock
+                    <input type="radio" name="options" id="clock" autocomplete="off" checked> Clock
                   </label>
                   <label class="btn btn-default">
-                    <input type="radio" name="options" id="option3" autocomplete="off"> Alarm
+                    <input type="radio" name="options" id="alarm" autocomplete="off"> Alarm
                   </label>
                   <label class="btn btn-default">
-                    <input type="radio" name="options" id="option3" autocomplete="off"> Countdown
+                    <input type="radio" name="options" id="countdown" autocomplete="off"> Countdown
                   </label>
                   <label class="btn btn-default">
-                    <input type="radio" name="options" id="option2" autocomplete="off"> Stopwatch
+                    <input type="radio" name="options" id="stopwatch" autocomplete="off"> Stopwatch
                   </label>
                   <label class="btn btn-default">
-                    <input type="radio" name="options" id="option2" autocomplete="off"> Lap Timer
+                    <input type="radio" name="options" id="laptimer" autocomplete="off"> Lap Timer
                   </label>
                 </div>
                   
-                  <input type="text" class="form-control" placeholder="Title">
-                  <input type="text" class="form-control" placeholder="Size">
-                  <input type="text" class="form-control" placeholder="Timezone">
+                  <input id="title" type="text" class="form-control" placeholder="Title">
+                  <input id="size" type="text" class="form-control" placeholder="Size">
+                  <input id="timezone" type="text" class="form-control" placeholder="Timezone">
                   
                   <button id="add" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Add</button>
                   <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save</button>
