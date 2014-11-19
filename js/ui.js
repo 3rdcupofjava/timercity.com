@@ -1,12 +1,12 @@
 var timer_count=1; // eventually need to load from storage so not to override current timers
+var selected = [];
 function ui(){
     $('#add').on('click', function(){
-        var selected = [];
         $('#checkboxes').find('input:checked').each(function() {
             selected.push($(this).attr('id'));
         });
 
-        console.log(selected.slice(-1)[0]);
+        //console.log(selected.slice(-1)[0]);
 
         var title = $('#title').val();
         var size = $('#size').val();
@@ -23,5 +23,18 @@ function preDraw(view){
     Mustache.parse(template);
     var output = Mustache.render(template, view);
     $('#timer_holder').append(output);
-    drawClock(parseInt(view['clockSize']), parseInt(view['timezone']), view['guid']);
+    switch(selected.slice(-1)[0]) {
+        case 'clock':
+            drawClock(parseInt(view['clockSize']), parseInt(view['timezone']), view['guid']);
+            break;
+        case 'alarm':
+            alert('alarm');
+            break;
+        case 'stopwatch':
+            alert('stopwatch');
+            break;
+        case 'laptimer':
+            alert('laptimer');
+            break;
+    }
 }
