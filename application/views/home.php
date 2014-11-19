@@ -11,13 +11,16 @@
                     <input type="radio" name="options" id="option1" autocomplete="off" checked> Clock
                   </label>
                   <label class="btn btn-default">
-                    <input type="radio" name="options" id="option2" autocomplete="off"> Stopwatch
+                    <input type="radio" name="options" id="option3" autocomplete="off"> Alarm
                   </label>
                   <label class="btn btn-default">
                     <input type="radio" name="options" id="option3" autocomplete="off"> Countdown
                   </label>
                   <label class="btn btn-default">
-                    <input type="radio" name="options" id="option3" autocomplete="off"> Alarm
+                    <input type="radio" name="options" id="option2" autocomplete="off"> Stopwatch
+                  </label>
+                  <label class="btn btn-default">
+                    <input type="radio" name="options" id="option2" autocomplete="off"> Lap Timer
                   </label>
                 </div>
                   
