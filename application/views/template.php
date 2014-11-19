@@ -33,7 +33,9 @@
     <script type="text/javascript" src="/js/ui.js"></script>
     <script type="text/javascript" src="/js/main.js"></script>
     
-    <script type="text/javascript">var timer_box = '<?php include($_SERVER["DOCUMENT_ROOT"].'/application/templates/timer_box.mustache') ?>';</script>
+    <script id="template" type="x-tmpl-mustache">
+        <?php include($_SERVER["DOCUMENT_ROOT"].'/application/templates/timer_box.mustache') ?>
+    </script>
     
   </body>
 </html>
