@@ -10,7 +10,6 @@
     <title><?=$title.' - '.$subtitle?></title>
 
     <link href="/css/bootstrap.css" rel="stylesheet">
-    <link href="/css/ghostdown.css" rel="stylesheet">
     <link href="/css/main.css" rel="stylesheet">
     
     <script type="text/javascript" src="/js/d3.js"></script>

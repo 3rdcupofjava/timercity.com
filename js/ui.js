@@ -8,6 +8,8 @@ function ui(){
 }
 
 function preDraw(view){
+    var template = $('#template').html();
+    Mustache.parse(template);
     var output = Mustache.render(template, view);
     $('#timer_holder').append(output);
     drawClock(view['clockSize'], view['timezone'], view['guid']);
