@@ -12,9 +12,11 @@ function ui(){
         var size = $('#size').val();
         var timezone = $('#timezone').val();
 
-        var view = { 'timezone': timezone, 'city': title, 'clockSize': size, 'guid' : 'timer'+timer_count};
-        timer_count++;
-        preDraw(view);
+        if(title !== '' && size !== '' && timezone !== '') {
+            var view = { 'timezone': timezone, 'city': title, 'clockSize': size, 'guid' : 'timer'+timer_count};
+            timer_count++;
+            preDraw(view);
+        }
     });
 }
 
@@ -33,8 +35,13 @@ function preDraw(view){
         case 'stopwatch':
             alert('stopwatch');
             break;
+        case 'countdown':
+            drawCountDown(parseInt(view['clockSize']), 3670, view['guid']);
+            break;
         case 'laptimer':
-            alert('laptimer');
+            drawLapTimer(parseInt(view['clockSize']), view['guid']);
+            break;
+        default :
             break;
     }
 }
