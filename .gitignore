@@ -45,3 +45,6 @@ Temporary Items
 
 # IDEA config
 .idea/*
+
+# Except this file
+!.gitignore
