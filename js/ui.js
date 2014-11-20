@@ -2,6 +2,59 @@ var timer_count=1; // eventually need to load from storage so not to override cu
 var timer_type = '1';
 
 var ui = {
+    nav: function(){
+        $('#sign_up a').on('click', function(){
+
+            var parent = $(this).parent();
+            if(parent.hasClass('active')){
+                parent.removeClass('active');
+                $('#registration_sorry').hide();
+            }
+            else{
+                parent.addClass('active')
+                    .siblings().removeClass('active');
+                $('#registration_sorry').show();
+            }
+            $('#registration_form').hide();
+
+        });
+        $('#log_in a').on('click', function(){
+
+            var parent = $(this).parent();
+            if(parent.hasClass('active')){
+                parent.removeClass('active');
+                $('#registration_form').hide();
+            }
+            else{
+                parent.addClass('active')
+                    .siblings().removeClass('active');
+                $('#registration_form').show();
+                $('#button_request').hide();
+                $('#button_log_in').show();
+            }
+            $('#registration_sorry').hide();
+
+            $('#password').show();
+            $('#why').hide();
+
+        });
+        $('#early_registration').on('click', function(){
+
+            $('#registration_sorry').toggle();
+            $('#registration_form').show();
+
+            $('#button_log_in').hide();
+            $('#button_request').show();
+
+            $('#password').hide();
+            $('#why').show();
+
+        });
+        $('#button_register').on('click', function(){
+            $('#registration_form')
+                .attr('action', '/yaam/public/register');
+        }); 
+    },
     timer_types: function(){
         var view = {
             'id': 'timer_types',
@@ -80,6 +133,7 @@ var ui = {
         
     },
     render: function(){
+        this.nav();
         this.timer_types();
         this.set_type('1', false);
     }

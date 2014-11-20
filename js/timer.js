@@ -244,147 +244,21 @@ var clock = {
                 .attr('transform',function(d){
                     return 'rotate('+ d.scale(d.value) +')';
                 });
-
-                this.postRender(guid);
+                
+        if(this.postRender !== undefined)
+            this.postRender(guid);
     }
 }
 
 var timerClock = {
     postRender : function(guid){
+        alert('yo');
         $('#btns').append(' \
             <p><button onclick="startTimerOnClick(\'' + guid + '\');">Start</button> \
             <button onclick="stopTimerOnClick(\'' + guid + '\');">Stop</button></p>');
     }
 }
 var countDownClock = {
-    render: function(view){
-        var clockRadius = parseInt(view['clockSize']);
-        var offset = parseInt(view['timezone']);
-        var guid = view['guid'];
-        clocks[guid] = view;
-
-        var template = $('#template_timer_box').html();
-        Mustache.parse(template);
-        var output = Mustache.render(template, view);
-        $('#timer_holder').append(output);
-
-        // clicking on a timer to edit
-        $('#' + guid + '_link').on('click', function(){
-
-            $('#title').val(clocks[guid].title);
-            $('#size').val(clocks[guid].size);
-            $('#timezone').val(clocks[guid].timezone);
-
-            ui.set_type(clocks[guid].type, true)
-        });
-
-        initCountDownTimer(guid, view['time']);
-
-        var width = (clockRadius+margin)*2,// replace global definition in function scope.
-            height = (clockRadius+margin)*2,
-            secondTickStart = clockRadius,
-            hourTickStart = clockRadius,
-            secondLabelRadius = clockRadius + 16,
-            hourLabelRadius = clockRadius - 40;
-
-        var svg = d3.select("body").append("svg")
-            .attr("width", width)
-            .attr("height", height);
-
-        var face = svg.append('g')
-            .attr('id','clock-face')
-            .attr('transform','translate(' + (clockRadius + margin) + ',' + (clockRadius + margin) + ')');
-
-        //add marks for seconds
-        face.selectAll('.second-tick')
-            .data(d3.range(0,60)).enter()
-            .append('line')
-            .attr('class', 'second-tick')
-            .attr('x1',0)
-            .attr('x2',0)
-            .attr('y1',secondTickStart)
-            .attr('y2',secondTickStart + secondTickLength)
-            .attr('transform',function(d){
-                return 'rotate(' + secondScale(d) + ')';
-            });
-        //and labels
-
-        face.selectAll('.second-label')
-            .data(d3.range(5,61,5))
-            .enter()
-            .append('text')
-            .attr('class', 'second-label')
-            .attr('text-anchor','middle')
-            .attr('x',function(d){
-                return secondLabelRadius*Math.sin(secondScale(d)*radians);
-            })
-            .attr('y',function(d){
-                return -secondLabelRadius*Math.cos(secondScale(d)*radians) + secondLabelYOffset;
-            })
-            .text(function(d){
-                return d;
-            });
-
-        //... and hours
-        face.selectAll('.hour-tick')
-            .data(d3.range(0,12)).enter()
-            .append('line')
-            .attr('class', 'hour-tick')
-            .attr('x1',0)
-            .attr('x2',0)
-            .attr('y1',hourTickStart)
-            .attr('y2',hourTickStart + hourTickLength)
-            .attr('transform',function(d){
-                return 'rotate(' + hourScale(d) + ')';
-            });
-
-        face.selectAll('.hour-label')
-            .data(d3.range(3,13,3))
-            .enter()
-            .append('text')
-            .attr('class', 'hour-label')
-            .attr('text-anchor','middle')
-            .attr('x',function(d){
-                return hourLabelRadius*Math.sin(hourScale(d)*radians);
-            })
-            .attr('y',function(d){
-                return -hourLabelRadius*Math.cos(hourScale(d)*radians) + hourLabelYOffset;
-            })
-            .text(function(d){
-                return d;
-            });
-
-
-        var hands = face.append('g').attr('id','clock-hands' + guid);
-
-        face.append('g').attr('id','face-overlay')
-            .append('circle').attr('class','hands-cover')
-            .attr('x',0)
-            .attr('y',0)
-            .attr('r',clockRadius/20);
-
-        hands.selectAll('line')
-            .data(handData)
-            .enter()
-            .append('line')
-            .attr('class', function(d){
-                return d.type + '-hand';
-            })
-            .attr('x1',0)
-            .attr('y1',function(d){
-                return d.balance ? d.balance : 0;
-            })
-            .attr('x2',0)
-            .attr('y2',function(d){
-                return d.length;
-            })
-            .attr('transform',function(d){
-                return 'rotate('+ d.scale(d.value) +')';
-            });
-
-        updateCountDown(guid);
-        moveCountDownHands(guid, guid);
-    },
     postRender : function(guid){
         $('#btns').append(' \
             <p><button onclick="startCountDownOnClick(\'' + guid + '\');">Start</button> \
