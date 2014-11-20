@@ -66,9 +66,10 @@ var ui = {
             var title = $('#title').val();
             var size = $('#size').val();
             var timezone = $('#timezone').val();
-
-            if(title !== '' && size !== '' && timezone !== '') {
-                var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type};
+            var time = parseInt($('#countdown_time').val());
+            console.log(title, size, timezone, time);
+            if(title !== '' && size !== ''/* && timezone !== ''*/) {
+                var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time};
                 timer_count++;
                 preDraw(view);
             }
@@ -93,7 +94,7 @@ function preDraw(view){
             timerClock.render(view);
             break;
         case '3':
-            countDown.render(view);
+            countDownClock.render(view);
             break;
         case '4':
             lapTimerClock.render(view);
