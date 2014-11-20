@@ -1,4 +1,6 @@
 $(document).ready(function(){
+    $.extend(timerClock, clock);
+    storage_check();
 
     $('#sign_up a').on('click', function(){
 
@@ -55,7 +57,7 @@ $(document).ready(function(){
             .attr('action', '/yaam/public/register');
     });
     
-    ui();
+    ui.render();
 
 });
 

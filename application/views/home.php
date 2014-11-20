@@ -1,40 +1,36 @@
 <div class="container-fluid" style="height:100%;">
     <div class="row" style="height:100%;">
         <!-- <<< LEFT COLUMN <<< -->
-        <div class="col-md-3" style="background-color:#f5f5f5; padding-top: 1em; height:100%;">
+        <div id="left_col" class="col-md-3" style="background-color:#f5f5f5; padding-top: 1em; height:100%;">
+            
+            <input id="title" type="text" class="form-control" placeholder="Title">
+            <input id="size" type="text" class="form-control" placeholder="Size" value="120">
+            
+            <input id="timezone" type="text" class="form-control" placeholder="Timezone" style="display:none;">
+            <input id="countdown_time" type="text" class="form-control" placeholder="Time to countdown" style="display:none;">
+            <input id="alarm_time" type="text" class="form-control" placeholder="Wake Up Time" style="display:none;">
 
-            <form id="myForm" role="form">
-              <div class="form-group">
-                  
-                <div id="checkboxes" class="btn-group" data-toggle="buttons">
-                  <label class="btn btn-default active">
-                    <input type="radio" name="options" id="clock" autocomplete="off" checked> Clock
-                  </label>
-                  <label class="btn btn-default">
-                    <input type="radio" name="options" id="alarm" autocomplete="off"> Alarm
-                  </label>
-                  <label class="btn btn-default">
-                    <input type="radio" name="options" id="countdown" autocomplete="off"> Countdown
-                  </label>
-                  <label class="btn btn-default">
-                    <input type="radio" name="options" id="stopwatch" autocomplete="off"> Stopwatch
-                  </label>
-                  <label class="btn btn-default">
-                    <input type="radio" name="options" id="laptimer" autocomplete="off"> Lap Timer
-                  </label>
-                </div>
-                  
-                  <input id="title" type="text" class="form-control" placeholder="Title">
-                  <input id="size" type="text" class="form-control" placeholder="Size">
-                  <input id="timezone" type="text" class="form-control" placeholder="Timezone">
-                  
-                  <button id="add" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Add</button>
-                  <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save</button>
-                  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</button>
-                  
-              </div>
-            </form>
+            <div id="buttons_stopwatch" style="display:none;">
+                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button>
+                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button>
+            </div>
 
+            <div id="buttons_lap_timer" style="display:none;">
+                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button>
+                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button>
+                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>
+            </div>
+
+            <br />
+            <div id="buttons_edit_mode" style="display:none;">
+                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save</button>
+                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+            </div>
+            <div id="buttons_not_edit_mode">
+                <button id="add" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Add</button>
+                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Reset</button>
+            </div>
+            
         </div>
         <!-- >>> LEFT COLUMN >>> -->
         <!-- <<< RIGHT COLUMN <<< -->
@@ -72,12 +68,6 @@
                 </div>
                 <!-- scrap, needs to be trashed, leaving for now for testing -->
 
-
-
-                <div id="btns" style="margin-left: 80%; margin-top: 5%;"></div>
-                <script src="/js/timer.js"></script>
-                <script src="/js/storage.js"></script>
-                <div id="txts" style="margin-left: 80%; margin-top: 5%;"></div>
               
               </div>
               <div role="tabpanel" class="tab-pane" id="profile">.o..</div>
