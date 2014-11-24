@@ -33,7 +33,6 @@
 
     <script>
         $(function(){
-            digitalTimer.preRender();
             digitalTimer.render();
         });
     </script>

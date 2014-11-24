@@ -252,7 +252,7 @@ var clock = {
 
 var timerClock = {
     postRender : function(guid){
-        alert('yo');
+        //alert('yo');
         $('#btns').append(' \
             <p><button onclick="startTimerOnClick(\'' + guid + '\');">Start</button> \
             <button onclick="stopTimerOnClick(\'' + guid + '\');">Stop</button></p>');
@@ -282,7 +282,7 @@ var playSound = {
         var audioElement = document.createElement('audio');
         audioElement.setAttribute('src', 'http://www.kessels.com/CatSounds/tweety4.wav');
         //audioElement.setAttribute('autoplay', 'autoplay');
-        audioElement.load()
+        audioElement.load();
         $.get();
         audioElement.addEventListener("load", function() {
             audioElement.play();
@@ -306,6 +306,7 @@ var playSound = {
 
 var digitalTimer = {
     render : function() {
+        digitalTimer.preRender();
         var dd = document.getElementsByClassName('digital_display')[0],
             start = document.getElementById('start'),
             stop = document.getElementById('stop'),
