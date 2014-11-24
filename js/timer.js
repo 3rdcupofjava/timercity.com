@@ -248,16 +248,16 @@ var clock = {
         if(this.postRender !== undefined)
             this.postRender(guid);
     }
-}
+};
 
 var timerClock = {
     postRender : function(guid){
-        alert('yo');
+        //alert('yo');
         $('#btns').append(' \
             <p><button onclick="startTimerOnClick(\'' + guid + '\');">Start</button> \
             <button onclick="stopTimerOnClick(\'' + guid + '\');">Stop</button></p>');
     }
-}
+};
 var countDownClock = {
     postRender : function(guid){
         $('#btns').append(' \
@@ -267,7 +267,7 @@ var countDownClock = {
         updateCountDown(guid);
         moveCountDownHands(guid, guid);
     }
-}
+};
 var lapTimerClock = {
     postRender : function(guid){
         $('#btns').append(' \
@@ -275,7 +275,91 @@ var lapTimerClock = {
             <button onclick="splitTimerOnClick(\'' + guid + '\');">[ lap ]</button> \
             <button onclick="stopLapTimerOnClick(\'' + guid + '\');">Stop</button></p>');
     }
-}
+};
+
+var playSound = {
+    go : function() {
+        var audioElement = document.createElement('audio');
+        audioElement.setAttribute('src', 'http://www.kessels.com/CatSounds/tweety4.wav');
+        //audioElement.setAttribute('autoplay', 'autoplay');
+        audioElement.load();
+        $.get();
+        audioElement.addEventListener("load", function() {
+            audioElement.play();
+        }, true);
+
+        audioElement.play();
+
+        /* uncomment it and add to view buttons play / pause for controls
+
+        $('.play').click(function() {
+            audioElement.play();
+        });
+
+        $('.pause').click(function() {
+            audioElement.pause();
+        });
+        */
+
+    }
+};
+
+var digitalTimer = {
+    render : function() {
+        digitalTimer.preRender();
+        var dd = document.getElementsByClassName('digital_display')[0],
+            start = document.getElementById('start'),
+            stop = document.getElementById('stop'),
+            clear = document.getElementById('clear'),
+            seconds = 0, minutes = 0, hours = 0,
+            t;
+
+        function add() {
+            seconds++;
+            if (seconds >= 60) {
+                seconds = 0;
+                minutes++;
+                if (minutes >= 60) {
+                    minutes = 0;
+                    hours++;
+                }
+            }
+
+            dd.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00")
+                + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00")
+                + ":" + (seconds > 9 ? seconds : "0" + seconds);
+
+            timer();
+        }
+        function timer() {
+            t = setTimeout(add, 1000);
+        }
+        timer();
+
+
+        /* Start button */
+        start.onclick = timer;
+
+        /* Stop button */
+        stop.onclick = function() {
+            clearTimeout(t);
+            playSound.go();
+        };
+
+        /* Clear button */
+        clear.onclick = function() {
+            dd.textContent = "00:00:00";
+            seconds = 0; minutes = 0; hours = 0;
+        };
+    },
+    preRender : function(){
+
+        $('.btns').append(' \
+            <button id="start">start</button> \
+            <button id="stop">stop</button> \
+            <button id="clear">clear</button>');
+    }
+};
 
 
 function moveHands(area){

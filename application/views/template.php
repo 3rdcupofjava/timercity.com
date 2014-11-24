@@ -30,6 +30,12 @@
     <script type="text/javascript" src="/js/main.js"></script>
     <script type="text/javascript" src="/js/timer.js"></script>
     <script type="text/javascript" src="/js/storage.js"></script>
+
+    <script>
+        $(function(){
+            digitalTimer.render();
+        });
+    </script>
     
     <script id="template_timer_box" type="x-tmpl-mustache">
         <?php include($_SERVER["DOCUMENT_ROOT"].'/application/templates/timer_box.mustache') ?>
