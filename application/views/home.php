@@ -16,9 +16,9 @@
             </div>
 
             <div id="buttons_lap_timer" style="display:none;">
-                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>
+<!--                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button>-->
+<!--                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button>-->
+<!--                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>-->
             </div>
 
             <br />

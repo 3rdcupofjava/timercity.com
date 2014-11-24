@@ -151,10 +151,9 @@ function preDraw(view){
             countDownClock.render(view);
             break;
         case '4':
-            lapTimerClock.render(view);
             break;
         case '5':
-            
+            lapTimerClock.render(view);
             break;
         default :
             alert('error, unknown type');

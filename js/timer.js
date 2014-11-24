@@ -270,10 +270,10 @@ var countDownClock = {
 };
 var lapTimerClock = {
     postRender : function(guid){
-        $('#btns').append(' \
-            <p><button onclick="startLapTimerOnClick(\'' + guid + '\');">Start</button> \
-            <button onclick="splitTimerOnClick(\'' + guid + '\');">[ lap ]</button> \
-            <button onclick="stopLapTimerOnClick(\'' + guid + '\');">Stop</button></p>');
+        $('#buttons_lap_timer').append(' \
+            <button onclick="startLapTimerOnClick(\'' + guid + '\');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
+            <button onclick="stopLapTimerOnClick(\'' + guid + '\');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button onclick="splitTimerOnClick(\'' + guid + '\');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>');
     }
 };
 
