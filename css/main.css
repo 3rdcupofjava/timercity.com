@@ -6,6 +6,14 @@ body {
     height:100%;
 }
 
+.ui-timepicker-list {
+    height: auto;
+    max-height: 200px;
+    width: 200px;
+    overflow-x: hidden;
+    background-color: #b9def0;
+}
+
 .features .editor .editorwrap {
     max-width: 2180px;
 }

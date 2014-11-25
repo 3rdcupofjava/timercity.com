@@ -120,7 +120,7 @@ var ui = {
             var size = $('#size').val();
             var timezone = $('#timezone').val();
             var time = parseInt($('#countdown_time').val());
-            console.log(title, size, timezone, time);
+            //console.log(title, size, timezone, time);
             if(title !== '' && size !== ''/* && timezone !== ''*/) {
                 var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time};
                 timer_count++;
@@ -151,10 +151,9 @@ function preDraw(view){
             countDownClock.render(view);
             break;
         case '4':
-            lapTimerClock.render(view);
             break;
         case '5':
-            
+            lapTimerClock.render(view);
             break;
         default :
             alert('error, unknown type');

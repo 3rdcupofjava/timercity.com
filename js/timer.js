@@ -254,26 +254,27 @@ var timerClock = {
     postRender : function(guid){
         //alert('yo');
         $('#btns').append(' \
-            <p><button onclick="startTimerOnClick(\'' + guid + '\');">Start</button> \
-            <button onclick="stopTimerOnClick(\'' + guid + '\');">Stop</button></p>');
+            <p><button onclick="startTimerOnClick(\'\' + guid + \'\');">Start</button> \
+            <button onclick="stopTimerOnClick(\'\' + guid + \'\');">Stop</button></p>');
     }
 };
 var countDownClock = {
     postRender : function(guid){
         $('#btns').append(' \
-            <p><button onclick="startCountDownOnClick(\'' + guid + '\');">Start</button> \
-            <button onclick="stopCountDownOnClick(\'' + guid + '\');">Stop</button></p>');
+            <p><button onclick="startCountDownOnClick(\'\' + guid + \'\');">Start</button> \
+            <button onclick="stopCountDownOnClick(\'\' + guid + \'\');">Stop</button></p>');
 
         updateCountDown(guid);
         moveCountDownHands(guid, guid);
     }
 };
+
 var lapTimerClock = {
     postRender : function(guid){
-        $('#btns').append(' \
-            <p><button onclick="startLapTimerOnClick(\'' + guid + '\');">Start</button> \
-            <button onclick="splitTimerOnClick(\'' + guid + '\');">[ lap ]</button> \
-            <button onclick="stopLapTimerOnClick(\'' + guid + '\');">Stop</button></p>');
+        $('#buttons_lap_timer').append(' \
+            <button onclick="startLapTimerOnClick(\'\' + guid + \'\');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
+            <button onclick="stopLapTimerOnClick(\'\' + guid + \'\');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button onclick="splitTimerOnClick(\'\' + guid + \'\');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>');
     }
 };
 
@@ -579,28 +580,6 @@ function startTimerOnClick(guid) {
     }, 1000);
 }
 
-/*
- * this function called when start button pressed
- * and take guid from drawTimer as parameter
- * */
-function startLapTimerOnClick(guid) {
-    if(lapTimerStarted[guid] === true) {
-        return 1;
-    }
-    lapTimerStarted[guid] = true;
-
-    before.hours = new Date().getHours();
-    before.minutes = new Date().getMinutes();
-    before.seconds = new Date().getSeconds();
-    splitter[guid] = 0;
-
-    window[guid+'lap'] = setInterval(function(){
-        updateTimer(guid);
-        moveTimerHands(guid, guid);
-        splitter[guid] += 1;
-    }, 1000);
-}
-
 function startCountDownOnClick(guid) {
     if(countDownStarted[guid] === true) {
         return 1;
@@ -630,6 +609,28 @@ function stopTimerOnClick(guid) {
     + 'm : ' +(after.seconds - before.seconds) + 's');
 }
 
+/*
+ * this function called when start button pressed
+ * and take guid from drawTimer as parameter
+ * */
+function startLapTimerOnClick(guid) {
+    if(lapTimerStarted[guid] === true) {
+        return 1;
+    }
+    lapTimerStarted[guid] = true;
+
+    before.hours = new Date().getHours();
+    before.minutes = new Date().getMinutes();
+    before.seconds = new Date().getSeconds();
+    splitter[guid] = 0;
+
+    window[guid+'lap'] = setInterval(function(){
+        updateTimer(guid);
+        moveTimerHands(guid, guid);
+        splitter[guid] += 1;
+    }, 1000);
+}
+
 function stopLapTimerOnClick(guid) {
     lapTimerStarted[guid] = false;
     after.hours = new Date().getHours();
@@ -647,7 +648,7 @@ function stopLapTimerOnClick(guid) {
 * works only with one timer presented
 * */
 function splitTimerOnClick(guid) {
-    $('#txts').append('You successfully split ' + splitter[guid] + ' seconds' + '<hr />');
+    $('.laptime_display').append('You successfully split ' + splitter[guid] + ' seconds' + '<hr />');
     splitter[guid] = 0;
 }
 

@@ -8,7 +8,7 @@
             
             <input id="timezone" type="text" class="form-control" placeholder="Timezone" style="display:none;">
             <input id="countdown_time" type="text" class="form-control" placeholder="Time to countdown" style="display:none;">
-            <input id="alarm_time" type="text" class="form-control" placeholder="Wake Up Time" style="display:none;">
+            <input id="alarm_time" type="text" data-time-format="H:i:s" class="form-control" placeholder="Wake Up Time" style="display:none;">
 
             <div id="buttons_stopwatch" style="display:none;">
                 <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button>
@@ -16,9 +16,9 @@
             </div>
 
             <div id="buttons_lap_timer" style="display:none;">
-                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>
+<!--                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button>-->
+<!--                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button>-->
+<!--                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>-->
             </div>
 
             <br />
