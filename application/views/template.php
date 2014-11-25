@@ -23,6 +23,7 @@
     <?=$content?>
 
     <script type="text/javascript" src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/js/jquery.timepicker.js"></script>
     <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/mustache.js"></script>
@@ -34,6 +35,8 @@
     <script>
         $(function(){
             digitalTimer.render();
+
+            $('#alarm_time').timepicker();
         });
     </script>
     
