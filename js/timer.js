@@ -254,15 +254,15 @@ var timerClock = {
     postRender : function(guid){
         //alert('yo');
         $('#btns').append(' \
-            <p><button onclick="startTimerOnClick(\' + guid + \');">Start</button> \
-            <button onclick="stopTimerOnClick(\' + guid + \');">Stop</button></p>');
+            <p><button onclick="startTimerOnClick(guid);">Start</button> \
+            <button onclick="stopTimerOnClick(guid);">Stop</button></p>');
     }
 };
 var countDownClock = {
     postRender : function(guid){
         $('#btns').append(' \
-            <p><button onclick="startCountDownOnClick(\' + guid + \');">Start</button> \
-            <button onclick="stopCountDownOnClick(\' + guid + \');">Stop</button></p>');
+            <p><button onclick="startCountDownOnClick(guid);">Start</button> \
+            <button onclick="stopCountDownOnClick(guid);">Stop</button></p>');
 
         updateCountDown(guid);
         moveCountDownHands(guid, guid);
@@ -271,10 +271,20 @@ var countDownClock = {
 
 var lapTimerClock = {
     postRender : function(guid){
+
+        //var start = document.createElement("button");
+        //start.setAttribute('type', 'button');
+        //start.setAttribute('class', 'btn btn-danger');
+        //start.setAttribute('onclick', 'startLapTimerOnClick(guid);');
+        //start.innerHTML = '<span class="glyphicon glyphicon-ok"></span> Start';
+        //
+        //var btn = document.getElementById('buttons_lap_timer');
+        //btn.appendChild(start);
+
         $('#buttons_lap_timer').append(' \
-            <button onclick="startLapTimerOnClick(\' + guid + \');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
-            <button onclick="stopLapTimerOnClick(\' + guid + \');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
-            <button onclick="splitTimerOnClick(\' + guid + \');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>');
+            <button onclick="startLapTimerOnClick(guid);" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
+            <button onclick="stopLapTimerOnClick(guid);"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button onclick="splitTimerOnClick(guid);"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>');
     }
 };
 
