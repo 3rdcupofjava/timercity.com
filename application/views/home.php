@@ -6,7 +6,15 @@
             <input id="title" type="text" class="form-control" placeholder="Title">
             <input id="size" type="text" class="form-control" placeholder="Size" value="120">
             
-            <input id="timezone" type="text" class="form-control" placeholder="Timezone" style="display:none;">
+            <select id="timezone" class="form-control" style="display:none;">
+             <option value="0">Please, select timezone</option>
+                <?php foreach(tz_list() as $t) { ?>
+                  <option value="<?php print $t['offset'] ?>">
+                    <?php print $t['diff_from_GMT'] . ' - ' . $t['timezone_name'] ?>
+                  </option>
+                <?php } ?>
+              </select>
+
             <input id="countdown_time" type="text" class="form-control" placeholder="Time to countdown" style="display:none;">
             <input id="alarm_time" type="text" data-time-format="H:i:s" class="form-control" placeholder="Wake Up Time" style="display:none;">
 
@@ -80,3 +88,21 @@
         <!-- >>> RIGHT COLUMN >>> -->
     </div> <!-- /.row -->
 </div><!-- /.container -->
+<?php
+    function tz_list() {
+      $timezone_array = array();
+
+      $timestamp = time();
+
+      foreach(timezone_identifiers_list() as $key => $timezone) {
+
+        date_default_timezone_set($timezone);
+
+        $timezone_array[$key]['timezone_name'] = $timezone;
+        $timezone_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+        $timezone_array[$key]['offset'] = date('P', $timestamp);
+      }
+      return $timezone_array;
+    }
+
+?>
