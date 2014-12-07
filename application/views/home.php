@@ -4,7 +4,7 @@
         <div id="left_col" class="col-md-3" style="background-color:#f5f5f5; padding-top: 1em; height:100%;">
             
             <input id="title" type="text" class="form-control" placeholder="Title">
-            <input id="size" type="text" class="form-control" placeholder="Size" value="120">
+            <input id="size" type="text" class="form-control" value="" placeholder="Size (Maximum '130')">
             
             <select id="timezone" class="form-control" style="display:none;">
              <option value="0">Please, select timezone</option>
@@ -62,7 +62,9 @@
                 <div id="timer_holder"></div>
 
                 <!-- scrap, needs to be trashed, leaving for now for testing -->
-                <div id="London" class="col-lg-4 timer_box">
+
+
+                <!--<div id="London" class="col-lg-4 timer_box">
                     <button type="button" class="close" data-dismiss="alert">
                       <span aria-hidden="true">&times;</span>
                       <span class="sr-only">Close</span>
@@ -73,7 +75,7 @@
                         <div class="digital_display">11:11 AM</div>
                         <div class="title">Photo Title</div>
                     </a>
-                </div>
+                </div>-->
                 <!-- scrap, needs to be trashed, leaving for now for testing -->
 
               
