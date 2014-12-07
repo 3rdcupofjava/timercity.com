@@ -135,12 +135,17 @@ var clock = {
             ui.set_type(clocks[guid].type, true)
         });
 
+
+
         //updateData(offset);	//draw them in the correct starting position
 
         setInterval(function(){
             updateData(offset);
             moveHands(guid);
         }, 1000);
+
+
+
 
         var width = (clockRadius+margin)*2,// replace global definition in function scope.
                 height = (clockRadius+margin)*2,
@@ -169,6 +174,7 @@ var clock = {
                 .attr('y2',secondTickStart + secondTickLength)
                 .attr('transform',function(d){
                     return 'rotate(' + secondScale(d) + ')';
+                    $(".digital_display").text(d);
                 });
         //and labels
 
@@ -254,15 +260,15 @@ var timerClock = {
     postRender : function(guid){
         //alert('yo');
         $('#btns').append(' \
-            <p><button onclick="startTimerOnClick(guid);">Start</button> \
-            <button onclick="stopTimerOnClick(guid);">Stop</button></p>');
+            <p><button onclick="startTimerOnClick(\' + guid + \');">Start</button> \
+            <button onclick="stopTimerOnClick(\' + guid + \');">Stop</button></p>');
     }
 };
 var countDownClock = {
     postRender : function(guid){
         $('#btns').append(' \
-            <p><button onclick="startCountDownOnClick(guid);">Start</button> \
-            <button onclick="stopCountDownOnClick(guid);">Stop</button></p>');
+            <p><button onclick="startCountDownOnClick(\' + guid + \');">Start</button> \
+            <button onclick="stopCountDownOnClick(\' + guid + \');">Stop</button></p>');
 
         updateCountDown(guid);
         moveCountDownHands(guid, guid);
@@ -271,20 +277,10 @@ var countDownClock = {
 
 var lapTimerClock = {
     postRender : function(guid){
-
-        //var start = document.createElement("button");
-        //start.setAttribute('type', 'button');
-        //start.setAttribute('class', 'btn btn-danger');
-        //start.setAttribute('onclick', 'startLapTimerOnClick(guid);');
-        //start.innerHTML = '<span class="glyphicon glyphicon-ok"></span> Start';
-        //
-        //var btn = document.getElementById('buttons_lap_timer');
-        //btn.appendChild(start);
-
         $('#buttons_lap_timer').append(' \
-            <button onclick="startLapTimerOnClick(guid);" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
-            <button onclick="stopLapTimerOnClick(guid);"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
-            <button onclick="splitTimerOnClick(guid);"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>');
+            <button onclick="startLapTimerOnClick(\' + guid + \');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
+            <button onclick="stopLapTimerOnClick(\' + guid + \');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button onclick="splitTimerOnClick(\' + guid + \');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>');
     }
 };
 
@@ -316,9 +312,10 @@ var playSound = {
 };
 
 var digitalTimer = {
-    render : function() {
+    render : function(view) {
         digitalTimer.preRender();
         var dd = document.getElementsByClassName('digital_display')[0],
+
             start = document.getElementById('start'),
             stop = document.getElementById('stop'),
             clear = document.getElementById('clear'),
@@ -380,6 +377,7 @@ function moveHands(area){
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value) +')';
             });
+    $('.current_time.').text(area);
 }
 
 function moveTimerHands(guid, area){
@@ -423,7 +421,60 @@ function updateData(offset){
     handData[0].value = (nd.getHours() % 12) + nd.getMinutes()/60;
     handData[1].value = nd.getMinutes();
     handData[2].value = nd.getSeconds();
+  
 }
+
+
+var times = [];
+function gettime(view){
+
+    var guid = view['guid'];
+    times[guid] = view;
+    var offset = parseInt(times[guid].timezone);
+    d = new Date(); 
+    utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    nd = new Date(utc + (3600000*offset)); 
+
+    if (nd.getHours() >= 12){
+        var hour = nd.getHours() - 12;
+        
+        var amPm = "PM";
+
+    } else {
+        var hour = nd.getHours(); 
+        
+        var amPm = "AM";
+    }
+
+    if (nd.getSeconds() < 10){
+
+        var seconds = "0" + nd.getSeconds();
+
+    } else {
+
+        var seconds = nd.getSeconds();
+    }
+
+    if (nd.getMinutes() < 10){
+
+        var minutes = "0" + nd.getMinutes();
+
+    } else {
+
+        var minutes = nd.getMinutes();
+    }
+
+    if(hour == 0){
+        hour = 1;
+    }
+
+
+    $('.'+guid).text(hour + ":" + minutes + ":" + seconds + " " + amPm);
+    setTimeout(function(){gettime(view)}, 1000);
+ }
+
+
+
 
 function updateTimer(guid, counter) {
 

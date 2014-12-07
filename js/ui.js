@@ -1,6 +1,7 @@
 var timer_count=1; // eventually need to load from storage so not to override current timers
 var timer_type = '1';
 
+
 var ui = {
     nav: function(){
         $('#sign_up a').on('click', function(){
@@ -120,11 +121,22 @@ var ui = {
             var size = $('#size').val();
             var timezone = $('#timezone').val();
             var time = parseInt($('#countdown_time').val());
-            //console.log(title, size, timezone, time);
-            if(title !== '' && size !== ''/* && timezone !== ''*/) {
-                var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time};
-                timer_count++;
-                preDraw(view);
+           
+            if(title !== '' && size !== '' && timezone != 0/* && timezone !== ''*/) {
+                if($.isNumeric(size)){
+                    if(size <= 130){
+                        var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time};
+                        timer_count++;
+                        preDraw(view);
+                        $('.timer_box').show();
+                    } else {
+                        alert('Please Set a size of clock a maximum 130');
+                    }
+                    
+                } else {
+                    alert('Please Input Number on size');
+
+                }  
             }
             else{
                 alert('Please enter a valid value.');
@@ -143,9 +155,11 @@ function preDraw(view){
     switch(timer_type) {
         case '1':
             clock.render(view);
+            gettime(view);
             break;
         case '2':
             timerClock.render(view);
+            digitalTimer.render(view);
             break;
         case '3':
             countDownClock.render(view);
@@ -159,5 +173,4 @@ function preDraw(view){
             alert('error, unknown type');
             break;
     }
-
 }
