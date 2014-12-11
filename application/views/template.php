@@ -9,10 +9,10 @@
 
     <title><?=$title.' - '.$subtitle?></title>
 
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <link href="/css/main.css" rel="stylesheet">
+    <link href="<?=URL::base()?>/css/bootstrap.css" rel="stylesheet">
+    <link href="<?=URL::base()?>/css/main.css" rel="stylesheet">
     
-    <script type="text/javascript" src="/js/d3.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>/js/d3.js"></script>
     
   </head>
 
@@ -22,15 +22,15 @@
 
     <?=$content?>
 
-    <script type="text/javascript" src="/js/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>/js/jquery-2.1.0.min.js"></script>
     <script src="/js/jquery.timepicker.js"></script>
     <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
-    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/mustache.js"></script>
-    <script type="text/javascript" src="/js/ui.js"></script>
-    <script type="text/javascript" src="/js/main.js"></script>
-    <script type="text/javascript" src="/js/timer.js"></script>
-    <script type="text/javascript" src="/js/storage.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>/js/mustache.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>/js/ui.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/main.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/timer.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/storage.js"></script>
 
     <script>
         $(function(){
@@ -41,7 +41,7 @@
     </script>
     
     <script id="template_timer_box" type="x-tmpl-mustache">
-        <?php include($_SERVER["DOCUMENT_ROOT"].'/application/templates/timer_box.mustache') ?>
+        <?php include($_SERVER["DOCUMENT_ROOT"].URL::base().'application/templates/timer_box.mustache') ?>
     </script>
     
     <script id="template_select" type="x-tmpl-mustache">

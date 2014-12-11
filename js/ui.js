@@ -1,5 +1,6 @@
 var timer_count=1; // eventually need to load from storage so not to override current timers
 var timer_type = '1';
+var type_name = "";
 
 var ui = {
     nav: function(){
@@ -58,6 +59,7 @@ var ui = {
     timer_types: function(){
         var view = {
             'id': 'timer_types',
+            'name': 'timer_types',
             'type': 'radio',
             'options':[
                 {'oid': 1, 'title': 'Clock', 'checked': true},
@@ -97,41 +99,29 @@ var ui = {
         switch(type) {
             case '1':
                 $('#timezone').show();
+                type_name = "( World Clock )";
                 break;
             case '2':
                 $('#alarm_time').show();
+                type_name = "( Alarm Clock )";
                 break;
             case '3':
                 $('#countdown_time').show();
+                type_name = "( Countdown Timer )";
                 break;
             case '4':
                 $('#buttons_stopwatch').show();
+                type_name = "( Stopwatch )";
                 break;
             case '5':
                 $('#buttons_lap_timer').show();
+                type_name = "( Lap Timer )";
                 break;
             default :
                 alert('error, unknown type');
                 break;
         }
-        
-        $('#add').on('click', function(){
-            var title = $('#title').val();
-            var size = $('#size').val();
-            var timezone = $('#timezone').val();
-            var time = parseInt($('#countdown_time').val());
-            //console.log(title, size, timezone, time);
-            if(title !== '' && size !== ''/* && timezone !== ''*/) {
-                var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time};
-                timer_count++;
-                preDraw(view);
-            }
-            else{
-                alert('Please enter a valid value.');
-            }
-        });
-        
-    },
+    },  
     render: function(){
         this.nav();
         this.timer_types();
@@ -151,6 +141,7 @@ function preDraw(view){
             countDownClock.render(view);
             break;
         case '4':
+            stopWatchClock.render(view);
             break;
         case '5':
             lapTimerClock.render(view);
@@ -161,3 +152,23 @@ function preDraw(view){
     }
 
 }
+
+$(document).ready(function(){
+    $('#add').on('click', function(){
+        var title = $('#title').val();
+        var size = $('#size').val();
+        var timezone = $("#timezone").val();
+        var time = parseInt($('#countdown_time').val());
+        //console.log(title, size, timezone, time);
+        if(title !== '' && size !== '' && !isNaN(size)/* && timezone !== ''*/) {
+            var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time, 'type_name' : type_name};
+            timer_count++;
+            preDraw(view);
+            return 0;
+        }
+        else{
+            alert('Please enter a valid value.');
+            return 0;
+        }
+    });
+});
