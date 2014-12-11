@@ -130,17 +130,30 @@ svg{
 }
 
 
+.close{
+    margin: -3px 3px 0px 0px;
+}
 
 
-/* PHOTO STUFF */  
+/* PHOTO STUFF */ 
+#buttons_lap_timer/{float:left; display:none;}
+.timer_holder{
+    display: block;
+} 
 .timer_box{
-    margin-bottom:5px; }
+    margin-top:20px;
+    margin-left: 3px;
+    display: block;
+    position: relative;
+    float: left;
+    min-width: 250px;}
 .timer_box a:hover {
     text-decoration: none;}
 .timer_box .title{
-    position:absolute;     top:6px;     left:25px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
+    position:absolute;     top:2px;     left:25px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
 .digital_display{
-    margin-top:-20px;
+    margin-top:5px;
+    float: right;
     margin-right: 4px;
     text-align: right;
     background-color: #FFFFFF;
@@ -158,3 +171,4 @@ svg{
 .photo_header .right_header.subs{     margin-top:-78px; } 
 .breadcrumb{     margin-bottom:10px;     margin-top:15px; } 
 #photo_link{     text-align:center; }
+.thumbnail{ padding: 5px; }
