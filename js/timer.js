@@ -15,7 +15,6 @@ var radians = 0.0174532925,
         secondLabelYOffset = 5,
         hourLabelRadius = clockRadius - 40,
         hourLabelYOffset = 7;
-        counter = 0;
 
 var hourScale = d3.scale.linear()
         .range([0,330])
@@ -116,41 +115,16 @@ var countData = [
 var clocks = [];
 var clock = {
     render : function(view){
-        var dd = $(".digital_display");
         var clockRadius = parseInt(view['clockSize']);
         var offset = parseInt(view['timezone']);
         var guid = view['guid'];
         clocks[guid] = view;
-        seconds = 0, minutes = 0, hours = 0;
-
+        var clockType = 'Clock';
+        
         var template = $('#template_timer_box').html();
         Mustache.parse(template);
         var output = Mustache.render(template, view);
-        //append the output to the specific tab
-        if(view['type'] !== 'undefined')
-        {
-            switch(view['type'])
-            {
-                case '1':
-                    $('#worldClockTab > .timer_holder').append(output);  
-                    break;
-                case '2':
-                    $('#alarmClockTab > .timer_holder').append(output); 
-                    break;
-                case '3':
-                    $('#countDownTab > .timer_holder').append(output); 
-                    break;
-                case '4':
-                    $('#stopWatchTab > .timer_holder').append(output);
-                    break;
-                case '5':
-                    $('#lapTimeTab > .timer_holder').append(output);
-                    break;
-                default:
-                    $('#home > .timer_holder').append(output);   
-                    break;
-            }
-        }
+        $('#timer_holder').append(output);
         
         // clicking on a timer to edit
         $('#' + guid + '_link').on('click', function(){
@@ -162,18 +136,26 @@ var clock = {
             ui.set_type(clocks[guid].type, true)
         });
 
-        //updateData(offset);	//draw them in the correct starting position
 
-        if(view['type'] !== 'undefined')
-        {
-            if(view['type'] == '1')
-            {
-                setInterval(function(){
-                    updateData(offset,guid);
-                    moveHands(guid);
-                }, 1000);
-            }
+
+        //updateData(offset);	//draw them in the correct starting position
+        if(clocks[guid].type == 3){
+            offset = guid;
+            var clockType = 'Countdown';
+           
+
+           $('.btns-'+guid).append(' \
+            <p><button onclick="startCountDownOnClick(\'' + guid + '\');">Start</button> \
+            <button onclick="stopCountDownOnClick(\' + guid + \');">Stop</button></p>');
         }
+
+        setInterval(function(){
+            updateData(offset, clockType);
+            moveHands(guid);
+        }, 1000);
+
+
+
 
         var width = (clockRadius+margin)*2,// replace global definition in function scope.
                 height = (clockRadius+margin)*2,
@@ -186,7 +168,6 @@ var clock = {
                 .attr("width", width)
                 .attr("height", height)
                 .attr('class', 'img-thumbnail');
-
 
         var face = svg.append('g')
                 .attr('id','clock-face')
@@ -203,6 +184,7 @@ var clock = {
                 .attr('y2',secondTickStart + secondTickLength)
                 .attr('transform',function(d){
                     return 'rotate(' + secondScale(d) + ')';
+                    $(".digital_display").text(d);
                 });
         //and labels
 
@@ -279,7 +261,6 @@ var clock = {
                     return 'rotate('+ d.scale(d.value) +')';
                 });
                 
-        //calls the postRender of every type of clock
         if(this.postRender !== undefined)
             this.postRender(guid);
     }
@@ -287,36 +268,29 @@ var clock = {
 
 var timerClock = {
     postRender : function(guid){
+        //alert('yo');
         $('#btns').append(' \
-            <p><button onclick="startTimerOnClick('+guid+');">Start</button> \
-            <button onclick="pauseTimerOnClick('+guid+');">Stop</button></p>');
+            <p><button onclick="startTimerOnClick(\' + guid + \');">Start</button> \
+            <button onclick="stopTimerOnClick(\' + guid + \');">Stop</button></p>');
     }
 };
-
-var stopWatchClock = {
-    postRender : function(guid){
-        $('#stopWatchTab .timer_box #'+guid+'_link').append(' \
-            <p><button onclick="startTimerOnClick('+guid+');">Start</button> \
-            <button onclick="pauseTimerOnClick('+guid+');">Pause</button> \
-            <button onclick="resetTimerOnClick('+guid+');">Reset</button></p>');
-    }
-};
-
 var countDownClock = {
     postRender : function(guid){
         $('#btns').append(' \
-            <p><button onclick="startCountDownOnClick('+guid+');">Start</button> \
-            <button onclick="stopCountDownOnClick('+guid+');">Stop</button></p>');
-    }
-};
+            <p><button onclick="startCountDownOnClick(\' + guid + \');">Start</button> \
+            <button onclick="stopCountDownOnClick(\' + guid + \');">Stop</button></p>');
+
+        updateCountDown(guid);
+       moveCountDownHands(guid, guid);
+}    }
+;
 
 var lapTimerClock = {
     postRender : function(guid){
-        //append the buttons in every clock
-        $('#lapTimeTab .timer_box #'+guid+'_link').append(' \
-            <button onclick="startLapTimerOnClick('+guid+');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
-            <button onclick="stopLapTimerOnClick('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
-            <button onclick="splitTimerOnClick('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap</button>');
+        $('#buttons_lap_timer').append(' \
+            <button onclick="startLapTimerOnClick(\' + guid + \');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
+            <button onclick="stopLapTimerOnClick(\' + guid + \');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button onclick="splitTimerOnClick(\' + guid + \');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap / Split</button>');
     }
 };
 
@@ -348,15 +322,15 @@ var playSound = {
 };
 
 var digitalTimer = {
-    render : function() {
+    render : function(view) {
         digitalTimer.preRender();
         var dd = document.getElementsByClassName('digital_display')[0],
+
             start = document.getElementById('start'),
             stop = document.getElementById('stop'),
             clear = document.getElementById('clear'),
             seconds = 0, minutes = 0, hours = 0,
             t;
-            st_clkd = 0;
 
         function add() {
             seconds++;
@@ -368,6 +342,7 @@ var digitalTimer = {
                     hours++;
                 }
             }
+
             dd.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00")
                 + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00")
                 + ":" + (seconds > 9 ? seconds : "0" + seconds);
@@ -377,29 +352,16 @@ var digitalTimer = {
         function timer() {
             t = setTimeout(add, 1000);
         }
-
-        /*comment this if not auto-start*/
-        if(!st_clkd)
-        {
-            timer();
-            st_clkd = 1;
-        }
+        timer();
 
 
         /* Start button */
-        start.onclick = function(){
-            if(!st_clkd)
-            {
-                timer();
-                st_clkd = 1;
-            }
-        }        
+        start.onclick = timer;
 
         /* Stop button */
         stop.onclick = function() {
             clearTimeout(t);
             playSound.go();
-            st_clkd = 0;
         };
 
         /* Clear button */
@@ -417,7 +379,7 @@ var digitalTimer = {
     }
 };
 
-/*Moves the hands of a clock (world clock)*/
+
 function moveHands(area){
     d3.select('#clock-hands'+area).selectAll('line')
             .data(handData)
@@ -425,22 +387,21 @@ function moveHands(area){
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value) +')';
             });
+    $('.current_time.').text(area);
 }
 
-/*Moves the hands of a stopwatch*/
-function moveTimerHands(guid){
-    d3.select("#clock-hands"+guid).selectAll('line')
-            .data(timerData[guid])
+function moveTimerHands(guid, area){
+    d3.select('#clock-hands'+area).selectAll('line')
+            .data(window[guid])
             .transition()
             .attr('transform',function(d){
-                    return 'rotate('+ d.scale(d.value) +')';
-             });
+                return 'rotate('+ d.scale(d.value) +')';
+            });
 }
 
-/*Moves the hands of a lap timer*/
-function moveLapTimerHands(guid){
-    d3.select('#clock-hands'+guid).selectAll('line')
-            .data(lapTimerData[guid])
+function moveLapTimerHands(guid, area){
+    d3.select('#clock-hands'+area).selectAll('line')
+            .data(window[guid])
             .transition()
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value) +')';
@@ -459,105 +420,88 @@ function moveCountDownHands(guid, area){
             });
 }
 
-/*Updates the values of the clock (world clock) according to its offset or Timezone
-*/
-function updateData(offset,guid){
-    var t = new Date();
-    var localTime = t.getTime();
-    var localOffset = t.getTimezoneOffset() * 60000;
-    var utc = localTime + localOffset;
-    var result = utc + (3600000*offset); // here we get time with offset.
-    var nd = new Date(result);
+function updateData(offset, clockType){
 
-    handData[0].value = (nd.getHours() % 12) + nd.getMinutes()/60;
-    handData[1].value = nd.getMinutes();
-    handData[2].value = nd.getSeconds();
+    if(clockType == 'Clock'){
 
-    if(!isNaN(handData[1].value))
-    {
-        if(handData[0].value > 9)
-            handData[1].value > 9 ? $("#"+guid+"_link .digital_display").text(Math.floor(handData[0].value)+":"+handData[1].value) : $("#"+guid+"_link .digital_display").text(Math.floor(handData[0].value)+":0"+handData[1].value);
-        else
-            handData[1].value > 9 ? $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[0].value)+":"+handData[1].value) : $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[0].value)+":0"+handData[1].value);
-    }
+        var t = new Date();
+        var localTime = t.getTime();
+        var localOffset = t.getTimezoneOffset() * 60000;
+        var utc = localTime + localOffset;
+        var result = utc + (3600000*offset); // here we get time with offset.
+        var nd = new Date(result);
+
+        handData[0].value = (nd.getHours() % 12) + nd.getMinutes()/60;
+        handData[1].value = nd.getMinutes();
+        handData[2].value = nd.getSeconds();
+
+    } else if(clockType == 'Countdown') {
+        $('.btns-'+offset).show();
+
+        handData[0].value = 1;
+        handData[1].value = 34;
+
+        $('.seconds-'+offset).each(function() {
+            var count = parseInt($(this).html());
+            handData[2].value = count;
+        });
+   }
 }
 
-/*Updates the timerData and its values
-* guid here is an id attribute already
-*/
-function updateTimer(guid)
-{
 
-    if(typeof timerData[guid] === 'undefined') {   //check if the specific timerData is already defined
-        timerData[guid] = [
-            {
-                type:'hour',
-                value:0,
-                length:-hourHandLength,
-                scale:hourScale
-            },
-            {
-                type:'minute',
-                value:0,
-                length:-minuteHandLength,
-                scale:minuteScale
-            },
-            {
-                type:'second',
-                value:0,
-                length:-secondHandLength,
-                scale:secondScale,
-                balance:secondHandBalance
-            }
-        ];
-    }
-   
-    timerData[guid][2].value +=1;
+var times = [];
+function gettime(view){
 
-    if(timerData[guid][2].value == 60) {
-        timerData[guid][2].value = 0;
-        timerData[guid][1].value +=1;
-        timerData[guid][0].value = timerData[guid][1].value/60;
-    }
-}
+    var guid = view['guid'];
+    times[guid] = view;
+    var offset = parseInt(times[guid].timezone);
+    d = new Date(); 
+    utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    nd = new Date(utc + (3600000*offset)); 
 
-function updateLapTimer(guid) 
-{
-    if(typeof lapTimerData[guid] === 'undefined') {   //check if the specific timerData is already defined
-        lapTimerData[guid] = [
-            {
-                type:'hour',
-                value:0,
-                length:-hourHandLength,
-                scale:hourScale
-            },
-            {
-                type:'minute',
-                value:0,
-                length:-minuteHandLength,
-                scale:minuteScale
-            },
-            {
-                type:'second',
-                value:0,
-                length:-secondHandLength,
-                scale:secondScale,
-                balance:secondHandBalance
-            }
-        ];
+    if (nd.getHours() >= 12){
+        var hour = nd.getHours() - 12;
+        
+        var amPm = "PM";
+
+    } else {
+        var hour = nd.getHours(); 
+        
+        var amPm = "AM";
     }
 
-    lapTimerData[guid][2].value +=1;
+    if (nd.getSeconds() < 10){
 
-    if(lapTimerData[guid][2].value == 60) {
-        lapTimerData[guid][2].value = 0;
-        lapTimerData[guid][1].value +=1;
-        lapTimerData[guid][0].value = lapTimerData[guid][1].value/60;
+        var seconds = "0" + nd.getSeconds();
+
+    } else {
+
+        var seconds = nd.getSeconds();
     }
-}
 
-function updateCountDown(guid, counter) 
-{
+    if (nd.getMinutes() < 10){
+
+        var minutes = "0" + nd.getMinutes();
+
+    } else {
+
+        var minutes = nd.getMinutes();
+    }
+
+    if(hour == 0){
+        hour = 1;
+    }
+
+
+    $('.'+guid).text(hour + ":" + minutes + ":" + seconds + " " + amPm);
+    setTimeout(function(){gettime(view)}, 1000);
+ }
+
+
+
+
+function updateTimer(guid, counter) {
+
     if(typeof window[guid] === 'undefined') {
         window[guid] = [
             {
@@ -597,197 +541,215 @@ function updateCountDown(guid, counter)
     }
 }
 
+function updateLapTimer(guid, counter) {
 
-//updates the time the specific stopwatch takes
-function updateStopTime(guid)
-{
-    if(stopTime[guid].seconds == 60)
-    {
-        stopTime[guid].seconds = 0;
-        if(stopTime[guid].minutes == 60)
-        {
-            stopTime[guid].minutes = 0;
-            if(stopTime[guid].hours == 12)
+    if(typeof window[guid] === 'undefined') {
+        window[guid] = [
             {
-                stopTime[guid].hours = 0;
-                stopTime[guid].hours++;
-            }
-            else
+                type:'hour',
+                value:0,
+                length:-hourHandLength,
+                scale:hourScale
+            },
             {
-                stopTime[guid].hours++;
+                type:'minute',
+                value:0,
+                length:-minuteHandLength,
+                scale:minuteScale
+            },
+            {
+                type:'second',
+                value:0,
+                length:-secondHandLength,
+                scale:secondScale,
+                balance:secondHandBalance
             }
-            stopTime[guid].minutes++;
-        }
-        else
-        {
-            stopTime[guid].minutes++;
-        }
-        stopTime[guid].seconds++;
+        ];
     }
-    else
-    {
-        stopTime[guid].seconds++;
+
+    counter = typeof counter !== 'undefined' ? counter : 0;
+    if(counter === 0) {
+        counter +=1;
+    }
+    if(counter > 0) {
+        window[guid][2].value +=1;
+
+        if(window[guid][2].value === 60) {
+            window[guid][2].value = 0;
+            window[guid][1].value +=1;
+            window[guid][0].value = window[guid][1].value/60;
+        }
     }
 }
 
-function updateSplitTime(guid)
-{
-    if(splitTime[guid].seconds == 60)
-    {
-        splitTime[guid].seconds = 0;
-        if(splitTime[guid].minutes == 60)
-        {
-            splitTime[guid].minutes = 0;
-            if(splitTime[guid].hours == 12)
+function updateCountDown(guid, counter) {
+
+    if(typeof window[guid] === 'undefined') {
+        window[guid] = [
             {
-                splitTime[guid].hours = 0;
-                splitTime[guid].hours++;
-            }
-            else
+                type:'hour',
+                value:0,
+                length:-hourHandLength,
+                scale:hourScale
+            },
             {
-                splitTime[guid].hours++;
+                type:'minute',
+                value:0,
+                length:-minuteHandLength,
+                scale:minuteScale
+            },
+            {
+                type:'second',
+                value:0,
+                length:-secondHandLength,
+                scale:secondScale,
+                balance:secondHandBalance
             }
-            splitTime[guid].minutes++;
-        }
-        else
-        {
-            splitTime[guid].minutes++;
-        }
-        splitTime[guid].seconds++;
+        ];
     }
-    else
-    {
-        splitTime[guid].seconds++;
+
+    counter = typeof counter !== 'undefined' ? counter : 0;
+    if(counter === 0) {
+        counter +=1;
+    }
+    if(counter > 0) {
+        window[guid][2].value +=1;
+
+        if(window[guid][2].value === 60) {
+            window[guid][2].value = 0;
+            window[guid][1].value +=1;
+            window[guid][0].value = window[guid][1].value/60;
+        }
     }
 }
-
 
 /*
  * variables for start and end of time counter
  * */
-var stopTime = {    //for the stopwatch
+var before = {
     hours: 0,
     minutes: 0,
     seconds: 0
 };
 
-var splitTime = {   //for the laptimer
+var after = {
     hours: 0,
     minutes: 0,
     seconds: 0
 };
 
 var interval;
+var splitter = [];
 var timerStarted = [],
         lapTimerStarted = [],
         countDownStarted = [];
 
-/*Starts the stopwatch
-*Remember that guid is still an HTML element
-*/
+
+/*
+ * this function called when start button pressed
+ * and take guid from drawTimer as parameter
+ * */
 function startTimerOnClick(guid) {
-    if(timerStarted[guid.id] === true) {    //return 1 only if the stopwatch is already started
+    if(timerStarted[guid] === true) {
         return 1;
     }
-    timerStarted[guid.id] = true; // set the specific stopwatch to true
-
-    //define specific stopTime
-    if(typeof stopTime[guid.id] === 'undefined'){ 
-        stopTime[guid.id] = {
-            hours: 0,
-            minutes: 0,
-            seconds: 0
-        };
-    }
-
-    d3.select('#'+guid.id+'_link .digital_display').text("");
-    //set interval by 1 sec
-    window[guid.id+'_link'] = setInterval(function(){
-        updateTimer(guid.id);
-        moveTimerHands(guid.id);
-        updateStopTime(guid.id);
-    }, 1000);
-}
-/*Pauses the stopwatch*/
-function pauseTimerOnClick(guid) {
-    timerStarted[guid.id] = false;              //set the specific stopwatch to false to be able to start again
-
-    clearInterval(window[guid.id+'_link']);     //clears the interval of specific element of stopwatch
- 
-    d3.select('#'+guid.id+'_link .digital_display').text((stopTime[guid.id].hours )
-    + 'h : ' + (stopTime[guid.id].minutes)
-    + 'm : ' +(stopTime[guid.id].seconds) + 's');
-}
-
-//resets the values of the specific stopwatch
-function resetTimerOnClick(guid)
-{
-    stopTime[guid.id].hours = 0;
-    stopTime[guid.id].minutes = 0;
-    stopTime[guid.id].seconds = 0;
-    timerData[guid.id][0].value = 0;
-    timerData[guid.id][1].value = 0;
-    timerData[guid.id][2].value = 0;
-    moveTimerHands(guid.id);
-    clearInterval(window[guid.id+'_link']);     //clears the interval of specific element of stopwatch
-    timerStarted[guid.id] = false;  //set specific timer to false
-}
-
-//starts the specific lap timer
-function startLapTimerOnClick(guid) {
-    if(lapTimerStarted[guid.id] === true) {
-        return 1;
-    }
-    lapTimerStarted[guid.id] = true;
-
-    if(typeof splitTime[guid.id] === 'undefined')
-    {
-        splitTime[guid.id] = {
-            hours: 0,
-            minutes: 0,
-            seconds: 0
-        };
-    }
-
-    window[guid.id+'lap'] = setInterval(function(){
-        updateLapTimer(guid.id);
-        moveLapTimerHands(guid.id);
-        updateSplitTime(guid.id);
-    }, 1000);
-}
-
-//pauses the specific lap timer
-function stopLapTimerOnClick(guid) {
-    lapTimerStarted[guid.id] = false; // set the specific lap timer to false
-
-    clearInterval(window[guid.id+'lap']); //clear the interval of a specific lap timer
-
-    d3.select('#'+guid.id+'_link .digital_display').text((splitTime[guid.id].hours )
-    + 'h : ' + (splitTime[guid.id].minutes)
-    + 'm : ' +(splitTime[guid.id].seconds) + 's');
-}
-
-//displays the current splitted time on specific lap timer
-function splitTimerOnClick(guid) {
-    //append the split time
-    $('#'+guid.id+'_link .laptime_display').append('You successfully split '+splitTime[guid.id].hours+'h :'+splitTime[guid.id].minutes+'m :'+splitTime[guid.id].seconds+'s<hr />');
-}
-
-
-function startCountDownOnClick(guid) {
-    if(countDownStarted[guid] === true) {
-        return 1;
-    }
-    countDownStarted[guid] = true;
+    timerStarted[guid] = true;
 
     before.hours = new Date().getHours();
     before.minutes = new Date().getMinutes();
     before.seconds = new Date().getSeconds();
 
-    window[guid+'count'] = setInterval(function(){
-        updateCountDown(guid);
-        moveCountDownHands(guid, guid);
+    window[guid+'tmr'] = setInterval(function(){
+        updateTimer(guid);
+        moveTimerHands(guid, guid);
     }, 1000);
+}
+
+function startCountDownOnClick(guid) {
+    //if(countDownStarted[guid] === true) {
+       // return 1;
+    //}
+    //countDownStarted[guid] = true;
+
+   // before.hours = new Date().getHours();
+    //before.minutes = new Date().getMinutes();
+    //before.seconds = new Date().getSeconds();
+
+    //window[guid+'count'] = setInterval(function(){
+     //   updateCountDown(guid);
+     //   moveCountDownHands(guid, guid);
+    //}, 1000);
+
+    $('.seconds-'+guid).each(function() {
+        var count = parseInt($(this).html());
+        if (count != 0) {
+            $(this).html(count -1);
+
+        } else {
+            $(this).html(count); 
+        }
+
+        handData[2].value = count;
+
+    });
+
+    setTimeout(function(){startCountDownOnClick(guid)}, 1000);
+}
+
+function stopTimerOnClick(guid) {
+    timerStarted[guid] = false;
+    after.hours = new Date().getHours();
+    after.minutes = new Date().getMinutes();
+    after.seconds = new Date().getSeconds();
+
+    clearInterval(window[guid+'tmr']);
+
+    alert((after.hours - before.hours)
+    + 'h : ' + (after.minutes - before.minutes)
+    + 'm : ' +(after.seconds - before.seconds) + 's');
+}
+
+/*
+ * this function called when start button pressed
+ * and take guid from drawTimer as parameter
+ * */
+function startLapTimerOnClick(guid) {
+    if(lapTimerStarted[guid] === true) {
+        return 1;
+    }
+    lapTimerStarted[guid] = true;
+
+    before.hours = new Date().getHours();
+    before.minutes = new Date().getMinutes();
+    before.seconds = new Date().getSeconds();
+    splitter[guid] = 0;
+
+    window[guid+'lap'] = setInterval(function(){
+        updateTimer(guid);
+        moveTimerHands(guid, guid);
+        splitter[guid] += 1;
+    }, 1000);
+}
+
+function stopLapTimerOnClick(guid) {
+    lapTimerStarted[guid] = false;
+    after.hours = new Date().getHours();
+    after.minutes = new Date().getMinutes();
+    after.seconds = new Date().getSeconds();
+
+    clearInterval(window[guid+'lap']);
+
+    alert((after.hours - before.hours)
+    + 'h : ' + (after.minutes - before.minutes)
+    + 'm : ' +(after.seconds - before.seconds) + 's');
+}
+
+/*
+* works only with one timer presented
+* */
+function splitTimerOnClick(guid) {
+    $('.laptime_display').append('You successfully split ' + splitter[guid] + ' seconds' + '<hr />');
+    splitter[guid] = 0;
 }
 
 function stopCountDownOnClick(guid) {
