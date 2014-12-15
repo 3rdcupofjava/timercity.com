@@ -1,13 +1,18 @@
-<div id="{{guid}}" class="timer_box">
+<div id="{{guid}}" class="col-lg-4 timer_box" style="display: none;">
     <button type="button" class="close" data-dismiss="alert">
         <span aria-hidden="true">&times;</span>
         <span class="sr-only">Close</span>
     </button>
-    <a id="{{guid}}_link" href="#/" class="thumbnail">
+    <a id="{{guid}}" href="#" class="thumbnail">
         <div class="svg_placeholder"></div>
         <div class="laptime_display"></div>
-        <div class="digital_display"></div>
-        <div class="btns"></div>
-        <div class="title">{{title}} {{type_name}}</div>
+        <!-- <div class="digital_display"></div> -->
+        <div class="btns-{{guid}}" style="display:none;">
+            <span class="hours-{{guid}}">01</span>:
+            <span class="minutes-{{guid}}">24</span>:
+            <span class="seconds-{{guid}}">60</span>
+        </div>
+        <div class="{{guid}}"></div>
+        <div class="title">{{title}}</div>
     </a>
 </div>
