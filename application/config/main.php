@@ -15,24 +15,8 @@ return array(
             'in_nav' => true
         ),
         array(
-            'title' => __('Another menu'),
-            'path'  => 'albums',
-            'mini_icon'  => 'picture',
-            'icon'  => 'photo_folder_256.png',
-            'admin' => false,
-            'in_nav' => true
-        ),
-        array(
-            'title' => __('Another one'),
-            'path'  => 'albums',
-            'mini_icon'  => 'star',
-            'icon'  => 'clip_board_tasks_512.png',
-            'admin' => false,
-            'in_nav' => true
-        ),
-        array(
             'title' => __('About'),
-            'path'  => 'albums',
+            'path'  => 'about',
             'mini_icon'  => 'picture',
             'icon'  => 'domain_512.png',
             'admin' => false,
