@@ -14,6 +14,8 @@
 
             <br />
             <div id="buttons_edit_mode" style="display:none;">
+                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Start</button>
+                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button>
                 <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save</button>
                 <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</button>
             </div>
