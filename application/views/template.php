@@ -23,7 +23,7 @@
     <?=$content?>
 
     <script type="text/javascript" src="<?=URL::base()?>/js/jquery-2.1.0.min.js"></script>
-    <script src="/js/jquery.timepicker.js"></script>
+    <script src="<?=URL::base()?>/js/jquery.timepicker.js"></script>
     <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
     <script type="text/javascript" src="<?=URL::base()?>/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>/js/mustache.js"></script>
@@ -36,7 +36,7 @@
         $(function(){
             digitalTimer.render();
 
-            $('#alarm_time').timepicker();
+            $('#alarm_time').timepicker({'timeFormat':'H:i'});
         });
     </script>
     
