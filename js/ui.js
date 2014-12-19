@@ -103,6 +103,7 @@ var ui = {
                 break;
             case '2':
                 $('#alarm_time').show();
+                $('#timezone').show();
                 type_name = "( Alarm Clock )";
                 break;
             case '3':
@@ -158,15 +159,57 @@ $(document).ready(function(){
         var title = $('#title').val();
         var size = $('#size').val();
         var timezone = $("#timezone").val();
-        var time = parseInt($('#countdown_time').val());
-        //console.log(title, size, timezone, time);
-        if(title !== '' && size !== '' && !isNaN(size)/* && timezone !== ''*/) {
-            var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time, 'type_name' : type_name};
+        var time = $('#countdown_time').val();
+        var alarm_time = $('#alarm_time').val();
+
+        if(title !== '' && size !== '' && !isNaN(size)) {
+            if(timer_type != 2) //not alarm clock
+            {
+                if(timer_type == 3) //if count down
+                {
+                    if(time.match(/:/g) != null && time.match(/:/g).length == 2) //check if it contains 2 :
+                    {
+                        var tempSplit = time.split(":");
+                        if(tempSplit[0] == '' || tempSplit[1] == '' || tempSplit[2] == '' ||
+                            isNaN(tempSplit[0]) || isNaN(tempSplit[1]) || isNaN(tempSplit[2]))
+                        {
+                            alert("Invalid Countdown value");
+                            return 0;
+                        }
+                    }
+                    else
+                    {
+                        alert("Invalid Countdown value.");
+                        return 0;
+                    }
+                }
+                var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time, 'type_name' : type_name};
+            }
+            else //if alarm clock
+            {
+                if(alarm_time.match(/:/g) != null && alarm_time.match(/:/g).length == 1)
+                {
+                    var tempSplit = alarm_time.split(":");
+                    if(tempSplit[0] == '' || tempSplit[1] == '' ||
+                        isNaN(tempSplit[0]) || isNaN(tempSplit[1]))
+                    {
+                        alert("Invalid alarm time.");
+                        return 0;
+                    }
+                }
+                else
+                {
+                    alert("Invalid alarm time.");
+                    return 0;
+                }
+                var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'alarm_time': alarm_time, 'type_name' : type_name};
+            }
             timer_count++;
             preDraw(view);
             return 0;
         }
-        else{
+        else
+        {
             alert('Please enter a valid value.');
             return 0;
         }
