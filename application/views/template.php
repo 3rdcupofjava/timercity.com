@@ -9,10 +9,10 @@
 
     <title><?=$title.' - '.$subtitle?></title>
 
-    <link href="<?=URL::base()?>/css/bootstrap.css" rel="stylesheet">
-    <link href="<?=URL::base()?>/css/main.css" rel="stylesheet">
+    <link href="<?=URL::base()?>css/bootstrap.css" rel="stylesheet">
+    <link href="<?=URL::base()?>css/main.css" rel="stylesheet">
     
-    <script type="text/javascript" src="<?=URL::base()?>/js/d3.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/d3.js"></script>
     
   </head>
 
@@ -22,12 +22,12 @@
 
     <?=$content?>
 
-    <script type="text/javascript" src="<?=URL::base()?>/js/jquery-2.1.0.min.js"></script>
-    <script src="<?=URL::base()?>/js/jquery.timepicker.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/jquery-2.1.0.min.js"></script>
+    <script src="<?=URL::base()?>js/jquery.timepicker.js"></script>
     <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
-    <script type="text/javascript" src="<?=URL::base()?>/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="<?=URL::base()?>/js/mustache.js"></script>
-    <script type="text/javascript" src="<?=URL::base()?>/js/ui.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/mustache.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/ui.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/main.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/timer.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/storage.js"></script>
