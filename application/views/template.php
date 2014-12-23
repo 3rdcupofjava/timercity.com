@@ -39,16 +39,31 @@
             $('#alarm_time').timepicker({'timeFormat':'H:i'});
         });
 
-        $('.nav a:first').on({
+        $('#save').on({
             click: function() {
                 event.preventDefault();
                 $.ajax({
                     type: "POST",
                     url: "/storage/save",
+                    data: "name=John Smith&location=Boston",
+                    cache: false,
+                    success: function(msg) {
+//                        console.log(msg);
+                    }
+                });
+            }
+        });
+
+        $('#load').on({
+            click: function() {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/storage/load",
                     data: "name=John&location=Boston",
                     cache: false,
                     success: function(msg) {
-                        //alert(msg);
+                        alert(msg);
                     }
                 });
             }
