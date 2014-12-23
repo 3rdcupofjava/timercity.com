@@ -4,6 +4,9 @@ var type_name = "";
 
 var ui = {
     nav: function(){
+        $('#save').on('click', function(){
+            alert('save')
+        });
         $('#sign_up a').on('click', function(){
 
             var parent = $(this).parent();
