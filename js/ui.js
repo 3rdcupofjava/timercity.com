@@ -191,24 +191,86 @@ var ui = {
         $('#alarm_time').timepicker({'timeFormat':'H:i'});
         $('#countdown_time').timepicker({'timeFormat':'H:i:s'});
     }
-}
-
+};
+/**
+ * this function create timers and set localStorage value
+ * @param view
+ */
 function preDraw(view){
     switch(timer_type) {
         case '1':
             clock.render(view);
+
+            var clock_s = {
+                'timezone': view['timezone'],
+                'clockSize': view['clockSize'],
+                'title': view['title'],
+                'guid': view['guid'],
+                'type': view['type'],
+                'type_name': view['type_name']
+            };
+            localStorage.setItem('clock_s', JSON.stringify(clock_s));
+
             break;
         case '2':
             timerClock.render(view);
+
+           var timerClock_s = {
+               'timezone': view['timezone'],
+               'clockSize': view['clockSize'],
+               'alarm_time': view['alarm_time'],
+               'title': view['title'],
+               'guid': view['guid'],
+               'type': view['type'],
+               'type_name': view['type_name']
+            };
+            localStorage.setItem('timerClock_s', JSON.stringify(timerClock_s));
+
             break;
         case '3':
             countDownClock.render(view);
+
+            var countDownClock_s = {
+                'timezone': view['timezone'],
+                'clockSize': view['clockSize'],
+                'title': view['title'],
+                'time': view['time'],
+                'guid': view['guid'],
+                'type': view['type'],
+                'type_name': view['type_name']
+            };
+            localStorage.setItem('countDownClock_s', JSON.stringify(countDownClock_s));
+
             break;
         case '4':
             stopWatchClock.render(view);
+
+            var stopWatchClock_s = {
+                'timezone': view['timezone'],
+                'clockSize': view['clockSize'],
+                'title': view['title'],
+                'guid': view['guid'],
+                'time': view['time'],
+                'type': view['type'],
+                'type_name': view['type_name']
+            };
+            localStorage.setItem('stopWatchClock_s', JSON.stringify(stopWatchClock_s));
+
             break;
         case '5':
             lapTimerClock.render(view);
+
+            var lapTimerClock_s = {
+                'timezone': view['timezone'],
+                'clockSize': view['clockSize'],
+                'title': view['title'],
+                'guid': view['guid'],
+                'time': view['time'],
+                'type': view['type'],
+                'type_name': view['type_name']
+            };
+            localStorage.setItem('lapTimerClock_s', JSON.stringify(lapTimerClock_s));
+
             break;
         default :
             alert('error, unknown type');
