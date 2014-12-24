@@ -20,8 +20,7 @@ var data = JSON.stringify(temporary_storage);
 var storage = {
     local : {
         save : function() {
-            localStorage.setItem($('#storage_key_save').val(), data);
-            console.log(temporary_storage);
+            localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
         },
         load : function() {
             alert(localStorage.getItem($('#storage_key_load').val()));
@@ -33,7 +32,7 @@ var storage = {
             $.ajax({
                 type: "POST",
                 url: "/storage/save",
-                data: 'text=' + data,
+                data: 'text=' + data, // not working
                 cache: false,
                 success: function(msg) {
                     alert('saved!');
