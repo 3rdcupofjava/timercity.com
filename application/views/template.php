@@ -31,45 +31,6 @@
     <script type="text/javascript" src="<?=URL::base()?>js/main.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/timer.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/storage.js"></script>
-
-    <script>
-        $(function(){
-            digitalTimer.render();
-
-            $('#alarm_time').timepicker({'timeFormat':'H:i'});
-        });
-
-        $('#save').on({
-            click: function() {
-                event.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "/storage/save",
-                    data: "name=John Smith&location=Boston",
-                    cache: false,
-                    success: function(msg) {
-//                        console.log(msg);
-                    }
-                });
-            }
-        });
-
-        $('#load').on({
-            click: function() {
-                event.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "/storage/load",
-                    data: "name=John&location=Boston",
-                    cache: false,
-                    success: function(msg) {
-                        alert(msg);
-                    }
-                });
-            }
-        });
-
-    </script>
     
     <script id="template_timer_box" type="x-tmpl-mustache">
         <?php include($_SERVER["DOCUMENT_ROOT"].URL::base().'application/templates/timer_box.mustache') ?>

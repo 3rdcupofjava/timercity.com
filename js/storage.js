@@ -16,12 +16,47 @@ function storage_check(){
     //    drawCountDown(tmp.clockSize, tmp.startsCountDown, c_guid);
     //    drawCountDown(tmp.clockSize, 3670, 'pari_c');
     } else { // NEW USER, DEMO CLOCKS
-        timerClock.render(100, 0, 'London');
-    //    drawTimer(100, 'lon_t');
-    //    drawLapTimer(100, 'lon_s');
-    //    drawCountDown(100, 11480, 'lon_c');
+//        timerClock.render(100, 0, 'London');
+//        drawTimer(100, 'lon_t');
+//        drawLapTimer(100, 'lon_s');
+//        drawCountDown(100, 11480, 'lon_c');
     }
 
     var person = { 'timezone': 0, 'city': 'London', 'clockSize': 130, 'startsCountDown': 11480 };
     localStorage.setItem('person', JSON.stringify(person));
 }
+
+var storage = {
+    local : {
+        save : function() {
+            alert('local save');
+        },
+        load : function() {
+            alert('local load');
+        }
+    },
+    global : {
+        save : function() {
+            $.ajax({
+                type: "POST",
+                url: "/storage/save",
+                data: "name=John Smith&location=Boston", // TODO: timer data / view state
+                cache: false,
+                success: function(msg) {
+        //                        console.log(msg);
+                }
+            });
+        },
+        load : function() {
+            alert('load');
+        }
+    },
+    user : { // TODO: after auth, login, etc...
+        save : function() {
+            alert('save to users account');
+        },
+        load : function() {
+            alert('load from users account');
+        }
+    },
+};

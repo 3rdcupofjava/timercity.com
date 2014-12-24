@@ -3,10 +3,62 @@ var timer_type = '1';
 var type_name = "";
 
 var ui = {
+    toggleNav: function(li, navbar){
+        $('.subnav').hide();
+        if(li.hasClass('active')){
+            li.removeClass('active');
+            $(navbar).hide();
+        }
+        else{
+            li.addClass('active')
+                .siblings().removeClass('active');
+            $(navbar).show();
+        }
+    },
     nav: function(){
-        $('#save').on('click', function(){
-            alert('save')
+        $('#save').on({
+            click: function(event) {
+                event.preventDefault();
+                ui.toggleNav($(this).parent(), '#nav_save')
+            }
         });
+        
+        $('#save_local').on({
+            click: function(event) {
+                event.preventDefault();
+                storage.local.save();
+            }
+        });
+        
+        $('#save_global').on({
+            click: function(event) {
+                event.preventDefault();
+                storage.global.save();
+            }
+        });
+
+        $('#load').on({
+            click: function(event) {
+                event.preventDefault();
+                ui.toggleNav($(this).parent(), '#nav_load')
+            }
+        });
+        
+        $('#load_local').on({
+            click: function(event) {
+                event.preventDefault();
+                storage.local.load();
+            }
+        });
+        
+        $('#load_global').on({
+            click: function(event) {
+                event.preventDefault();
+                storage.global.load();
+            }
+        });
+        
+        
         $('#sign_up a').on('click', function(){
 
             var parent = $(this).parent();
@@ -22,6 +74,7 @@ var ui = {
             $('#registration_form').hide();
 
         });
+        
         $('#log_in a').on('click', function(){
 
             var parent = $(this).parent();
@@ -42,6 +95,7 @@ var ui = {
             $('#why').hide();
 
         });
+        
         $('#early_registration').on('click', function(){
 
             $('#registration_sorry').toggle();
@@ -54,6 +108,7 @@ var ui = {
             $('#why').show();
 
         });
+        
         $('#button_register').on('click', function(){
             $('#registration_form')
                 .attr('action', '/yaam/public/register');
@@ -130,6 +185,11 @@ var ui = {
         this.nav();
         this.timer_types();
         this.set_type('1', false);
+        
+        digitalTimer.render();
+        
+        $('#alarm_time').timepicker({'timeFormat':'H:i'});
+        $('#countdown_time').timepicker({'timeFormat':'H:i:s'});
     }
 }
 
