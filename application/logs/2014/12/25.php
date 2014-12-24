@@ -63,3 +63,30 @@
 #5 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request.php(986): Kohana_Request_Client->execute(Object(Request))
 #6 /home/vagrant/Code/timercity.com/index.php(118): Kohana_Request->execute()
 #7 {main} in /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php:26
+2014-12-25 01:45:58 --- EMERGENCY: ErrorException [ 8 ]: Undefined index: name ~ APPPATH/classes/Controller/Storage.php [ 38 ] in /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php:38
+2014-12-25 01:45:58 --- DEBUG: #0 /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php(38): Kohana_Core::error_handler(8, 'Undefined index...', '/home/vagrant/C...', 38, Array)
+#1 /home/vagrant/Code/timercity.com/system/classes/Kohana/Controller.php(84): Controller_Storage->action_load()
+#2 [internal function]: Kohana_Controller->execute()
+#3 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request/Client/Internal.php(97): ReflectionMethod->invoke(Object(Controller_Storage))
+#4 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request/Client.php(114): Kohana_Request_Client_Internal->execute_request(Object(Request), Object(Response))
+#5 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request.php(986): Kohana_Request_Client->execute(Object(Request))
+#6 /home/vagrant/Code/timercity.com/index.php(118): Kohana_Request->execute()
+#7 {main} in /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php:38
+2014-12-25 01:46:02 --- EMERGENCY: ErrorException [ 8 ]: Undefined index: name ~ APPPATH/classes/Controller/Storage.php [ 38 ] in /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php:38
+2014-12-25 01:46:02 --- DEBUG: #0 /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php(38): Kohana_Core::error_handler(8, 'Undefined index...', '/home/vagrant/C...', 38, Array)
+#1 /home/vagrant/Code/timercity.com/system/classes/Kohana/Controller.php(84): Controller_Storage->action_load()
+#2 [internal function]: Kohana_Controller->execute()
+#3 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request/Client/Internal.php(97): ReflectionMethod->invoke(Object(Controller_Storage))
+#4 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request/Client.php(114): Kohana_Request_Client_Internal->execute_request(Object(Request), Object(Response))
+#5 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request.php(986): Kohana_Request_Client->execute(Object(Request))
+#6 /home/vagrant/Code/timercity.com/index.php(118): Kohana_Request->execute()
+#7 {main} in /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php:38
+2014-12-25 01:46:31 --- EMERGENCY: ErrorException [ 8 ]: Undefined index: name ~ APPPATH/classes/Controller/Storage.php [ 38 ] in /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php:38
+2014-12-25 01:46:31 --- DEBUG: #0 /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php(38): Kohana_Core::error_handler(8, 'Undefined index...', '/home/vagrant/C...', 38, Array)
+#1 /home/vagrant/Code/timercity.com/system/classes/Kohana/Controller.php(84): Controller_Storage->action_load()
+#2 [internal function]: Kohana_Controller->execute()
+#3 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request/Client/Internal.php(97): ReflectionMethod->invoke(Object(Controller_Storage))
+#4 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request/Client.php(114): Kohana_Request_Client_Internal->execute_request(Object(Request), Object(Response))
+#5 /home/vagrant/Code/timercity.com/system/classes/Kohana/Request.php(986): Kohana_Request_Client->execute(Object(Request))
+#6 /home/vagrant/Code/timercity.com/index.php(118): Kohana_Request->execute()
+#7 {main} in /home/vagrant/Code/timercity.com/application/classes/Controller/Storage.php:38

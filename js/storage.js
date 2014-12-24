@@ -24,7 +24,7 @@ var storage = {
             console.log(temporary_storage);
         },
         load : function() {
-            localStorage.getItem($('#storage_key_save').val());
+            alert(localStorage.getItem($('#storage_key_load').val()));
         }
     },
     global : {
@@ -33,7 +33,7 @@ var storage = {
             $.ajax({
                 type: "POST",
                 url: "/storage/save",
-                data: 'text=' + data, // somehow result is empty...
+                data: 'text=' + data,
                 cache: false,
                 success: function(msg) {
                     alert('saved!');
@@ -41,7 +41,15 @@ var storage = {
             });
         },
         load : function() {
-            alert('load');
+            $.ajax({
+                type: "POST",
+                url: "/storage/load",
+                data: '',
+                cache: false,
+                success: function(msg) {
+                    alert(msg);
+                }
+            });
         }
     },
     user : { // TODO: after auth, login, etc...
