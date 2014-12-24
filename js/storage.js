@@ -16,11 +16,11 @@
 //    }
 //
 //}
-
+var data = JSON.stringify(temporary_storage);
 var storage = {
     local : {
         save : function() {
-            localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
+            localStorage.setItem($('#storage_key_save').val(), data);
             console.log(temporary_storage);
         },
         load : function() {
@@ -29,13 +29,14 @@ var storage = {
     },
     global : {
         save : function() {
+            console.log(data);
             $.ajax({
                 type: "POST",
                 url: "/storage/save",
-                data: "name=John Smith&location=Boston", // TODO: timer data / view state
+                data: 'text=' + data, // somehow result is empty...
                 cache: false,
                 success: function(msg) {
-        //                        console.log(msg);
+                    alert('saved!');
                 }
             });
         },

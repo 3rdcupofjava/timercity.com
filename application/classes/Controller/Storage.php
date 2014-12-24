@@ -12,11 +12,11 @@ class Controller_Storage extends Controller {
 			if($_SERVER['REQUEST_METHOD'] == 'POST')
 			{
 				$url = 'http://e.znotez.com/api/1/setText';
-				if(isset($_POST['name']) && isset($_POST['location'])) {
-					$str = 'Username is: ' . $_POST['name'] . ', Location is: ' . $_POST['location'];
+				if(isset($_POST['text'])) {
+
 					$data = array('apikey' => '2a6e9953aed68276954081992e90d452c3b2c9eb27a12a1d565db8e2800c2fe5',
 								  'padID' => 'timercity.dev',
-								  'text' => $str);
+								  'text' => $_POST['text']);
 				}
 
 				$options = array(
