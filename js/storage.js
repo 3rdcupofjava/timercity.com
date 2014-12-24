@@ -20,10 +20,11 @@
 var storage = {
     local : {
         save : function() {
-            localStorage.setItem($('#storage_key_load').val(), JSON.stringify(timerClock_s));
+            localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
+            console.log(temporary_storage);
         },
         load : function() {
-            localStorage.getItem($('#storage_key_load').val());
+            localStorage.getItem($('#storage_key_save').val());
         }
     },
     global : {
