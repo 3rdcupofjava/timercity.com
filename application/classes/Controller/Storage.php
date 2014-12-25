@@ -2,15 +2,17 @@
 
 class Controller_Storage extends Controller {
 
+	public $api_key = '2a6e9953aed68276954081992e90d452c3b2c9eb27a12a1d565db8e2800c2fe5';
+
 	public function action_index()
 	{
             $this->response->body('this page does nothing');
 	}
 
-	public static function create_pad($padID)
+	public function create_pad($padID)
 	{
 		$url = 'http://e.znotez.com/api/1/createPad';
-		$data = array('apikey' => '2a6e9953aed68276954081992e90d452c3b2c9eb27a12a1d565db8e2800c2fe5',
+		$data = array('apikey' => $this->api_key,
 					  'padID' => $padID);
 
 		$options = array(
@@ -33,9 +35,9 @@ class Controller_Storage extends Controller {
 
 				$url = 'http://e.znotez.com/api/1/setText';  // createPad | padID
 				if(isset($_POST['padID']) && isset($_POST['text'])) {
-					self::create_pad($_POST['padID']);
+					$this->create_pad($_POST['padID']);
 
-					$data = array('apikey' => '2a6e9953aed68276954081992e90d452c3b2c9eb27a12a1d565db8e2800c2fe5',
+					$data = array('apikey' => $this->api_key,
 								  'padID' => $_POST['padID'],
 								  'text' => $_POST['text']);
 				}
@@ -57,7 +59,7 @@ class Controller_Storage extends Controller {
 	{
 		if(isset($_POST['padID'])) {
 			$url = 'http://e.znotez.com/api/1/getText';
-			$data = array('apikey' => '2a6e9953aed68276954081992e90d452c3b2c9eb27a12a1d565db8e2800c2fe5',
+			$data = array('apikey' => $this->api_key,
 						  'padID' => $_POST['padID']);
 			$options = array(
 				'http' => array(
