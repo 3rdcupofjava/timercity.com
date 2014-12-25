@@ -32,7 +32,7 @@ var storage = {
             $.ajax({
                 type: "POST",
                 url: "/storage/save",
-                data: 'text=' + JSON.stringify(temporary_storage), // not working
+                data: 'padID=' + $('#storage_key_save').val() + '&text=' + JSON.stringify(temporary_storage), // not working
                 cache: false,
                 success: function(msg) {
                     alert('saved!');
@@ -43,7 +43,7 @@ var storage = {
             $.ajax({
                 type: "POST",
                 url: "/storage/load",
-                data: '',
+                data: 'padID=' + $('#storage_key_load').val(),
                 cache: false,
                 success: function(msg) {
                     alert(msg);
