@@ -16,7 +16,7 @@
 //    }
 //
 //}
-var data = JSON.stringify(temporary_storage);
+
 var storage = {
     local : {
         save : function() {
@@ -28,11 +28,11 @@ var storage = {
     },
     global : {
         save : function() {
-            console.log(data);
+            console.log(JSON.stringify(temporary_storage));
             $.ajax({
                 type: "POST",
                 url: "/storage/save",
-                data: 'text=' + data, // not working
+                data: 'text=' + JSON.stringify(temporary_storage), // not working
                 cache: false,
                 success: function(msg) {
                     alert('saved!');
