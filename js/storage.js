@@ -18,12 +18,46 @@
 //}
 
 var storage = {
+    generate: function(result) {
+        for (var i in result) {
+            if(result.hasOwnProperty(i) && !jQuery.isEmptyObject(result[i])) {
+                var value = result[i],
+                    timer_type = result[i].type;
+
+                switch(timer_type) {
+                    case '1':
+                        clock.render(value);
+                        break;
+                    case '2':
+                        timerClock.render(value);
+                        break;
+                    case '3':
+                        countDownClock.render(value);
+                        break;
+                    case '4':
+                        stopWatchClock.render(value);
+                        break;
+                    case '5':
+                        lapTimerClock.render(value);
+                        break;
+                    default :
+                        alert('error, unknown type');
+                        break;
+                }
+        }
+    }
+    },
     local : {
         save : function() {
-            localStorage.setItem($('#storage_key_load').val(), JSON.stringify(timerClock_s));
+            localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
+           // maybe store last value in session and load after page reload.
+           // or need track somehow from which name of local \ global storage get timers after page reload.
+           // sessionStorage.setItem('last_timer', JSON.stringify(temporary_storage));
         },
         load : function() {
-            localStorage.getItem($('#storage_key_load').val());
+            var result = JSON.parse(localStorage.getItem($('#storage_key_load').val()));
+
+            storage.generate(result);
         }
     },
     global : {
@@ -31,15 +65,26 @@ var storage = {
             $.ajax({
                 type: "POST",
                 url: "/storage/save",
-                data: "name=John Smith&location=Boston", // TODO: timer data / view state
+                data: 'padID=' + $('#storage_key_save').val() + '&text=' + JSON.stringify(temporary_storage), // not working
                 cache: false,
                 success: function(msg) {
-        //                        console.log(msg);
+                    alert('saved!');
                 }
             });
         },
         load : function() {
-            alert('load');
+            $.ajax({
+                type: "POST",
+                url: "/storage/load",
+                data: 'padID=' + $('#storage_key_load').val(),
+                cache: false,
+                success: function(msg) {
+                    //alert(msg);
+                    var result = JSON.parse(msg);
+
+                    storage.generate(result);
+                }
+            });
         }
     },
     user : { // TODO: after auth, login, etc...

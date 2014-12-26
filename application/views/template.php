@@ -11,6 +11,8 @@
 
     <link href="<?=URL::base()?>css/bootstrap.css" rel="stylesheet">
     <link href="<?=URL::base()?>css/main.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     
     <script type="text/javascript" src="<?=URL::base()?>js/d3.js"></script>
     
@@ -23,6 +25,7 @@
     <?=$content?>
 
     <script type="text/javascript" src="<?=URL::base()?>js/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/jquery-ui.min.js"></script>
     <script src="<?=URL::base()?>js/jquery.timepicker.js"></script>
     <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
     <script type="text/javascript" src="<?=URL::base()?>js/bootstrap.min.js"></script>
@@ -44,6 +47,13 @@
                 </label>
             {{/options}}
         </div>
+    </script>
+
+    <script>
+      $(function() {
+        $( "#sortable" ).sortable();
+        $( "#sortable" ).disableSelection();
+      });
     </script>
 
   </body>
