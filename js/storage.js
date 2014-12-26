@@ -26,7 +26,35 @@ var storage = {
            // sessionStorage.setItem('last_timer', JSON.stringify(temporary_storage));
         },
         load : function() {
-            //alert(localStorage.getItem($('#storage_key_load').val()));
+            var result = JSON.parse(localStorage.getItem($('#storage_key_load').val()));
+
+            for (var i in result) {
+                if(result.hasOwnProperty(i) && !jQuery.isEmptyObject(result[i])) {
+                    var value = result[i],
+                        timer_type = result[i].type;
+
+                    switch(timer_type) {
+                        case '1':
+                            clock.render(value);
+                            break;
+                        case '2':
+                            timerClock.render(value);
+                            break;
+                        case '3':
+                            countDownClock.render(value);
+                            break;
+                        case '4':
+                            stopWatchClock.render(value);
+                            break;
+                        case '5':
+                            lapTimerClock.render(value);
+                            break;
+                        default :
+                            alert('error, unknown type');
+                            break;
+                    }
+                }
+            }
         }
     },
     global : {
@@ -49,7 +77,7 @@ var storage = {
                 cache: false,
                 success: function(msg) {
                     //alert(msg);
-                    var result = JSON.parse(msg); // console.log(JSON.parse(msg));
+                    var result = JSON.parse(msg);
 
                     for (var i in result) {
                         if(result.hasOwnProperty(i) && !jQuery.isEmptyObject(result[i])) {
