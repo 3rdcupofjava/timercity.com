@@ -21,6 +21,9 @@ var storage = {
     local : {
         save : function() {
             localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
+           // maybe store last value in session and load after page reload.
+           // or need track somehow from which name of local \ global storage get timers after page reload.
+           // sessionStorage.setItem('last_timer', JSON.stringify(temporary_storage));
         },
         load : function() {
             alert(localStorage.getItem($('#storage_key_load').val()));
@@ -28,7 +31,6 @@ var storage = {
     },
     global : {
         save : function() {
-            console.log(JSON.stringify(temporary_storage));
             $.ajax({
                 type: "POST",
                 url: "/storage/save",

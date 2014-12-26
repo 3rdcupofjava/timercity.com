@@ -13,7 +13,7 @@ class Controller_Storage extends Controller {
 	{
 		$url = 'http://e.znotez.com/api/1/createPad';
 		$data = array('apikey' => $this->api_key,
-					  'padID' => $padID);
+					  'padID' => 'my_timers_' . $padID);
 
 		$options = array(
 			'http' => array(
@@ -38,7 +38,7 @@ class Controller_Storage extends Controller {
 					$this->create_pad($_POST['padID']);
 
 					$data = array('apikey' => $this->api_key,
-								  'padID' => $_POST['padID'],
+								  'padID' => 'my_timers_' . $_POST['padID'],
 								  'text' => $_POST['text']);
 				}
 
@@ -60,7 +60,7 @@ class Controller_Storage extends Controller {
 		if(isset($_POST['padID'])) {
 			$url = 'http://e.znotez.com/api/1/getText';
 			$data = array('apikey' => $this->api_key,
-						  'padID' => $_POST['padID']);
+						  'padID' => 'my_timers_' . $_POST['padID']);
 			$options = array(
 				'http' => array(
 					'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
