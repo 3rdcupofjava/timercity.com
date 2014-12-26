@@ -18,6 +18,35 @@
 //}
 
 var storage = {
+    generate: function(result) {
+        for (var i in result) {
+            if(result.hasOwnProperty(i) && !jQuery.isEmptyObject(result[i])) {
+                var value = result[i],
+                    timer_type = result[i].type;
+
+                switch(timer_type) {
+                    case '1':
+                        clock.render(value);
+                        break;
+                    case '2':
+                        timerClock.render(value);
+                        break;
+                    case '3':
+                        countDownClock.render(value);
+                        break;
+                    case '4':
+                        stopWatchClock.render(value);
+                        break;
+                    case '5':
+                        lapTimerClock.render(value);
+                        break;
+                    default :
+                        alert('error, unknown type');
+                        break;
+                }
+        }
+    }
+    },
     local : {
         save : function() {
             localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
@@ -28,33 +57,7 @@ var storage = {
         load : function() {
             var result = JSON.parse(localStorage.getItem($('#storage_key_load').val()));
 
-            for (var i in result) {
-                if(result.hasOwnProperty(i) && !jQuery.isEmptyObject(result[i])) {
-                    var value = result[i],
-                        timer_type = result[i].type;
-
-                    switch(timer_type) {
-                        case '1':
-                            clock.render(value);
-                            break;
-                        case '2':
-                            timerClock.render(value);
-                            break;
-                        case '3':
-                            countDownClock.render(value);
-                            break;
-                        case '4':
-                            stopWatchClock.render(value);
-                            break;
-                        case '5':
-                            lapTimerClock.render(value);
-                            break;
-                        default :
-                            alert('error, unknown type');
-                            break;
-                    }
-                }
-            }
+            storage.generate(result);
         }
     },
     global : {
@@ -79,33 +82,7 @@ var storage = {
                     //alert(msg);
                     var result = JSON.parse(msg);
 
-                    for (var i in result) {
-                        if(result.hasOwnProperty(i) && !jQuery.isEmptyObject(result[i])) {
-                            var value = result[i],
-                                timer_type = result[i].type;
-
-                            switch(timer_type) {
-                                case '1':
-                                    clock.render(value);
-                                    break;
-                                case '2':
-                                    timerClock.render(value);
-                                    break;
-                                case '3':
-                                    countDownClock.render(value);
-                                    break;
-                                case '4':
-                                    stopWatchClock.render(value);
-                                    break;
-                                case '5':
-                                    lapTimerClock.render(value);
-                                    break;
-                                default :
-                                    alert('error, unknown type');
-                                    break;
-                            }
-                        }
-                    }
+                    storage.generate(result);
                 }
             });
         }
