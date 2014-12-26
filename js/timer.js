@@ -72,10 +72,15 @@ var clock = {
         if(view['type'] !== 'undefined')
         {
             activeTab = $(".nav .active > a").attr("href");
+
+            // after save global | local pressed activeTab somehow equals '#'
+            // next line is fix
+            if(activeTab === '#') activeTab = '#home';
+
             switch(view['type'])
             {
                 case '1':
-                    $(activeTab+' > .timer_holder').append(output);  
+                    $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '2':
                     $(activeTab+' > .timer_holder').append(output);

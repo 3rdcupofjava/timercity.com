@@ -20,10 +20,13 @@
 var storage = {
     local : {
         save : function() {
-            localStorage.setItem($('#storage_key_load').val(), JSON.stringify(timerClock_s));
+            localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
+           // maybe store last value in session and load after page reload.
+           // or need track somehow from which name of local \ global storage get timers after page reload.
+           // sessionStorage.setItem('last_timer', JSON.stringify(temporary_storage));
         },
         load : function() {
-            localStorage.getItem($('#storage_key_load').val());
+            alert(localStorage.getItem($('#storage_key_load').val()));
         }
     },
     global : {
@@ -31,15 +34,23 @@ var storage = {
             $.ajax({
                 type: "POST",
                 url: "/storage/save",
-                data: "name=John Smith&location=Boston", // TODO: timer data / view state
+                data: 'padID=' + $('#storage_key_save').val() + '&text=' + JSON.stringify(temporary_storage), // not working
                 cache: false,
                 success: function(msg) {
-        //                        console.log(msg);
+                    alert('saved!');
                 }
             });
         },
         load : function() {
-            alert('load');
+            $.ajax({
+                type: "POST",
+                url: "/storage/load",
+                data: 'padID=' + $('#storage_key_load').val(),
+                cache: false,
+                success: function(msg) {
+                    alert(msg);
+                }
+            });
         }
     },
     user : { // TODO: after auth, login, etc...
