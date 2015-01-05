@@ -1,6 +1,13 @@
 var timer_count=1; // eventually need to load from storage so not to override current timers
 var timer_type = '1';
 var type_name = "";
+var temporary_storage = {
+    'clock_s': {},
+    'timerClock_s': {},
+    'countDownClock_s': {},
+    'stopWatchClock_s': {},
+    'lapTimerClock_s': {}
+};
 
 var ui = {
     toggleNav: function(li, navbar){
@@ -186,7 +193,7 @@ var ui = {
         this.timer_types();
         this.set_type('1', false);
         
-        digitalTimer.render();
+        //digitalTimer.render();
         
         $('#alarm_time').timepicker({'timeFormat':'H:i'});
         $('#countdown_time').timepicker({'timeFormat':'H:i:s'});
@@ -201,37 +208,27 @@ function preDraw(view){
         case '1':
             clock.render(view);
 
-            var clock_s = view;
-            localStorage.setItem('clock_s', JSON.stringify(clock_s));
-
+            temporary_storage.clock_s = view;
             break;
         case '2':
             timerClock.render(view);
 
-           var timerClock_s = view;
-            localStorage.setItem('timerClock_s', JSON.stringify(timerClock_s));
-
+            temporary_storage.timerClock = view;
             break;
         case '3':
             countDownClock.render(view);
 
-            var countDownClock_s = view;
-            localStorage.setItem('countDownClock_s', JSON.stringify(countDownClock_s));
-
+            temporary_storage.clock_s = view;
             break;
         case '4':
             stopWatchClock.render(view);
 
-            var stopWatchClock_s = view;
-            localStorage.setItem('stopWatchClock_s', JSON.stringify(stopWatchClock_s));
-
+            temporary_storage.stopWatchClock = view;
             break;
         case '5':
             lapTimerClock.render(view);
 
-            var lapTimerClock_s = view;
-            localStorage.setItem('lapTimerClock_s', JSON.stringify(lapTimerClock_s));
-
+            temporary_storage.lapTimerClock = view;
             break;
         default :
             alert('error, unknown type');
