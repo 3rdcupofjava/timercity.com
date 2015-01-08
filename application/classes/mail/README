@@ -3,3 +3,5 @@ for make send mail work from index.php
 
 Example of crontab string in file: crontab_file_example. Or you can use this library for set up job from php script: https://github.com/MediovskiTechnology/php-crontab-manager
 or any kind of cron gui client. Main task is run index.php file from this job.
+
+Im using 'mailcatcher' ruby script for send \ receive email in development env,  with default config ( localhost:1025 )
