@@ -37,7 +37,7 @@ if(gettype($alarms) == 'Array' && $alarms['time'] <= $current_datetime)
 //Replace the plain text body with one created manually
     $mail->AltBody = 'This is a plain-text message body';
 //Attach an image file
-    $mail->addAttachment('./PHPMailer/examples/images/phpmailer_mini.png');
+//    $mail->addAttachment('./PHPMailer/examples/images/phpmailer_mini.png');
 
 //send the message, check for errors
     if (!$mail->send()) {
