@@ -83,6 +83,24 @@ var clock = {
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '2':
+                    /**
+                     * if isset alarm_time, send post request with given time.
+                     * maybe also need send date?
+                     *
+                     * need send this data to controller which can insert into database
+                     */
+                    if(typeof view['alarm_time'] !== 'undefined') {
+                        $.ajax({
+                            type: "POST",
+                            url: "#",
+                            data: "time=" + view['alarm_time'],
+                            cache: false,
+                            success: function(msg) {
+                                alert('Alarm time: ' + view['alarm_time']);
+                            }
+                        });
+                    }
+
                     $(activeTab+' > .timer_holder').append(output);
                     alarm_time[guid] = view['alarm_time'].split(":");
                     alarm_time[guid][0] = parseInt(alarm_time[guid][0]);
