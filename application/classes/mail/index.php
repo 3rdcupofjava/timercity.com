@@ -6,6 +6,12 @@ require_once '../db/db.php';
 $current_datetime = date('m/d/Y h:i:s a', time());
 $alarms = get_data();
 
+/**
+ * this logic depends on $alarms['time'] format in database
+ * if we can simple check it by <=, its must work
+ * but maybe for this we can change datetime format in database for saving not only time, but also date.
+ * right now it check time string from database with something like this: '01/08/2015 06:14:13 pm'
+ */
 if(gettype($alarms) == 'Array' && $alarms['time'] <= $current_datetime)
 {
 //SMTP needs accurate times, and the PHP time zone MUST be set
