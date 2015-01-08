@@ -1,0 +1,4 @@
+You need clone (in same with current file folder) PHP-MySQLi-Database-Class repository from this url: https://github.com/31H0B1eV/PHP-MySQLi-Database-Class
+for make db.php work
+
+Also you must set db connection details and have timercity.com database with alarms table ( current fields: $id | $title | $time | $email )
