@@ -1,7 +1,7 @@
 <?php
 /* this script use config for mailcatcher ( http://mailcatcher.me/ ) with it you can test sending mail in development env. */
-require_once './PHPMailer/PHPMailerAutoload.php'; // lib_url: https://github.com/PHPMailer/PHPMailer
-require_once '../db/db.php';
+require_once(dirname(__FILE__).'/PHPMailer/PHPMailerAutoload.php'); // lib_url: https://github.com/PHPMailer/PHPMailer
+require_once(dirname(__FILE__).'/../db/db.php');
 
 $current_datetime = date('h:i a', time());
 $time = str_split($current_datetime, 5)[0];

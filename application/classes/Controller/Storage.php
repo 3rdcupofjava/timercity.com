@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') or die('No direct script access.');
+require_once(dirname(__FILE__).'/../db/db.php');
 
 class Controller_Storage extends Controller {
 
@@ -30,28 +31,39 @@ class Controller_Storage extends Controller {
 	{
 			if($_SERVER['REQUEST_METHOD'] == 'POST')
 			{
-				if(isset($_POST['padID'])) {
+				if(isset($_POST['padID']))
+				{
+
+					$url = 'http://e.znotez.com/api/1/setText';  // createPad | padID
+					if (isset($_POST['padID']) && isset($_POST['text']))
+					{
+						$this->create_pad($_POST['padID']);
+
+						$data = array('apikey' => $this->api_key,
+									  'padID'  => 'my_timers_' . $_POST['padID'],
+									  'text'   => $_POST['text']);
+					}
+
+					$options = array(
+						'http' => array(
+							'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+							'method'  => 'POST',
+							'content' => http_build_query($data),
+						),
+					);
+					$context = stream_context_create($options);
+					$result = file_get_contents($url, false, $context);
+					var_dump($result);
 				}
 
-				$url = 'http://e.znotez.com/api/1/setText';  // createPad | padID
-				if(isset($_POST['padID']) && isset($_POST['text'])) {
-					$this->create_pad($_POST['padID']);
-
-					$data = array('apikey' => $this->api_key,
-								  'padID' => 'my_timers_' . $_POST['padID'],
-								  'text' => $_POST['text']);
+				if(isset($_POST['time']))
+				{
+					try {
+						set_data('test', $_POST['time'], 'my_mail@example.org');
+					} catch (Exception $e) {
+						echo $e->getMessage();
+					}
 				}
-
-				$options = array(
-					'http' => array(
-						'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-						'method'  => 'POST',
-						'content' => http_build_query($data),
-					),
-				);
-				$context  = stream_context_create($options);
-				$result = file_get_contents($url, false, $context);
-				var_dump($result);
 			}
 	}
         

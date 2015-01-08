@@ -1,8 +1,8 @@
-<?php require_once ('./PHP-MySQLi-Database-Class/MysqliDb.php');  // lib_url: https://github.com/31H0B1eV/PHP-MySQLi-Database-Class
+<?php require_once (dirname(__FILE__).'/PHP-MySQLi-Database-Class/MysqliDb.php');  // lib_url: https://github.com/31H0B1eV/PHP-MySQLi-Database-Class
 
 function get_data()
 {
-    $db = new MysqliDb ('localhost', 'homestead', 'secret', 'timercity.com');
+    $db = new MysqliDb ('localhost', 'homestead', 'secret', 'timercity');
 
     $cols = Array ("title", "time", "email");
     try {
@@ -15,7 +15,7 @@ function get_data()
 
 function set_data($title, $time, $email)
 {
-    $db = new MysqliDb ('localhost', 'homestead', 'secret', 'timercity.com');
+    $db = new MysqliDb ('localhost', 'homestead', 'secret', 'timercity');
 
     $data = Array ('title' => $title,
                    'time' => $time,
