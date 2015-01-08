@@ -3,7 +3,7 @@
 require_once './PHPMailer/PHPMailerAutoload.php'; // lib_url: https://github.com/PHPMailer/PHPMailer
 require_once '../db/db.php';
 
-$current_datetime = date('m/d/Y h:i', time());
+$current_datetime = date('m/d/Y h:i:s a', time());
 $alarms = get_data();
 
 if(gettype($alarms) == 'Array' && $alarms['time'] <= $current_datetime)
