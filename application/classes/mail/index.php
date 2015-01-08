@@ -26,7 +26,7 @@ if(gettype($alarms) == 'Array' && $alarms['time'] <= $current_datetime)
     $mail->Port = 1025;
     $mail->SMTPAuth = false;
 //Set who the message is to be sent from
-    $mail->setFrom('from@example.com', 'Mike Doe');
+    $mail->setFrom('no-reply@timercity.com', 'timercity.com');
 //Set who the message is to be sent to
     $mail->addAddress($alarms['email'], 'John Doe');
 //Set the subject line
