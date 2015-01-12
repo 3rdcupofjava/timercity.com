@@ -56,9 +56,13 @@
           for(var i = 0; i < localStorage.length; i++)
           {
             var result = JSON.parse(localStorage.getItem(localStorage.key(i)));
-            console.log(result);
-            if(result !== null)
+            if(result !== null){
+              for(var j = 0; j < result.length; j++) {
+                var str = "#"+ result[j]["guid"];
+                $(str).empty();
+              }
               storage.generate(result);
+            }
           }
         }
       });

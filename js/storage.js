@@ -24,6 +24,10 @@ var storage = {
                 var value = result[i],
                     timer_type = result[i].type;
 
+                    var str = "#"+ value["guid"];
+                    console.log(str);
+                    $(str).remove();
+
                 switch(timer_type) {
                     case '1':
                         clock.render(value);
