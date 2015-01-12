@@ -32,22 +32,26 @@ var storage = {
                         timer_count++;
                         break;
                     case '2':
-                        timerClock.render(value);
+                        if(!$("#"+value["guid"]))
+                            timerClock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;
                     case '3':
-                        countDownClock.render(value);
+                        if(!$("#"+value["guid"]))
+                            countDownClock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;
                     case '4':
-                        stopWatchClock.render(value);
+                        if(!$("#"+value["guid"]))
+                            stopWatchClock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;
                     case '5':
-                        lapTimerClock.render(value);
+                        if(!$("#"+value["guid"]))
+                            lapTimerClock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;
