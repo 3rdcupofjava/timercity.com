@@ -25,7 +25,6 @@ var storage = {
                     timer_type = result[i].type;
 
                     var str = "#"+ value["guid"];
-                    console.log(str);
                     $(str).remove();
 
                 switch(timer_type) {
