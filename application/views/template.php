@@ -50,6 +50,19 @@
     </script>
 
     <script>
+      $(function(){
+        if(confirm('Load last timers?'))
+        {
+          for(var i = 0; i < localStorage.length; i++)
+          {
+            var result = JSON.parse(localStorage.getItem(localStorage.key(i)));
+            console.log(result);
+            if(result !== null)
+              storage.generate(result);
+          }
+        }
+      });
+
       $(function() {
         $( "#sortable" ).sortable();
         $( "#sortable" ).disableSelection();
