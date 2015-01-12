@@ -1,4 +1,7 @@
-var timer_count=1; // eventually need to load from storage so not to override current timers
+if(typeof(timer_count) !== 'undefined')
+{
+    var timer_count=1; // eventually need to load from storage so not to override current timers
+}
 var timer_type = '1';
 var type_name = "";
 var temporary_storage = [];
