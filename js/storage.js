@@ -26,7 +26,8 @@ var storage = {
 
                 switch(timer_type) {
                     case '1':
-                        clock.render(value);
+                        if(!$("#"+value["guid"]))
+                            clock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;
