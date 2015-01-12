@@ -1,4 +1,4 @@
-if(typeof(timer_count) !== 'undefined')
+if(typeof(timer_count) === "undefined")
 {
     var timer_count=1; // eventually need to load from storage so not to override current timers
 }

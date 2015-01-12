@@ -27,18 +27,28 @@ var storage = {
                 switch(timer_type) {
                     case '1':
                         clock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
                         break;
                     case '2':
                         timerClock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
                         break;
                     case '3':
                         countDownClock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
                         break;
                     case '4':
                         stopWatchClock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
                         break;
                     case '5':
                         lapTimerClock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
                         break;
                     default :
                         alert('error, unknown type');
