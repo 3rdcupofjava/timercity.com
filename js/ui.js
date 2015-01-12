@@ -1,13 +1,10 @@
-var timer_count=1; // eventually need to load from storage so not to override current timers
+if(typeof(timer_count) === "undefined")
+{
+    var timer_count=1; // eventually need to load from storage so not to override current timers
+}
 var timer_type = '1';
 var type_name = "";
-var temporary_storage = {
-    'clock_s': {},
-    'timerClock_s': {},
-    'countDownClock_s': {},
-    'stopWatchClock_s': {},
-    'lapTimerClock_s': {}
-};
+var temporary_storage = [];
 
 var ui = {
     toggleNav: function(li, navbar){
@@ -199,6 +196,7 @@ var ui = {
         $('#countdown_time').timepicker({'timeFormat':'H:i:s'});
     }
 };
+
 /**
  * this function create timers and set localStorage value
  * @param view
@@ -208,27 +206,27 @@ function preDraw(view){
         case '1':
             clock.render(view);
 
-            temporary_storage.clock_s = view;
+            temporary_storage.push(view);
             break;
         case '2':
             timerClock.render(view);
 
-            temporary_storage.timerClock = view;
+            temporary_storage.push(view);
             break;
         case '3':
             countDownClock.render(view);
 
-            temporary_storage.clock_s = view;
+            temporary_storage.push(view);
             break;
         case '4':
             stopWatchClock.render(view);
 
-            temporary_storage.stopWatchClock = view;
+            temporary_storage.push(view);
             break;
         case '5':
             lapTimerClock.render(view);
 
-            temporary_storage.lapTimerClock = view;
+            temporary_storage.push(view);
             break;
         default :
             alert('error, unknown type');
