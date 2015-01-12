@@ -26,32 +26,27 @@ var storage = {
 
                 switch(timer_type) {
                     case '1':
-                        if(!$("#"+value["guid"]))
-                            clock.render(value);
+                        clock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;
                     case '2':
-                        if(!$("#"+value["guid"]))
-                            timerClock.render(value);
+                        timerClock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;
                     case '3':
-                        if(!$("#"+value["guid"]))
-                            countDownClock.render(value);
+                        countDownClock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;
                     case '4':
-                        if(!$("#"+value["guid"]))
-                            stopWatchClock.render(value);
+                        stopWatchClock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;
                     case '5':
-                        if(!$("#"+value["guid"]))
-                            lapTimerClock.render(value);
+                        lapTimerClock.render(value);
                         temporary_storage.push(value);
                         timer_count++;
                         break;

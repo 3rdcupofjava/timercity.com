@@ -21,10 +21,7 @@ var radians = 0.0174532925,
         alarmCount = [];    //used as a counter
         ampm = [];          //am or pm for the local time according to the inputted timezone
 
-if(typeof(activeTab) === "undefined")
-{
-    var activeTab = "#home";
-}
+var activeTab = "#home";
 
 var hourScale = d3.scale.linear()
         .range([0,330])
