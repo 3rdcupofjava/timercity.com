@@ -80,6 +80,7 @@ var clock = {
             switch(view['type'])
             {
                 case '1':
+                    activeTab = "#worldClockTab";
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '2':
@@ -101,6 +102,7 @@ var clock = {
                         });
                     }
 
+                    activeTab = "#alarmClockTab";
                     $(activeTab+' > .timer_holder').append(output);
                     alarm_time[guid] = view['alarm_time'].split(":");
                     alarm_time[guid][0] = parseInt(alarm_time[guid][0]);
@@ -120,6 +122,8 @@ var clock = {
                     alarm[guid] = alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2];
                     break;
                 case '3':
+
+                    activeTab = "#countDownTab";
                     $(activeTab+' > .timer_holder').append(output);
 
                     //initialize first the countdown data
@@ -167,9 +171,13 @@ var clock = {
 
                     break;
                 case '4':
+
+                    activeTab = "#stopWatchTab";
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '5':
+
+                    activeTab = "#lapTimeTab";
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 default:
