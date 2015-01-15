@@ -29,8 +29,10 @@ body {
 .features .editor .CodeMirror-lines {
     padding: 10px 0 40px 0
 }
-
-#nav_login{
+#storage_key_load, #storage_key_save{
+    width:200px;
+}
+#nav_save, #nav_load, #nav_login, #nav_register, #nav_request{
     background-color:#080808;
 }
 

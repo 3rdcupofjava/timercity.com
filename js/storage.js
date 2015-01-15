@@ -1,27 +1,111 @@
-function storage_check(){
-    // IF RETURNING USER
-    if(localStorage.getItem('person') !== null) {
-        var tmp = JSON.parse(localStorage.person);
+//function storage_check(){
+//    // IF RETURNING USER
+//    if(localStorage.getItem('clock_s') !== null) {
+//
+//    } else if(localStorage.getItem('timerClock_s') !== null) {
+//
+//    } else if(localStorage.getItem('countDownClock_s') !== null) {
+//
+//    } else if(localStorage.getItem('stopWatchClock_s') !== null) {
+//
+//    } else if(localStorage.getItem('lapTimerClock_s') !== null) {
+//
+//    } else {
+//
+//        timerClock.render(130, 0, 'Demo Timer'); // timer presented if user came in first time and no global \ local storage.
+//    }
+//
+//}
 
-        var t_guid = tmp.city.toLowerCase().slice(0,2) + '_t';
-        var s_guid = tmp.city.toLowerCase().slice(0,2) + '_s';
-        var c_guid = tmp.city.toLowerCase().slice(0,2) + '_c';
+var storage = {
+    generate: function(result) {
+        for (var i in result) {
+            if(result.hasOwnProperty(i) && !jQuery.isEmptyObject(result[i])) {
+                var value = result[i],
+                    timer_type = result[i].type;
 
-        timerClock.render(tmp.clockSize, tmp.timezone, tmp.city);
-    //    drawClock(tmp.clockSize, -1, 'Paris');
-    //    drawTimer(tmp.clockSize, t_guid);
-    //    drawTimer(tmp.clockSize, 'pari_t');
-    //    drawLapTimer(tmp.clockSize, s_guid);
-    //    drawLapTimer(tmp.clockSize, 'pari_s');
-    //    drawCountDown(tmp.clockSize, tmp.startsCountDown, c_guid);
-    //    drawCountDown(tmp.clockSize, 3670, 'pari_c');
-    } else { // NEW USER, DEMO CLOCKS
-        timerClock.render(100, 0, 'London');
-    //    drawTimer(100, 'lon_t');
-    //    drawLapTimer(100, 'lon_s');
-    //    drawCountDown(100, 11480, 'lon_c');
+                    var str = "#"+ value["guid"];
+                    $(str).remove();
+
+                switch(timer_type) {
+                    case '1':
+                        clock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
+                        break;
+                    case '2':
+                        timerClock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
+                        break;
+                    case '3':
+                        countDownClock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
+                        break;
+                    case '4':
+                        stopWatchClock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
+                        break;
+                    case '5':
+                        lapTimerClock.render(value);
+                        temporary_storage.push(value);
+                        timer_count++;
+                        break;
+                    default :
+                        alert('error, unknown type');
+                        break;
+                }
+        }
     }
+    },
+    local : {
+        save : function() {
+            localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
+           // maybe store last value in session and load after page reload.
+           // or need track somehow from which name of local \ global storage get timers after page reload.
+           // sessionStorage.setItem('last_timer', JSON.stringify(temporary_storage));
+        },
+        load : function() {
+            var result = JSON.parse(localStorage.getItem($('#storage_key_load').val()));
 
-    var person = { 'timezone': 0, 'city': 'London', 'clockSize': 130, 'startsCountDown': 11480 };
-    localStorage.setItem('person', JSON.stringify(person));
-}
+            storage.generate(result);
+        }
+    },
+    global : {
+        save : function() {
+            $.ajax({
+                type: "POST",
+                url: "/storage/save",
+                data: 'padID=' + $('#storage_key_save').val() + '&text=' + JSON.stringify(temporary_storage), // not working
+                cache: false,
+                success: function(msg) {
+                    alert('saved!');
+                }
+            });
+        },
+        load : function() {
+            $.ajax({
+                type: "POST",
+                url: "/storage/load",
+                data: 'padID=' + $('#storage_key_load').val(),
+                cache: false,
+                success: function(msg) {
+                    //alert(msg);
+                    var result = JSON.parse(msg);
+
+                    storage.generate(result);
+                }
+            });
+        }
+    },
+    user : { // TODO: after auth, login, etc...
+        save : function() {
+            alert('save to users account');
+        },
+        load : function() {
+            alert('load from users account');
+        }
+    },
+};
