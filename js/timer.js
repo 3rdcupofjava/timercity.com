@@ -54,75 +54,6 @@ var handData = [
     }
 ];
 
-//stopwatch data
-var timerData = [
-    {
-        type:'hour',
-        value:0,
-        length:-hourHandLength,
-        scale:hourScale
-    },
-    {
-        type:'minute',
-        value:0,
-        length:-minuteHandLength,
-        scale:minuteScale
-    },
-    {
-        type:'second',
-        value:0,
-        length:-secondHandLength,
-        scale:secondScale,
-        balance:secondHandBalance
-    }
-];
-
-//lap timer data
-var lapTimerData = [
-    {
-        type:'hour',
-        value:0,
-        length:-hourHandLength,
-        scale:hourScale
-    },
-    {
-        type:'minute',
-        value:0,
-        length:-minuteHandLength,
-        scale:minuteScale
-    },
-    {
-        type:'second',
-        value:0,
-        length:-secondHandLength,
-        scale:secondScale,
-        balance:secondHandBalance
-    }
-];
-
-//countdown timer data
-var countData = [
-    {
-        type:'hour',
-        value:0,
-        length:-hourHandLength,
-        scale:hourScale
-    },
-    {
-        type:'minute',
-        value:0,
-        length:-minuteHandLength,
-        scale:minuteScale
-    },
-    {
-        type:'second',
-        value:0,
-        length:-secondHandLength,
-        scale:secondScale,
-        balance:secondHandBalance
-    }
-];
-
 var clockObject = [];
 var clocks = [];
 var clock = {
@@ -141,12 +72,37 @@ var clock = {
         if(view['type'] !== 'undefined')
         {
             activeTab = $(".nav .active > a").attr("href");
+
+            // after save global | local pressed activeTab somehow equals '#'
+            // next line is fix
+            // if(activeTab === '#') activeTab = '#home';
+
             switch(view['type'])
             {
                 case '1':
-                    $(activeTab+' > .timer_holder').append(output);  
+                    // activeTab = "#worldClockTab";
+                    $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '2':
+                    /**
+                     * if isset alarm_time, send post request with given time.
+                     * maybe also need send date?
+                     *
+                     * need send this data to controller which can insert into database
+                     */
+                    if(typeof view['alarm_time'] !== 'undefined') {
+                        $.ajax({
+                            type: "POST",
+                            url: "#",
+                            data: "time=" + view['alarm_time'],
+                            cache: false,
+                            success: function(msg) {
+                                alert('Alarm time: ' + view['alarm_time']);
+                            }
+                        });
+                    }
+
+                    // activeTab = "#alarmClockTab";
                     $(activeTab+' > .timer_holder').append(output);
                     alarm_time[guid] = view['alarm_time'].split(":");
                     alarm_time[guid][0] = parseInt(alarm_time[guid][0]);
@@ -166,10 +122,12 @@ var clock = {
                     alarm[guid] = alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2];
                     break;
                 case '3':
+
+                    // activeTab = "#countDownTab";
                     $(activeTab+' > .timer_holder').append(output);
 
                     //initialize first the countdown data
-                    if(typeof countData[guid] === 'undefined')
+                    if(typeof handData[guid] === 'undefined')
                     {
                         var formattedTime = view['time'].split(":"); //split the inputted time to an array
                         //check if seconds is 0 while the others are not
@@ -190,7 +148,7 @@ var clock = {
                                 }
                             }
                         }
-                        countData[guid] = [{
+                        handData[guid] = [{
                                 type:'hour',
                                 value:parseInt(formattedTime[0]),
                                 length:-hourHandLength,
@@ -213,9 +171,13 @@ var clock = {
 
                     break;
                 case '4':
+
+                    // activeTab = "#stopWatchTab";
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '5':
+
+                    // activeTab = "#lapTimeTab";
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 default:
@@ -258,7 +220,8 @@ var clock = {
                             alarmCount[guid]++;
                             if(handData[2].value%10==0) //play the alarm sound every 10 seconds of the alarm time
                             {
-                                playSound.go(); //play the alarm sound if it's time
+                                alarm.playSound(); //play the alarm sound if it's time
+                                alarm.flashTaskbar(); // also flash the task bar
                             }
                             if(alarmCount[guid] == 1)
                             {
@@ -358,28 +321,7 @@ var clock = {
                 .attr('r',clockRadius/20);
 
         hands.selectAll('line')
-                .data(
-                    function()
-                    {
-                        switch(view['type'])
-                        {
-                            case '1':
-                            case '2':
-                                return handData;
-                                break;
-                            case '3':
-                                return countData;
-                                break;
-                            case '4':
-                                return timerData;
-                                break;
-                            case '5':
-                                return lapTimerData;
-                                break;
-                            default:
-                                return handData;
-                        }
-                    })
+                .data(handData)
                 .enter()
                 .append('line')
                 .attr('class', function(d){
@@ -436,8 +378,8 @@ var lapTimerClock = {
     }
 };
 
-var playSound = {
-    go : function() {
+var alarm = {
+    playSound : function() {
         var audioElement = document.createElement('audio');
         audioElement.setAttribute('src', 'http://www.kessels.com/CatSounds/tweety4.wav');
         //audioElement.setAttribute('autoplay', 'autoplay');
@@ -460,6 +402,12 @@ var playSound = {
         });
         */
 
+    },
+    flashTaskbar : function(){
+        var msg = "----";
+        setInterval(function() {
+            document.title = document.title == msg ? '###' : msg;
+        }, 1000);
     }
 };
 
@@ -514,7 +462,8 @@ var digitalTimer = {
         /* Stop button */
         stop.onclick = function() {
             clearTimeout(t);
-            playSound.go();
+            alarm.playSound();
+            alarm.flashTaskbar();
             st_clkd = 0;
         };
 
@@ -546,7 +495,7 @@ function moveHands(area){
 /*Moves the hands of a stopwatch*/
 function moveTimerHands(guid){
     d3.select("#clock-hands"+guid).selectAll('line')
-            .data(timerData[guid])
+            .data(handData[guid])
             .transition()
             .attr('transform',function(d){
                     return 'rotate('+ d.scale(d.value) +')';
@@ -556,7 +505,7 @@ function moveTimerHands(guid){
 /*Moves the hands of a lap timer*/
 function moveLapTimerHands(guid){
     d3.select('#clock-hands'+guid).selectAll('line')
-            .data(lapTimerData[guid])
+            .data(handData[guid])
             .transition()
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value) +')';
@@ -565,7 +514,7 @@ function moveLapTimerHands(guid){
 
 function moveCountDownHands(guid){
     d3.select('#clock-hands'+guid).selectAll('line')
-            .data(countData[guid])
+            .data(handData[guid])
             .transition()
             .attr('transform',function(d){
                 return 'rotate('+ d.scale(d.value)  +')';
@@ -625,8 +574,8 @@ function updateData(offset,guid,type){
 function updateTimer(guid)
 {
 
-    if(typeof timerData[guid] === 'undefined') {   //check if the specific timerData is already defined
-        timerData[guid] = [
+    if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
+        handData[guid] = [
             {
                 type:'hour',
                 value:0,
@@ -649,19 +598,19 @@ function updateTimer(guid)
         ];
     }
    
-    timerData[guid][2].value +=1;
+    handData[guid][2].value +=1;
 
-    if(timerData[guid][2].value == 60) {
-        timerData[guid][2].value = 0;
-        timerData[guid][1].value +=1;
-        timerData[guid][0].value = timerData[guid][1].value/60;
+    if(handData[guid][2].value == 60) {
+        handData[guid][2].value = 0;
+        handData[guid][1].value +=1;
+        handData[guid][0].value = handData[guid][1].value/60;
     }
 }
 
 function updateLapTimer(guid) 
 {
-    if(typeof lapTimerData[guid] === 'undefined') {   //check if the specific timerData is already defined
-        lapTimerData[guid] = [
+    if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
+        handData[guid] = [
             {
                 type:'hour',
                 value:0,
@@ -684,21 +633,21 @@ function updateLapTimer(guid)
         ];
     }
 
-    lapTimerData[guid][2].value +=1;
+    handData[guid][2].value +=1;
 
-    if(lapTimerData[guid][2].value == 60) {
-        lapTimerData[guid][2].value = 0;
-        lapTimerData[guid][1].value +=1;
-        lapTimerData[guid][0].value = lapTimerData[guid][1].value/60;
+    if(handData[guid][2].value == 60) {
+        handData[guid][2].value = 0;
+        handData[guid][1].value +=1;
+        handData[guid][0].value = handData[guid][1].value/60;
     }
 }
 
 function updateCountDown(guid) 
 {
-    countData[guid][2].value -=1;   //decrement the seconds
-    if(countData[guid][2].value == 0)   //check if the seconds is 0
+    handData[guid][2].value -=1;   //decrement the seconds
+    if(handData[guid][2].value == 0)   //check if the seconds is 0
     {
-        if(countData[guid][0].value == 0 && countData[guid][1].value == 0 && countData[guid][2].value == 0) //time is up
+        if(handData[guid][0].value == 0 && handData[guid][1].value == 0 && handData[guid][2].value == 0) //time is up
         {
             //stop the countdown
             countDownStarted[guid] = false;
@@ -706,34 +655,33 @@ function updateCountDown(guid)
         }
         else
         {
-            countData[guid][2].value = 60;
-            if(countData[guid][1].value != 0)
+            handData[guid][2].value = 60;
+            if(handData[guid][1].value != 0)
             {
-                countData[guid][1].value-=1;
+                handData[guid][1].value-=1;
             }
             else
             {
-                if(countData[guid][0].value > 0)
+                if(handData[guid][0].value > 0)
                     temp+=1;    // increment the temp for a decremented hour
-                countData[guid][1].value = 59;  //set the minutes for another hour
+                handData[guid][1].value = 59;  //set the minutes for another hour
             } 
         }
     }
-    if(countData[guid][0].value > 0)
+    if(handData[guid][0].value > 0)
     {
-        countData[guid][0].value -= temp;   //decrement the hour by the previous offset
-        countData[guid][0].value += (countData[guid][1].value/60);  //update the hour data by the new offset determined by minute value
-        temp = (countData[guid][1].value/60);   //update the temp with the new offset
+        handData[guid][0].value -= temp;   //decrement the hour by the previous offset
+        handData[guid][0].value += (handData[guid][1].value/60);  //update the hour data by the new offset determined by minute value
+        temp = (handData[guid][1].value/60);   //update the temp with the new offset
     }
     else
-        countData[guid][0].value = 0;
+        handData[guid][0].value = 0;
 
-    if(countData[guid][1].value != 0)
-        d3.select('#'+guid+'_link .digital_display').text(Math.floor(countData[guid][0].value)+"h :"+countData[guid][1].value+"m :"+countData[guid][2].value+"s");
+    if(handData[guid][1].value != 0)
+        d3.select('#'+guid+'_link .digital_display').text(Math.floor(handData[guid][0].value)+"h :"+handData[guid][1].value+"m :"+handData[guid][2].value+"s");
     else
-        d3.select('#'+guid+'_link .digital_display').text(Math.ceil(countData[guid][0].value)+"h :"+countData[guid][1].value+"m :"+countData[guid][2].value+"s");
+        d3.select('#'+guid+'_link .digital_display').text(Math.ceil(handData[guid][0].value)+"h :"+handData[guid][1].value+"m :"+handData[guid][2].value+"s");
 }
-
 
 //updates the time the specific stopwatch takes
 function updateStopTime(guid)
@@ -891,9 +839,9 @@ function resetTimerOnClick(guid)
     stopTime[guid.id].hours = 0;
     stopTime[guid.id].minutes = 0;
     stopTime[guid.id].seconds = 0;
-    timerData[guid.id][0].value = 0;
-    timerData[guid.id][1].value = 0;
-    timerData[guid.id][2].value = 0;
+    handData[guid.id][0].value = 0;
+    handData[guid.id][1].value = 0;
+    handData[guid.id][2].value = 0;
     moveTimerHands(guid.id);
     clearInterval(clockObject[guid.id]);     //clears the interval of specific element of stopwatch
     timerStarted[guid.id] = false;  //set specific timer to false
@@ -945,7 +893,7 @@ function startCountDownOnClick(guid) {
         return 1;
     }
 
-    if(!(countData[guid.id][0].value == 0 && countData[guid.id][1].value == 0 && countData[guid.id][2].value == 0))
+    if(!(handData[guid.id][0].value == 0 && handData[guid.id][1].value == 0 && handData[guid.id][2].value == 0))
     {
         countDownStarted[guid.id] = true;
         clockObject[guid.id] = setInterval(function(){
@@ -966,4 +914,8 @@ function removeClock(guid){
     clearInterval(clockObject[guid.id]);    //clear the interval of the closed clock to stop the specific clock process
 }
 
+function resetFields()
+{
+    $("input[type=text]").val("");
+}
 d3.select(self.frameElement).style("height", height + "px");

@@ -15,6 +15,8 @@
             </ul><!--/.nav -->
             
             <ul class="nav navbar-nav pull-right">
+                <li id="save_nav"><a id="save" href="#"><?= __('Save') ?></a></li>
+                <li id="save_nav"><a id="load" href="#"><?= __('Load') ?></a></li>
                 <?php if ($show_login): ?>
                     <?php /*<li id="sign_up"><a href="#"><?= __('Sign Up') ?></a></li>*/?>
                     <li id="log_in"><a href="#"><?= __('Log In') ?></a></li>

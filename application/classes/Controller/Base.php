@@ -8,7 +8,6 @@ class Controller_Base extends Controller_Template {
         //I18n::lang('es-es');
         $this->template->title = Kohana::$config->load('main.title');
         $this->template->subtitle = Kohana::$config->load('main.subtitle');
-        $this->template->scripts = '<script type="text/javascript">$("#photo").css("max-height", $(window).height() + "px");</script>';
 
         if (Auth::instance()->logged_in())
         {

@@ -5,6 +5,6 @@ $(document).ready(function(){
     $.extend(stopWatchClock, clock);
     $.extend(lapTimerClock, clock);
     
-    storage_check();
+    //storage_check();
     ui.render();
 });

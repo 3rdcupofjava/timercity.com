@@ -1,9 +1,68 @@
-var timer_count=1; // eventually need to load from storage so not to override current timers
+if(typeof(timer_count) === "undefined")
+{
+    var timer_count=1; // eventually need to load from storage so not to override current timers
+}
 var timer_type = '1';
 var type_name = "";
+var temporary_storage = [];
 
 var ui = {
+    toggleNav: function(li, navbar){
+        $('.subnav').hide();
+        if(li.hasClass('active')){
+            li.removeClass('active');
+            $(navbar).hide();
+        }
+        else{
+            li.addClass('active')
+                .siblings().removeClass('active');
+            $(navbar).show();
+        }
+    },
     nav: function(){
+        $('#save').on({
+            click: function(event) {
+                event.preventDefault();
+                ui.toggleNav($(this).parent(), '#nav_save')
+            }
+        });
+        
+        $('#save_local').on({
+            click: function(event) {
+                event.preventDefault();
+                storage.local.save();
+            }
+        });
+        
+        $('#save_global').on({
+            click: function(event) {
+                event.preventDefault();
+                storage.global.save();
+            }
+        });
+
+        $('#load').on({
+            click: function(event) {
+                event.preventDefault();
+                ui.toggleNav($(this).parent(), '#nav_load')
+            }
+        });
+        
+        $('#load_local').on({
+            click: function(event) {
+                event.preventDefault();
+                storage.local.load();
+            }
+        });
+        
+        $('#load_global').on({
+            click: function(event) {
+                event.preventDefault();
+                storage.global.load();
+            }
+        });
+        
+        
         $('#sign_up a').on('click', function(){
 
             var parent = $(this).parent();
@@ -19,6 +78,7 @@ var ui = {
             $('#registration_form').hide();
 
         });
+        
         $('#log_in a').on('click', function(){
 
             var parent = $(this).parent();
@@ -39,6 +99,7 @@ var ui = {
             $('#why').hide();
 
         });
+        
         $('#early_registration').on('click', function(){
 
             $('#registration_sorry').toggle();
@@ -51,6 +112,7 @@ var ui = {
             $('#why').show();
 
         });
+        
         $('#button_register').on('click', function(){
             $('#registration_form')
                 .attr('action', '/yaam/public/register');
@@ -127,25 +189,44 @@ var ui = {
         this.nav();
         this.timer_types();
         this.set_type('1', false);
+        
+        //digitalTimer.render();
+        
+        $('#alarm_time').timepicker({'timeFormat':'H:i'});
+        $('#countdown_time').timepicker({'timeFormat':'H:i:s'});
     }
-}
+};
 
+/**
+ * this function create timers and set localStorage value
+ * @param view
+ */
 function preDraw(view){
     switch(timer_type) {
         case '1':
             clock.render(view);
+
+            temporary_storage.push(view);
             break;
         case '2':
             timerClock.render(view);
+
+            temporary_storage.push(view);
             break;
         case '3':
             countDownClock.render(view);
+
+            temporary_storage.push(view);
             break;
         case '4':
             stopWatchClock.render(view);
+
+            temporary_storage.push(view);
             break;
         case '5':
             lapTimerClock.render(view);
+
+            temporary_storage.push(view);
             break;
         default :
             alert('error, unknown type');
@@ -214,4 +295,22 @@ $(document).ready(function(){
             return 0;
         }
     });
+
+
+    
 });
+
+//shows the rename field
+function showRename()
+{
+    $("ul.nav > li.active > a").hide(); 
+    $("ul.nav > li.active").append("<div class='rnm-holder'><input type='text' id='nt-name' placeholder='Tab new name'><button onclick='renameTab()' type='button'>Rename</button></div>");
+}
+
+//renames tab
+function renameTab()
+{
+    if($("#nt-name").val() != '') $("ul.nav > li.active > a").text($("#nt-name").val());
+    $("ul.nav > li.active > a").show();
+    $("div.rnm-holder").remove();   
+}

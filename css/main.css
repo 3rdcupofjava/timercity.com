@@ -29,8 +29,10 @@ body {
 .features .editor .CodeMirror-lines {
     padding: 10px 0 40px 0
 }
-
-#nav_login{
+#storage_key_load, #storage_key_save{
+    width:200px;
+}
+#nav_save, #nav_load, #nav_login, #nav_register, #nav_request{
     background-color:#080808;
 }
 
@@ -172,3 +174,4 @@ svg{
 .breadcrumb{     margin-bottom:10px;     margin-top:15px; } 
 #photo_link{     text-align:center; }
 .thumbnail{ padding: 5px; }
+.rnm-holder{padding: 8px; background-color: #fff;}

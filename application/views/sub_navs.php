@@ -1,6 +1,38 @@
-<div id="nav_login" class="container-fluid">
+<div id="nav_save" class="subnav container-fluid" style="display:none;">
 
-        <form id="registration_form" action="/yaam/public/login" method="POST" style="display:none; padding-right:0px;" class="navbar-form pull-right">
+    <form class="navbar-form pull-right">
+        <label for="storage_key_save"><?= __('Save under') ?>:</label>
+        <input id="storage_key_save" name="storage_key_save" type="text" placeholder="<?= __('Make it good for global.') ?>">
+        <button id="save_local" type="button" class="btn btn-primary">
+            <?= __('Local') ?>
+        </button>
+        <button id="save_global" type="button" class="btn btn-primary">
+            <?= __('Global') ?>
+        </button>
+    </form>
+    <div class="clear"></div>
+
+</div>
+
+<div id="nav_load" class="subnav container-fluid" style="display:none;">
+
+    <form class="navbar-form pull-right">
+        <label for="storage_key_load"><?= __('Load from') ?>:</label>
+        <input id="storage_key_load" name="storage_key_load" type="text" placeholder="<?= __('Make it good for global.') ?>">
+        <button id="load_local" type="button" class="btn btn-primary">
+            <?= __('Local') ?>
+        </button>
+        <button id="load_global" type="button" class="btn btn-primary">
+            <?= __('Global') ?>
+        </button>
+    </form>
+    <div class="clear"></div>
+
+</div>
+
+<div id="nav_login" class="subnav container-fluid" style="display:none;">
+
+        <form id="registration_form" action="/yaam/public/login" method="POST" class="navbar-form pull-right">
             <input id="username" name="username" type="text" placeholder="<?= __('Email') ?>">
             <input id="password" name="password" type="password" placeholder="<?= __('Password') ?>">
             <input id="why" name="why" style="display:none; width:400px;" type="text" placeholder="Briefly describe why you are interested in early access.">
