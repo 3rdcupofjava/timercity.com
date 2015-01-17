@@ -157,7 +157,13 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                   <div role="tabpanel" class="tab-pane active" id="home">
+<<<<<<< HEAD
                       <ul class="sortable timer_holder"></ul>
+=======
+                      <ul id="sortable" class="timer_holder">
+                          <div ></div>
+                      </ul>
+>>>>>>> 9491cc3d6c9901aa958ad76181867265e1689ffb
                   </div>
                   <div role="tabpanel" class="tab-pane" id="worldClockTab">
                       <ul class="sortable timer_holder"></ul>
