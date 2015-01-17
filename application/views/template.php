@@ -68,13 +68,8 @@
       });
 
       $(function() {
-<<<<<<< HEAD
         $( ".sortable" ).sortable();
         $( ".sortable" ).disableSelection();
-=======
-        $( "#sortable" ).sortable();
-        $( "#sortable" ).disableSelection();
->>>>>>> 9491cc3d6c9901aa958ad76181867265e1689ffb
       });
     </script>
 

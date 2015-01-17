@@ -75,20 +75,12 @@ var clock = {
 
             // after save global | local pressed activeTab somehow equals '#'
             // next line is fix
-<<<<<<< HEAD
             // if(activeTab === '#') activeTab = '#home';
-=======
-            if(activeTab === '#') activeTab = '#home';
->>>>>>> 9491cc3d6c9901aa958ad76181867265e1689ffb
 
             switch(view['type'])
             {
                 case '1':
-<<<<<<< HEAD
                     // activeTab = "#worldClockTab";
-=======
-                    activeTab = "#worldClockTab";
->>>>>>> 9491cc3d6c9901aa958ad76181867265e1689ffb
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '2':
@@ -110,11 +102,7 @@ var clock = {
                         });
                     }
 
-<<<<<<< HEAD
                     // activeTab = "#alarmClockTab";
-=======
-                    activeTab = "#alarmClockTab";
->>>>>>> 9491cc3d6c9901aa958ad76181867265e1689ffb
                     $(activeTab+' > .timer_holder').append(output);
                     alarm_time[guid] = view['alarm_time'].split(":");
                     alarm_time[guid][0] = parseInt(alarm_time[guid][0]);
@@ -135,11 +123,7 @@ var clock = {
                     break;
                 case '3':
 
-<<<<<<< HEAD
                     // activeTab = "#countDownTab";
-=======
-                    activeTab = "#countDownTab";
->>>>>>> 9491cc3d6c9901aa958ad76181867265e1689ffb
                     $(activeTab+' > .timer_holder').append(output);
 
                     //initialize first the countdown data
@@ -188,20 +172,12 @@ var clock = {
                     break;
                 case '4':
 
-<<<<<<< HEAD
                     // activeTab = "#stopWatchTab";
-=======
-                    activeTab = "#stopWatchTab";
->>>>>>> 9491cc3d6c9901aa958ad76181867265e1689ffb
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '5':
 
-<<<<<<< HEAD
                     // activeTab = "#lapTimeTab";
-=======
-                    activeTab = "#lapTimeTab";
->>>>>>> 9491cc3d6c9901aa958ad76181867265e1689ffb
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 default:
