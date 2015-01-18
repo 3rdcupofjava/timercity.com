@@ -75,12 +75,12 @@ var clock = {
 
             // after save global | local pressed activeTab somehow equals '#'
             // next line is fix
-            if(activeTab === '#') activeTab = '#home';
+            // if(activeTab === '#') activeTab = '#home';
 
             switch(view['type'])
             {
                 case '1':
-                    activeTab = "#worldClockTab";
+                    // activeTab = "#worldClockTab";
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '2':
@@ -102,7 +102,7 @@ var clock = {
                         });
                     }
 
-                    activeTab = "#alarmClockTab";
+                    // activeTab = "#alarmClockTab";
                     $(activeTab+' > .timer_holder').append(output);
                     alarm_time[guid] = view['alarm_time'].split(":");
                     alarm_time[guid][0] = parseInt(alarm_time[guid][0]);
@@ -123,7 +123,7 @@ var clock = {
                     break;
                 case '3':
 
-                    activeTab = "#countDownTab";
+                    // activeTab = "#countDownTab";
                     $(activeTab+' > .timer_holder').append(output);
 
                     //initialize first the countdown data
@@ -172,12 +172,12 @@ var clock = {
                     break;
                 case '4':
 
-                    activeTab = "#stopWatchTab";
+                    // activeTab = "#stopWatchTab";
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 case '5':
 
-                    activeTab = "#lapTimeTab";
+                    // activeTab = "#lapTimeTab";
                     $(activeTab+' > .timer_holder').append(output);
                     break;
                 default:
@@ -914,4 +914,8 @@ function removeClock(guid){
     clearInterval(clockObject[guid.id]);    //clear the interval of the closed clock to stop the specific clock process
 }
 
+function resetFields()
+{
+    $("input[type=text]").val("");
+}
 d3.select(self.frameElement).style("height", height + "px");

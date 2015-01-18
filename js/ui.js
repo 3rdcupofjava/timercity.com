@@ -295,4 +295,22 @@ $(document).ready(function(){
             return 0;
         }
     });
+
+
+    
 });
+
+//shows the rename field
+function showRename()
+{
+    $("ul.nav > li.active > a").hide(); 
+    $("ul.nav > li.active").append("<div class='rnm-holder'><input type='text' id='nt-name' placeholder='Tab new name'><button onclick='renameTab()' type='button'>Rename</button></div>");
+}
+
+//renames tab
+function renameTab()
+{
+    if($("#nt-name").val() != '') $("ul.nav > li.active > a").text($("#nt-name").val());
+    $("ul.nav > li.active > a").show();
+    $("div.rnm-holder").remove();   
+}

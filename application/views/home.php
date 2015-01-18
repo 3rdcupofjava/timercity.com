@@ -133,7 +133,7 @@
             </div>
             <div id="buttons_not_edit_mode">
                 <button id="add" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Add</button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Reset</button>
+                <button onclick="resetFields();" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Reset</button>
             </div>
             
         </div>
@@ -146,35 +146,33 @@
 
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-                    <li role="presentation"><a href="#worldClockTab" aria-controls="worldClockTab" role="tab" data-toggle="tab">World Clocks</a></li>
-                    <li role="presentation"><a href="#alarmClockTab" aria-controls="alarmClockTab" role="tab" data-toggle="tab">Alarm Clocks</a></li>
-                    <li role="presentation"><a href="#countDownTab" aria-controls="countDownTab" role="tab" data-toggle="tab">Countdown Timers</a></li>
-                    <li role="presentation"><a href="#stopWatchTab" aria-controls="stopWatchTab" role="tab" data-toggle="tab">Stopwatches</a></li>
-                    <li role="presentation"><a href="#lapTimeTab" aria-controls="lapTimeTab" role="tab" data-toggle="tab">Lap Timers</a></li>
+                    <li role="presentation" class="active"><a href="#home" ondblclick="showRename()" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+                    <li role="presentation"><a href="#worldClockTab" ondblclick="showRename()" aria-controls="worldClockTab" role="tab" data-toggle="tab">World Clocks</a></li>
+                    <li role="presentation"><a href="#alarmClockTab" ondblclick="showRename()" aria-controls="alarmClockTab" role="tab" data-toggle="tab">Alarm Clocks</a></li>
+                    <li role="presentation"><a href="#countDownTab" ondblclick="showRename()" aria-controls="countDownTab" role="tab" data-toggle="tab">Countdown Timers</a></li>
+                    <li role="presentation"><a href="#stopWatchTab" ondblclick="showRename()" aria-controls="stopWatchTab" role="tab" data-toggle="tab">Stopwatches</a></li>
+                    <li role="presentation"><a href="#lapTimeTab" ondblclick="showRename()" aria-controls="lapTimeTab" role="tab" data-toggle="tab">Lap Timers</a></li>
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="tab-content">
                   <div role="tabpanel" class="tab-pane active" id="home">
-                      <ul id="sortable" class="timer_holder">
-                          <div ></div>
-                      </ul>
+                      <ul class="sortable timer_holder"></ul>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="worldClockTab">
-                    <div class="timer_holder"></div>
+                      <ul class="sortable timer_holder"></ul>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="alarmClockTab">
-                    <div class="timer_holder"></div> 
+                      <ul class="sortable timer_holder"></ul>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="countDownTab">
-                    <div class="timer_holder"></div>
+                      <ul class="sortable timer_holder"></ul>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="stopWatchTab">
-                    <div class="timer_holder"></div>
+                      <ul class="sortable timer_holder"></ul>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="lapTimeTab">
-                    <div class="timer_holder"></div>
+                      <ul class="sortable timer_holder"></ul>
                   </div>
                 </div>
                 <!-- end of Tab panes -->
