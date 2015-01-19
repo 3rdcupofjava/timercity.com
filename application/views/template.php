@@ -68,8 +68,7 @@
       });
 
       $(function() {
-        $( ".sortable" ).sortable();
-        $( ".sortable" ).disableSelection();
+        $( ".column1,.column2,.column3" ).sortable({connectWith:".connectedColumn"}).disableSelection();
       });
     </script>
 

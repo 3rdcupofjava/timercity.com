@@ -6,6 +6,8 @@ body {
     height:100%;
 }
 
+#left_col{background-color:#f5f5f5; padding-top: 1em; min-height: 550px;}
+
 .ui-timepicker-list {
     height: auto;
     max-height: 200px;
@@ -39,8 +41,6 @@ body {
 #nav_note{
     padding-top:3px;
     padding-left:3px;
-
-    /*background-color:#357ebd;*/
 }
 
 #root_list, #root_list ul{
@@ -139,16 +139,12 @@ svg{
 
 /* PHOTO STUFF */ 
 #buttons_lap_timer/{float:left; display:none;}
-.timer_holder{
-    display: block;
-} 
-.timer_box{
-    margin-top:20px;
-    margin-left: 3px;
-    display: block;
-    position: relative;
-    float: left;
-    min-width: 250px;}
+.lapTimeHolder{margin-top: 10px;}
+.lapTimeHolder > div{padding: 10px;}
+.timer_holder{display: block;float:left;min-width:30%; padding:5px 0px; min-height: 550px;} 
+.timer_box{margin-top:20px;margin-left: 3px;display: block;position: relative;min-width: 250px;}
+
+li.timer_box{display:block;}
 .timer_box a:hover {
     text-decoration: none;}
 .timer_box .title{
