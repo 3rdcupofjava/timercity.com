@@ -6,8 +6,6 @@
             <input id="title" type="text" class="form-control" placeholder="Title">
             <input id="size" type="text" class="form-control" placeholder="Size" value="100">
             
-            <!-- <input id="timezone" type="text" class="form-control" placeholder="Timezone" style="display:none;"> -->
-            
             <select id="timezone" class="form-control">
               <option value="0">Select Timezone</option>
               <option value="-11">Pacific/Midway (UTC-11)</option>

@@ -74,8 +74,14 @@ var clock = {
         if(view['type'] !== 'undefined')
         {
             //check the specific column where the timer is to be placed
-            if(holder != 3) holder++;
-            else holder = 1;
+            if($(".tab-pane.active>.column1").children().length < 1) holder = 1;        //column 1 has no children
+            else if($(".tab-pane.active>.column2").children().length < 1) holder = 2;   //column 2 has no children
+            else if($(".tab-pane.active>.column3").children().length < 1) holder = 3;   //column 3 has no children
+            else    //all columns have children
+            {
+                if(holder != 3) holder++;
+                else holder = 1;
+            }
             activeTab = $(".nav .active > a").attr("href");
 
             // after save global | local pressed activeTab somehow equals '#'
@@ -942,6 +948,7 @@ function removeClock(guid){
 function resetFields()
 {
     $("input[type=text]").val("");
+    $("select").val(0);
 }
 
 d3.select(self.frameElement).style("height", height + "px");
