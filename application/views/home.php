@@ -1,12 +1,10 @@
-<div class="container-fluid" style="height:100%;">
-    <div class="row" style="height:100%;">
+<div class="container-fluid">
+    <div class="row">
         <!-- <<< LEFT COLUMN <<< -->
-        <div id="left_col" class="col-md-3" style="background-color:#f5f5f5; padding-top: 1em; height:100%;">
+        <div id="left_col" class="col-md-3">
             
             <input id="title" type="text" class="form-control" placeholder="Title">
             <input id="size" type="text" class="form-control" placeholder="Size" value="100">
-            
-            <!-- <input id="timezone" type="text" class="form-control" placeholder="Timezone" style="display:none;"> -->
             
             <select id="timezone" class="form-control">
               <option value="0">Select Timezone</option>
@@ -136,6 +134,8 @@
                 <button onclick="resetFields();" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Reset</button>
             </div>
             
+            <div class="lapTimeHolder"></div>
+
         </div>
         <!-- >>> LEFT COLUMN >>> -->
         <!-- <<< RIGHT COLUMN <<< -->
@@ -157,22 +157,34 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                   <div role="tabpanel" class="tab-pane active" id="home">
-                      <ul class="sortable timer_holder"></ul>
+                      <div class="column1 timer_holder connectedColumn"></div>
+                      <div class="column2 timer_holder connectedColumn"></div>
+                      <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="worldClockTab">
-                      <ul class="sortable timer_holder"></ul>
+                      <div class="column1 timer_holder connectedColumn"></div>
+                      <div class="column2 timer_holder connectedColumn"></div>
+                      <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="alarmClockTab">
-                      <ul class="sortable timer_holder"></ul>
+                      <div class="column1 timer_holder connectedColumn"></div>
+                      <div class="column2 timer_holder connectedColumn"></div>
+                      <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="countDownTab">
-                      <ul class="sortable timer_holder"></ul>
+                      <div class="column1 timer_holder connectedColumn"></div>
+                      <div class="column2 timer_holder connectedColumn"></div>
+                      <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="stopWatchTab">
-                      <ul class="sortable timer_holder"></ul>
+                      <div class="column1 timer_holder connectedColumn"></div>
+                      <div class="column2 timer_holder connectedColumn"></div>
+                      <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="lapTimeTab">
-                      <ul class="sortable timer_holder"></ul>
+                      <div class="column1 timer_holder connectedColumn"></div>
+                      <div class="column2 timer_holder connectedColumn"></div>
+                      <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                 </div>
                 <!-- end of Tab panes -->

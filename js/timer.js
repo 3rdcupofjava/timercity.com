@@ -54,6 +54,8 @@ var handData = [
     }
 ];
 
+var holder=0;
+
 var clockObject = [];
 var clocks = [];
 var clock = {
@@ -68,20 +70,27 @@ var clock = {
         var template = $('#template_timer_box').html();
         Mustache.parse(template);
         var output = Mustache.render(template, view);
-        //append the output to the specific tab
+        //append the output to the active tab
         if(view['type'] !== 'undefined')
         {
+            //check the specific column where the timer is to be placed
+            if($(".tab-pane.active>.column1").children().length < 1) holder = 1;        //column 1 has no children
+            else if($(".tab-pane.active>.column2").children().length < 1) holder = 2;   //column 2 has no children
+            else if($(".tab-pane.active>.column3").children().length < 1) holder = 3;   //column 3 has no children
+            else    //all columns have children
+            {
+                if(holder != 3) holder++;
+                else holder = 1;
+            }
             activeTab = $(".nav .active > a").attr("href");
 
             // after save global | local pressed activeTab somehow equals '#'
             // next line is fix
-            // if(activeTab === '#') activeTab = '#home';
 
             switch(view['type'])
             {
                 case '1':
-                    // activeTab = "#worldClockTab";
-                    $(activeTab+' > .timer_holder').append(output);
+                    $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 case '2':
                     /**
@@ -102,8 +111,7 @@ var clock = {
                         });
                     }
 
-                    // activeTab = "#alarmClockTab";
-                    $(activeTab+' > .timer_holder').append(output);
+                    $(activeTab+' > .timer_holder.column'+holder).append(output);
                     alarm_time[guid] = view['alarm_time'].split(":");
                     alarm_time[guid][0] = parseInt(alarm_time[guid][0]);
                     alarm_time[guid][1] = parseInt(alarm_time[guid][1]);
@@ -123,8 +131,7 @@ var clock = {
                     break;
                 case '3':
 
-                    // activeTab = "#countDownTab";
-                    $(activeTab+' > .timer_holder').append(output);
+                    $(activeTab+' > .timer_holder.column'+holder).append(output);
 
                     //initialize first the countdown data
                     if(typeof handData[guid] === 'undefined')
@@ -171,17 +178,13 @@ var clock = {
 
                     break;
                 case '4':
-
-                    // activeTab = "#stopWatchTab";
-                    $(activeTab+' > .timer_holder').append(output);
+                    $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 case '5':
-
-                    // activeTab = "#lapTimeTab";
-                    $(activeTab+' > .timer_holder').append(output);
+                    $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 default:
-                    $(activeTab+' > .timer_holder').append(output);   
+                    $(activeTab+' > .timer_holder.column'+holder).append(output);   
                     break;
             }
         }
@@ -193,7 +196,17 @@ var clock = {
             $('#size').val(clocks[guid].size);
             $('#timezone').val(clocks[guid].timezone);
             
-            ui.set_type(clocks[guid].type, true)
+            ui.set_type(clocks[guid].type, true);
+        });
+
+        $('#' + guid + '_link.5').on('click', function(){
+            var t = "<div>Splitted Times:</div>";
+
+            for(var i=1; i<lapTime[guid].length; i++)
+            {
+                t += "<div class=lapTime"+i+">"+i+") "+lapTime[guid][i][0]+":"+lapTime[guid][i][1]+":"+lapTime[guid][i][2]+"</div>";   
+            }
+            $(".lapTimeHolder").html(t);
         });
 
         //updateData(offset);	//draw them in the correct starting position
@@ -762,6 +775,12 @@ var splitTime = {   //for the laptimer
     seconds: 0
 };
 
+var lapTime = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+};
+
 var interval;
 var timerStarted = [],
         lapTimerStarted = [],
@@ -884,7 +903,18 @@ function stopLapTimerOnClick(guid) {
 //displays the current splitted time on specific lap timer
 function splitTimerOnClick(guid) {
     //append the split time
-    $('#'+guid.id+'_link .laptime_display').append('You successfully split '+splitTime[guid.id].hours+'h :'+splitTime[guid.id].minutes+'m :'+splitTime[guid.id].seconds+'s<hr />');
+    if(typeof lapTime[guid.id] === 'undefined')
+    {
+        lapTime[guid.id] = [{
+            hours: 0,
+            minutes: 0,
+            seconds: 0
+        }];
+    }
+
+    lapTime[guid.id].push([lapTime[guid.id].hours = splitTime[guid.id].hours,lapTime[guid.id].minutes = splitTime[guid.id].minutes,lapTime[guid.id].seconds = splitTime[guid.id].seconds]);
+
+    $('#'+guid.id+'_link .laptime_display').text('You successfully split '+splitTime[guid.id].hours+'h :'+splitTime[guid.id].minutes+'m :'+splitTime[guid.id].seconds+'s');
 }
 
 //starts the specific count down timer
@@ -914,8 +944,11 @@ function removeClock(guid){
     clearInterval(clockObject[guid.id]);    //clear the interval of the closed clock to stop the specific clock process
 }
 
+//resets the fields
 function resetFields()
 {
     $("input[type=text]").val("");
+    $("select").val(0);
 }
+
 d3.select(self.frameElement).style("height", height + "px");

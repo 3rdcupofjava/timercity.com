@@ -243,6 +243,7 @@ $(document).ready(function(){
         var time = $('#countdown_time').val();
         var alarm_time = $('#alarm_time').val();
 
+        if(size < 100) size = 100; //minimum size will be 100
         if(title !== '' && size !== '' && !isNaN(size)) {
             if(timer_type != 2) //not alarm clock
             {
