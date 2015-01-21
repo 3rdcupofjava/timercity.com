@@ -6,6 +6,8 @@ body {
     height:100%;
 }
 
+.hidden{display:none;}
+
 #left_col{background-color:#f5f5f5; padding-top: 1em; min-height: 550px;}
 
 .ui-timepicker-list {
@@ -143,12 +145,14 @@ svg{
 .lapTimeHolder > div{padding: 10px;}
 .timer_holder{display: block;float:left;min-width:30%; padding:5px 0px; min-height: 550px;} 
 .timer_box{margin-top:20px;margin-left: 3px;display: block;position: relative;min-width: 250px;}
+.tb_nav{background-color: #fff; padding:2px;border:1px solid #e1e1e1;}
+.tb_nav a:hover{text-decoration: none;}
 
 li.timer_box{display:block;}
 .timer_box a:hover {
     text-decoration: none;}
 .timer_box .title{
-    position:absolute;     top:2px;     left:25px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
+    position:absolute;     top:2px;     left:10px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
 .digital_display{
     margin-top:5px;
     float: right;

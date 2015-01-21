@@ -941,7 +941,17 @@ function stopCountDownOnClick(guid) {
 
 //removes the clock and clear its interval
 function removeClock(guid){
+    $("#"+guid.id+"_nav").show();
+    $("#"+guid.id+"_nav").remove();
     clearInterval(clockObject[guid.id]);    //clear the interval of the closed clock to stop the specific clock process
+}
+
+function minimizeClock(guid){
+    $("#"+guid.id).slideToggle();
+    if($("#"+guid.id+"_nav").hasClass("hidden"))
+        $("#"+guid.id+"_nav").removeClass("hidden");
+    else
+        $("#"+guid.id+"_nav").addClass("hidden");
 }
 
 //resets the fields
