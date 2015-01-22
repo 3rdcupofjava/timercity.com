@@ -157,31 +157,43 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                   <div role="tabpanel" class="tab-pane active" id="home">
+                      <div class="min_clock_holder"></div>
+                      <div class="clear"></div>
                       <div class="column1 timer_holder connectedColumn"></div>
                       <div class="column2 timer_holder connectedColumn"></div>
                       <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="worldClockTab">
+                      <div class="min_clock_holder"></div>
+                      <div class="clear"></div>
                       <div class="column1 timer_holder connectedColumn"></div>
                       <div class="column2 timer_holder connectedColumn"></div>
                       <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="alarmClockTab">
+                      <div class="min_clock_holder"></div>
+                      <div class="clear"></div>
                       <div class="column1 timer_holder connectedColumn"></div>
                       <div class="column2 timer_holder connectedColumn"></div>
                       <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="countDownTab">
+                      <div class="min_clock_holder"></div>
+                      <div class="clear"></div>
                       <div class="column1 timer_holder connectedColumn"></div>
                       <div class="column2 timer_holder connectedColumn"></div>
                       <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="stopWatchTab">
+                      <div class="min_clock_holder"></div>
+                      <div class="clear"></div>
                       <div class="column1 timer_holder connectedColumn"></div>
                       <div class="column2 timer_holder connectedColumn"></div>
                       <div class="column3 timer_holder connectedColumn"></div>
                   </div>
                   <div role="tabpanel" class="tab-pane" id="lapTimeTab">
+                      <div class="min_clock_holder"></div>
+                      <div class="clear"></div>
                       <div class="column1 timer_holder connectedColumn"></div>
                       <div class="column2 timer_holder connectedColumn"></div>
                       <div class="column3 timer_holder connectedColumn"></div>

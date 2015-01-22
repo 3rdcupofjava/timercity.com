@@ -38,6 +38,9 @@
     <script id="template_timer_box" type="x-tmpl-mustache">
         <?php include($_SERVER["DOCUMENT_ROOT"].URL::base().'application/templates/timer_box.mustache') ?>
     </script>
+    <script id="min_clocks" type="x-tmpl-mustache">
+        <?php include($_SERVER['DOCUMENT_ROOT'].URL::base().'application/templates/min_clocks.mustache') ?>
+    </script>
     
     <script id="template_select" type="x-tmpl-mustache">
         <div id="{{id}}" class="btn-group" data-toggle="buttons">

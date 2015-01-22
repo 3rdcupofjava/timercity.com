@@ -67,9 +67,16 @@ var clock = {
         clocks[guid] = view;
         seconds = 0, minutes = 0, hours = 0;
 
+        //for the clock
         var template = $('#template_timer_box').html();
         Mustache.parse(template);
         var output = Mustache.render(template, view);
+
+        //for the minimization navigation
+        var template2 = $("#min_clocks").html();
+        Mustache.parse(template2);
+        var output2 = Mustache.render(template2,view);
+
         //append the output to the active tab
         if(view['type'] !== 'undefined')
         {
@@ -86,6 +93,9 @@ var clock = {
 
             // after save global | local pressed activeTab somehow equals '#'
             // next line is fix
+
+            //append the minimize button
+            $(activeTab+' > .min_clock_holder').append(output2);
 
             switch(view['type'])
             {
@@ -195,7 +205,7 @@ var clock = {
             $('#title').val(clocks[guid].title);
             $('#size').val(clocks[guid].size);
             $('#timezone').val(clocks[guid].timezone);
-            
+            $(".lapTimeHolder").html("");
             ui.set_type(clocks[guid].type, true);
         });
 
@@ -912,6 +922,7 @@ function splitTimerOnClick(guid) {
         }];
     }
 
+    //record the time splitted
     lapTime[guid.id].push([lapTime[guid.id].hours = splitTime[guid.id].hours,lapTime[guid.id].minutes = splitTime[guid.id].minutes,lapTime[guid.id].seconds = splitTime[guid.id].seconds]);
 
     $('#'+guid.id+'_link .laptime_display').text('You successfully split '+splitTime[guid.id].hours+'h :'+splitTime[guid.id].minutes+'m :'+splitTime[guid.id].seconds+'s');
@@ -943,11 +954,14 @@ function stopCountDownOnClick(guid) {
 function removeClock(guid){
     $("#"+guid.id+"_nav").show();
     $("#"+guid.id+"_nav").remove();
+    $(".lapTimeHolder").html("");
     clearInterval(clockObject[guid.id]);    //clear the interval of the closed clock to stop the specific clock process
 }
 
+//minimizes the specific clock
 function minimizeClock(guid){
     $("#"+guid.id).slideToggle();
+    $(".lapTimeHolder").html("");
     if($("#"+guid.id+"_nav").hasClass("hidden"))
         $("#"+guid.id+"_nav").removeClass("hidden");
     else
