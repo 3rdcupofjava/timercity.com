@@ -1,8 +1,13 @@
 
-    <div id="{{guid}}" class="timer_box ui-state-default">
+
+    <div id="{{guid}}" class="timer_box">
         <button onclick="removeClock({{guid}});" type="button" class="close" data-dismiss="alert">
             <span aria-hidden="true">&times;</span>
             <span class="sr-only">Close</span>
+        </button>
+        <button onclick="minimizeClock({{guid}});" type="button" class="close">
+            <span aria-hidden="true">&minus;</span>
+            <span class="sr-only">Minimize</span>
         </button>
         <a id="{{guid}}_link" href="#/" class="{{type}} thumbnail">
             <div class="svg_placeholder"></div>
