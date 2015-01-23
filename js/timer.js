@@ -89,8 +89,7 @@ var clock = {
                 if(holder != 3) holder++;
                 else holder = 1;
             }
-            activeTab = $(".nav .active > a").attr("href");
-
+            
             // after save global | local pressed activeTab somehow equals '#'
             // next line is fix
 

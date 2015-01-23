@@ -54,19 +54,26 @@
 
     <script>
       $(function(){
-        if(confirm('Load last timers?'))
+        if(typeof(Storage) !== 'undefined') // check if browser supports local storage
         {
-          for(var i = 0; i < localStorage.length; i++)
+          if(confirm('Load last timers?'))
           {
-            var result = JSON.parse(localStorage.getItem(localStorage.key(i)));
-            if(result !== null){
-              for(var j = 0; j < result.length; j++) {
-                var str = "#"+ result[j]["guid"];
-                $(str).empty();
+            for(var i = 0; i < localStorage.length; i++)
+            {
+              var result = JSON.parse(localStorage.getItem(localStorage.key(i)));
+              if(result !== null){
+                for(var j = 0; j < result.length; j++) {
+                  var str = "#"+ result[j]["guid"];
+                  $(str).empty();
+                }
+                storage.generate(result);
               }
-              storage.generate(result);
             }
           }
+        }
+        else
+        {
+          alert("Web Storage not supported in your browser.");
         }
       });
 

@@ -19,7 +19,7 @@
 
 var storage = {
     generate: function(result) {
-        for (var i in result) {
+        for (var i=0; i<result.length; i++) {
             if(result.hasOwnProperty(i) && !jQuery.isEmptyObject(result[i])) {
                 var value = result[i],
                     timer_type = result[i].type;

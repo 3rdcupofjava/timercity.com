@@ -315,3 +315,9 @@ function renameTab()
     $("ul.nav > li.active > a").show();
     $("div.rnm-holder").remove();   
 }
+
+//changes the activeTab
+function changeAT(tab)
+{
+    activeTab = tab;
+}
