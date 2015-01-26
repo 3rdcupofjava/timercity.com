@@ -31,6 +31,7 @@
     <script type="text/javascript" src="<?=URL::base()?>js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/mustache.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/ui.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/funcs.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/main.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/timer.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/storage.js"></script>

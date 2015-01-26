@@ -195,27 +195,43 @@ var clock = {
                 default:
                     $(activeTab+' > .timer_holder.column'+holder).append(output);   
                     break;
+            }//end switch
+
+            //check if the clock is minimized or not after loading then load again
+            if($("#"+view['guid']+"_nav").hasClass("hidden"))
+            {
+                //do nothing if the minimize navigation of the clock is not visible
+                //just append the clock
+            }
+            else
+            {
+                //hide the minimize navigation of the specific clock
+                $("#"+view['guid']+"_nav").addClass("hidden");
             }
         }
         
         // clicking on a timer to edit
         $('#' + guid + '_link').on('click', function(){
-            
             $('#title').val(clocks[guid].title);
-            $('#size').val(clocks[guid].size);
+            $('#size').val(clocks[guid].clockSize);
             $('#timezone').val(clocks[guid].timezone);
             $(".lapTimeHolder").html("");
             ui.set_type(clocks[guid].type, true);
         });
 
         $('#' + guid + '_link.5').on('click', function(){
-            var t = "<div>Splitted Times:</div>";
-
-            for(var i=1; i<lapTime[guid].length; i++)
+            //check if the there are laptime recorded for the specific laptimer and then append it
+            if(typeof lapTime[guid] !== "undefined")
             {
-                t += "<div class=lapTime"+i+">"+i+") "+lapTime[guid][i][0]+":"+lapTime[guid][i][1]+":"+lapTime[guid][i][2]+"</div>";   
+                var t = "<div>Splitted Times:</div>";
+                
+                //get every lap time recorded and append it to the t variable as a string 
+                for(var i=1; i<lapTime[guid].length; i++)
+                {
+                    t += "<div class=lapTime"+i+">"+i+") "+lapTime[guid][i][0]+":"+lapTime[guid][i][1]+":"+lapTime[guid][i][2]+"</div>";   
+                }
+                $(".lapTimeHolder").html(t); //append the final lap times to the lapTimeHolder
             }
-            $(".lapTimeHolder").html(t);
         });
 
         //updateData(offset);	//draw them in the correct starting position
