@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <!-- <<< LEFT COLUMN <<< -->
-        <div id="left_col" class="col-md-3">
+        <div id="left_col" class="col-md-3 mx">
             
             <input id="title" type="text" class="form-control" placeholder="Title">
             <input id="size" type="text" class="form-control" placeholder="Size" value="100">
@@ -139,19 +139,21 @@
         </div>
         <!-- >>> LEFT COLUMN >>> -->
         <!-- <<< RIGHT COLUMN <<< -->
-        <div class="col-md-9" style="height:100%; padding: 0;">
+        <div class="col-md-9 right-col">
             <?php include('sub_navs.php') ?>
             
             <div role="tabpanel">
 
                 <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#home" ondblclick="showRename()" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-                    <li role="presentation"><a href="#worldClockTab" ondblclick="showRename()" aria-controls="worldClockTab" role="tab" data-toggle="tab">World Clocks</a></li>
-                    <li role="presentation"><a href="#alarmClockTab" ondblclick="showRename()" aria-controls="alarmClockTab" role="tab" data-toggle="tab">Alarm Clocks</a></li>
-                    <li role="presentation"><a href="#countDownTab" ondblclick="showRename()" aria-controls="countDownTab" role="tab" data-toggle="tab">Countdown Timers</a></li>
-                    <li role="presentation"><a href="#stopWatchTab" ondblclick="showRename()" aria-controls="stopWatchTab" role="tab" data-toggle="tab">Stopwatches</a></li>
-                    <li role="presentation"><a href="#lapTimeTab" ondblclick="showRename()" aria-controls="lapTimeTab" role="tab" data-toggle="tab">Lap Timers</a></li>
+                <ul class="nav nav-tabs clock-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#home" onclick="changeAT('#home')" ondblclick="showRename()" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+                    <li role="presentation"><a href="#worldClockTab" onclick="changeAT('#worldClockTab')" ondblclick="showRename()" aria-controls="worldClockTab" role="tab" data-toggle="tab">World Clocks</a></li>
+                    <li role="presentation"><a href="#alarmClockTab" onclick="changeAT('#alarmClockTab')" ondblclick="showRename()" aria-controls="alarmClockTab" role="tab" data-toggle="tab">Alarm Clocks</a></li>
+                    <li role="presentation"><a href="#countDownTab" onclick="changeAT('#countDownTab')" ondblclick="showRename()" aria-controls="countDownTab" role="tab" data-toggle="tab">Countdown Timers</a></li>
+                    <li role="presentation"><a href="#stopWatchTab" onclick="changeAT('#stopWatchTab')" ondblclick="showRename()" aria-controls="stopWatchTab" role="tab" data-toggle="tab">Stopwatches</a></li>
+                    <li role="presentation"><a href="#lapTimeTab" onclick="changeAT('#lapTimeTab')" ondblclick="showRename()" aria-controls="lapTimeTab" role="tab" data-toggle="tab">Lap Timers</a></li>
+                    <li class="pull-right" role="presentation"><a id="tab-adder" title="Add New Tab" class="glyphicon glyphicon-plus-sign" href="#"></a></li>
+                    <li class="pull-right" role="presentation"><a id="tab-remover" title="Remove Active Tab" class="glyphicon glyphicon-minus-sign" href="#"></a></li>
                 </ul>
 
                 <!-- Tab panes -->

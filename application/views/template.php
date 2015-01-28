@@ -31,6 +31,7 @@
     <script type="text/javascript" src="<?=URL::base()?>js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/mustache.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/ui.js"></script>
+    <script type="text/javascript" src="<?=URL::base()?>js/funcs.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/main.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/timer.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/storage.js"></script>
@@ -54,19 +55,26 @@
 
     <script>
       $(function(){
-        if(confirm('Load last timers?'))
+        if(typeof(Storage) !== 'undefined') // check if browser supports local storage
         {
-          for(var i = 0; i < localStorage.length; i++)
+          if(confirm('Load last timers?'))
           {
-            var result = JSON.parse(localStorage.getItem(localStorage.key(i)));
-            if(result !== null){
-              for(var j = 0; j < result.length; j++) {
-                var str = "#"+ result[j]["guid"];
-                $(str).empty();
+            for(var i = 0; i < localStorage.length; i++)
+            {
+              var result = JSON.parse(localStorage.getItem(localStorage.key(i)));
+              if(result !== null){
+                for(var j = 0; j < result.length; j++) {
+                  var str = "#"+ result[j]["guid"];
+                  $(str).empty();
+                }
+                storage.generate(result);
               }
-              storage.generate(result);
             }
           }
+        }
+        else
+        {
+          alert("Web Storage not supported in your browser.");
         }
       });
 

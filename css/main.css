@@ -10,6 +10,7 @@ body {
 .clear{clear:both;}
 
 #left_col{background-color:#f5f5f5; padding-top: 1em; min-height: 550px;}
+.right-col{height:100%; padding: 0;}
 
 .ui-timepicker-list {
     height: auto;
@@ -138,6 +139,8 @@ svg{
 .close{
     margin: -3px 3px 0px 0px;
 }
+
+#tab-adder,#tab-remover{padding-left: 5px;padding-right: 5px;}
 
 
 /* PHOTO STUFF */ 
