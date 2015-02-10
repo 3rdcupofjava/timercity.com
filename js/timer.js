@@ -14,14 +14,12 @@ var radians = 0.0174532925,
         secondLabelRadius = clockRadius + 16,
         secondLabelYOffset = 5,
         hourLabelRadius = clockRadius - 40,
-        hourLabelYOffset = 7;
-        temp = 0; //used in countdown
-        alarm_time = [];    //storage for the specific clock alarm time
-        alarm = [];         //just a storage for text
-        alarmCount = [];    //used as a counter
+        hourLabelYOffset = 7,
+        temp = 0, //used in countdown
+        alarm_time = [],    //storage for the specific clock alarm time
+        alarm = [],         //just a storage for text
+        alarmCount = [],    //used as a counter
         ampm = [];          //am or pm for the local time according to the inputted timezone
-
-var activeTab = "#home";
 
 var hourScale = d3.scale.linear()
         .range([0,330])
@@ -31,7 +29,7 @@ var minuteScale = secondScale = d3.scale.linear()
         .range([0,354])
         .domain([0,59]);
 
-//world clocks data
+//clocks' hands data
 var handData = [
     {
         type:'hour',
@@ -54,7 +52,35 @@ var handData = [
     }
 ];
 
+
+//variables for start and end of time counter
+var stopTime = {    //for the stopwatch
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+};
+
+var splitTime = {   //for the laptimer
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+};
+
+var lapTime = {
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+};
+
+var interval;
+var timerStarted = [],
+    lapTimerStarted = [],
+    countDownStarted = [];
+
+
 var holder=0;
+var activeTab = "#home";
+var TBFlasher;
 
 var clockObject = [];
 var clocks = [];
@@ -234,15 +260,13 @@ var clock = {
             }
         });
 
-        //updateData(offset);	//draw them in the correct starting position
-
         if(view['type'] !== 'undefined')
         {
             if(view['type'] == '1' || view['type'] == '2')
             {
                 clockObject[guid] = setInterval(function(){
-                    updateData(offset,guid,view['type']);
-                    moveHands(guid);
+                    clock.updateData(offset,guid,view['type']);
+                    clock.moveHands(guid);
 
                     //check if it is an alarm clock
                     if(view['type'] == '2')
@@ -252,11 +276,11 @@ var clock = {
                             alarmCount[guid] = 0;
                         }
                         //check if hour and minutes is already equal to the selected alarm time
-                        if(Math.floor(handData[0].value) == alarm_time[guid][0] &&
-                            handData[1].value == alarm_time[guid][1] && alarm_time[guid][2] == ampm[guid])
+                        if(Math.floor(handData[guid][0].value) == alarm_time[guid][0] &&
+                            handData[guid][1].value == alarm_time[guid][1] && alarm_time[guid][2] == ampm[guid])
                         {
                             alarmCount[guid]++;
-                            if(handData[2].value%10==0) //play the alarm sound every 10 seconds of the alarm time
+                            if(handData[guid][2].value%10==0) //play the alarm sound every 10 seconds of the alarm time
                             {
                                 alarm.playSound(); //play the alarm sound if it's time
                                 alarm.flashTaskbar(); // also flash the task bar
@@ -264,7 +288,7 @@ var clock = {
                             if(alarmCount[guid] == 1)
                             {
                                 $(activeTab+' .timer_box #'+guid+'_link').append(' \
-                                    <p><button id="'+guid+'_snooze" onclick="snooze('+guid+');">Snooze (10 min)</button></p>');
+                                    <p><button id="'+guid+'_snooze" onclick="timerClock.snooze('+guid+');">Snooze (10 min)</button></p>');
                             }
                         }
                     }
@@ -380,29 +404,296 @@ var clock = {
         //calls the postRender of every type of clock
         if(this.postRender !== undefined)
             this.postRender(guid);
+    },
+    moveHands: function(area){
+        d3.select('#clock-hands'+area).selectAll('line')
+        .data(handData[area])
+        .transition()
+        .attr('transform',function(d){
+            return 'rotate('+ d.scale(d.value) +')';
+        });
+    },
+    updateData: function (offset, guid, type){
+        var t = new Date();
+        var localTime = t.getTime();
+        var localOffset = t.getTimezoneOffset() * 60000;
+        var utc = localTime + localOffset;
+        var result = utc + (3600000*offset); // here we get time with offset.
+        var nd = new Date(result);
+
+        if(nd.getHours() < t.getHours() && nd.getHours() < 12)
+        {
+            ampm[guid] = "AM";
+        }
+        else
+        {
+            ampm[guid] = "PM";
+        }
+
+        var tempHour = nd.getHours() % 12;
+        if(tempHour == 0)
+            tempHour = 12;
+
+        if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
+            handData[guid] = [
+                {
+                    type:'hour',
+                    value:0,
+                    length:-hourHandLength,
+                    scale:hourScale
+                },
+                {
+                    type:'minute',
+                    value:0,
+                    length:-minuteHandLength,
+                    scale:minuteScale
+                },
+                {
+                    type:'second',
+                    value:0,
+                    length:-secondHandLength,
+                    scale:secondScale,
+                    balance:secondHandBalance
+                }
+            ];
+        }
+
+        handData[guid][0].value = tempHour + nd.getMinutes()/60;
+        handData[guid][1].value = nd.getMinutes();
+        handData[guid][2].value = nd.getSeconds();
+
+        //do not overwrite the text of alarm clock
+        if(type != '2')
+        {
+            if(!isNaN(handData[guid][1].value))
+            {
+                if(handData[guid][0].value > 9)
+                    handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+                else
+                    handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+            }
+        }
+        else
+        {
+            if(handData[guid][0].value > 9)
+                handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").html(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]) : $("#"+guid+"_link .digital_display").html(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]);
+            else
+                handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").html("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]) : $("#"+guid+"_link .digital_display").html("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]);
+        }
     }
 };
 
 var timerClock = {
     postRender : function(guid){
         d3.select(activeTab+' .timer_box #'+guid+'_link .digital_display').text("Alarm time: "+alarm[guid]);
+    },
+    snooze: function (guid){
+        alarm_time[guid.id][1]+=10;             //increment the minutes with 10 minutes
+        if(alarm_time[guid.id][1] == 60)        //check if it falls to an hour
+        {
+            alarm_time[guid.id][0] += 1;        //increment the hour by 1
+            alarm_time[guid.id][1] = 0;         //reset the minutes to 0
+        }
+        else if(alarm_time[guid.id][1] > 60)    //if minutes is greater than 60
+        {
+            alarm_time[guid.id][1] -= 60;       //get the excess value and store to minutes
+            alarm_time[guid.id][0] += 1;        //increment the hour
+        }
+        if(alarm_time[guid.id][0] == 13)        //if the hour is 13 set it to 1
+        {
+            alarm_time[guid.id][0] = 1;
+            if(alarm_time[guid.id][2] == "AM")  //check if it is am or pm after making it on one oclock
+                alarm_time[guid.id][2] = "PM";
+            else
+                alarm_time[guid.id][2] = "AM";
+        }
+
+        //Stop the flashTaskbar and replace the document's title
+        clearInterval(TBFlasher);
+        document.title = "TimerCity - For all your timing needs. We have lap timers, countdown timers, count-up timers, big timers, little timers, and plenty of clocks for any part of the world.";
+
+        alarmCount[guid.id] = 0;
+        $("p > button#"+guid.id+"_snooze").remove();
     }
 };
 
 var stopWatchClock = {
     postRender : function(guid){
         $(activeTab+' .timer_box #'+guid+'_link').append(' \
-            <p><button onclick="startTimerOnClick('+guid+');">Start</button> \
-            <button onclick="pauseTimerOnClick('+guid+');">Pause</button> \
-            <button onclick="resetTimerOnClick('+guid+');">Reset</button></p>');
+            <p><button onclick="stopWatchClock.start('+guid+');">Start</button> \
+            <button onclick="stopWatchClock.pause('+guid+');">Pause</button> \
+            <button onclick="stopWatchClock.reset('+guid+');">Reset</button></p>');
+    }, 
+    start: function (guid){     //starts the stopwatch
+        if(timerStarted[guid.id] === true) {    //return 1 only if the stopwatch is already started
+            return 1;
+        }
+        timerStarted[guid.id] = true; // set the specific stopwatch to true
+
+        //define specific stopTime
+        if(typeof stopTime[guid.id] === 'undefined'){ 
+            stopTime[guid.id] = {
+                hours: 0,
+                minutes: 0,
+                seconds: 0
+            };
+        }
+
+        d3.select('#'+guid.id+'_link .digital_display').text("");
+        //set interval by 1 sec
+        clockObject[guid.id] = setInterval(function(){
+            stopWatchClock.updateTimer(guid.id);
+            stopWatchClock.moveHands(guid.id);
+            stopWatchClock.updateStopTime(guid.id);
+        }, 1000);
+    },
+    pause: function (guid){     //pauses the stopwatch
+        timerStarted[guid.id] = false;              //set the specific stopwatch to false to be able to start again
+
+        clearInterval(clockObject[guid.id]);     //clears the interval of specific element of stopwatch
+    },
+    reset: function (guid){     //resets the specific stopwatch
+        stopTime[guid.id].hours = 0;
+        stopTime[guid.id].minutes = 0;
+        stopTime[guid.id].seconds = 0;
+        handData[guid.id][0].value = 0;
+        handData[guid.id][1].value = 0;
+        handData[guid.id][2].value = 0;
+        stopWatchClock.moveHands(guid.id);
+        clearInterval(clockObject[guid.id]);     //clears the interval of specific element of stopwatch
+        timerStarted[guid.id] = false;  //set specific timer to false
+        d3.select('#'+guid.id+'_link .digital_display').text('0h : 0m : 0s');
+    },
+    updateStopTime: function (guid){    //updates the specific stoptime
+        if(stopTime[guid].seconds == 60)
+        {
+            stopTime[guid].seconds = 0;
+            if(stopTime[guid].minutes == 60)
+            {
+                stopTime[guid].minutes = 0;
+                if(stopTime[guid].hours == 12)
+                {
+                    stopTime[guid].hours = 0;
+                    stopTime[guid].hours++;
+                }
+                else
+                {
+                    stopTime[guid].hours++;
+                }
+                stopTime[guid].minutes++;
+            }
+            else
+            {
+                stopTime[guid].minutes++;
+            }
+            stopTime[guid].seconds++;
+        }
+        else
+        {
+            stopTime[guid].seconds++;
+        }
+
+        d3.select('#'+guid+'_link .digital_display').text((stopTime[guid].hours )
+        + 'h : ' + (stopTime[guid].minutes)
+        + 'm : ' +(stopTime[guid].seconds) + 's');
+    },
+    updateTimer: function (guid){   //Updates the timerData and its values guid here is an id attribute already
+        if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
+            handData[guid] = [
+                {
+                    type:'hour',
+                    value:0,
+                    length:-hourHandLength,
+                    scale:hourScale
+                },
+                {
+                    type:'minute',
+                    value:0,
+                    length:-minuteHandLength,
+                    scale:minuteScale
+                },
+                {
+                    type:'second',
+                    value:0,
+                    length:-secondHandLength,
+                    scale:secondScale,
+                    balance:secondHandBalance
+                }
+            ];
+        }
+       
+        handData[guid][2].value +=1;
+
+        if(handData[guid][2].value == 60) {
+            handData[guid][2].value = 0;
+            handData[guid][1].value +=1;
+            handData[guid][0].value = handData[guid][1].value/60;
+        }
     }
 };
 
 var countDownClock = {
     postRender : function(guid){
         $(activeTab+' .timer_box #'+guid+'_link').append(' \
-            <p><button onclick="startCountDownOnClick('+guid+');">Start</button> \
-            <button onclick="stopCountDownOnClick('+guid+');">Stop</button></p>');
+            <p><button onclick="countDownClock.start('+guid+');">Start</button> \
+            <button onclick="countDownClock.stop('+guid+');">Stop</button></p>');
+    },
+    start: function (guid){     //starts the countdown timer
+        if(countDownStarted[guid.id] === true) {
+            return 1;
+        }
+
+        if(!(handData[guid.id][0].value == 0 && handData[guid.id][1].value == 0 && handData[guid.id][2].value == 0))
+        {
+            countDownStarted[guid.id] = true;
+            clockObject[guid.id] = setInterval(function(){
+                countDownClock.updateCountDown(guid.id);
+                countDownClock.moveHands(guid.id);
+            }, 1000);
+        }
+    },
+    stop: function (guid){      //stops the countdown timer
+        countDownStarted[guid.id] = false;
+        clearInterval(clockObject[guid.id]);
+    },
+    updateCountDown: function (guid){
+        handData[guid][2].value -=1;   //decrement the seconds
+        if(handData[guid][2].value == 0)   //check if the seconds is 0
+        {
+            if(handData[guid][0].value == 0 && handData[guid][1].value == 0 && handData[guid][2].value == 0) //time is up
+            {
+                //stop the countdown
+                countDownStarted[guid] = false;
+                clearInterval(clockObject[guid]);
+            }
+            else
+            {
+                handData[guid][2].value = 60;
+                if(handData[guid][1].value != 0)
+                {
+                    handData[guid][1].value-=1;
+                }
+                else
+                {
+                    if(handData[guid][0].value > 0)
+                        temp+=1;    // increment the temp for a decremented hour
+                    handData[guid][1].value = 59;  //set the minutes for another hour
+                } 
+            }
+        }
+        if(handData[guid][0].value > 0)
+        {
+            handData[guid][0].value -= temp;   //decrement the hour by the previous offset
+            handData[guid][0].value += (handData[guid][1].value/60);  //update the hour data by the new offset determined by minute value
+            temp = (handData[guid][1].value/60);   //update the temp with the new offset
+        }
+        else
+            handData[guid][0].value = 0;
+
+        if(handData[guid][1].value != 0)
+            d3.select('#'+guid+'_link .digital_display').text(Math.floor(handData[guid][0].value)+"h :"+handData[guid][1].value+"m :"+handData[guid][2].value+"s");
+        else
+            d3.select('#'+guid+'_link .digital_display').text(Math.ceil(handData[guid][0].value)+"h :"+handData[guid][1].value+"m :"+handData[guid][2].value+"s");
     }
 };
 
@@ -410,9 +701,117 @@ var lapTimerClock = {
     postRender : function(guid){
         //append the buttons in every clock
         $(activeTab+' .timer_box #'+guid+'_link').append(' \
-            <button onclick="startLapTimerOnClick('+guid+');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
-            <button onclick="stopLapTimerOnClick('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
-            <button onclick="splitTimerOnClick('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap</button>');
+            <button onclick="lapTimerClock.start('+guid+');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
+            <button onclick="lapTimerClock.stop('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button onclick="lapTimerClock.split('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap</button>');
+    },
+    start: function (guid){     //starts the lap timer
+        if(lapTimerStarted[guid.id] === true) {
+            return 1;
+        }
+        lapTimerStarted[guid.id] = true;
+
+        if(typeof splitTime[guid.id] === 'undefined')
+        {
+            splitTime[guid.id] = {
+                hours: 0,
+                minutes: 0,
+                seconds: 0
+            };
+        }
+
+        clockObject[guid.id] = setInterval(function(){
+            lapTimerClock.updateLapTimer(guid.id);
+            lapTimerClock.moveHands(guid.id);
+            lapTimerClock.updateSplitTime(guid.id);
+        }, 1000);
+    },
+    stop: function (guid){      //stops the lap timer
+        lapTimerStarted[guid.id] = false; // set the specific lap timer to false
+
+        clearInterval(clockObject[guid.id]); //clear the interval of a specific lap timer
+
+        d3.select('#'+guid.id+'_link .digital_display').text((splitTime[guid.id].hours )
+        + 'h : ' + (splitTime[guid.id].minutes)
+        + 'm : ' +(splitTime[guid.id].seconds) + 's');
+    },
+    split: function (guid){     //appends the splitted time
+        //append the split time
+        if(typeof lapTime[guid.id] === 'undefined')
+        {
+            lapTime[guid.id] = [{
+                hours: 0,
+                minutes: 0,
+                seconds: 0
+            }];
+        }
+
+        //record the time splitted
+        lapTime[guid.id].push([lapTime[guid.id].hours = splitTime[guid.id].hours,lapTime[guid.id].minutes = splitTime[guid.id].minutes,lapTime[guid.id].seconds = splitTime[guid.id].seconds]);
+
+        $('#'+guid.id+'_link .laptime_display').text('You successfully split '+splitTime[guid.id].hours+'h :'+splitTime[guid.id].minutes+'m :'+splitTime[guid.id].seconds+'s');
+    },
+    updateSplitTime: function (guid){       //updates the split time
+        if(splitTime[guid].seconds == 60)
+        {
+            splitTime[guid].seconds = 0;
+            if(splitTime[guid].minutes == 60)
+            {
+                splitTime[guid].minutes = 0;
+                if(splitTime[guid].hours == 12)
+                {
+                    splitTime[guid].hours = 0;
+                    splitTime[guid].hours++;
+                }
+                else
+                {
+                    splitTime[guid].hours++;
+                }
+                splitTime[guid].minutes++;
+            }
+            else
+            {
+                splitTime[guid].minutes++;
+            }
+            splitTime[guid].seconds++;
+        }
+        else
+        {
+            splitTime[guid].seconds++;
+        }
+    },
+    updateLapTimer: function (guid){
+        if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
+            handData[guid] = [
+                {
+                    type:'hour',
+                    value:0,
+                    length:-hourHandLength,
+                    scale:hourScale
+                },
+                {
+                    type:'minute',
+                    value:0,
+                    length:-minuteHandLength,
+                    scale:minuteScale
+                },
+                {
+                    type:'second',
+                    value:0,
+                    length:-secondHandLength,
+                    scale:secondScale,
+                    balance:secondHandBalance
+                }
+            ];
+        }
+
+        handData[guid][2].value +=1;
+
+        if(handData[guid][2].value == 60) {
+            handData[guid][2].value = 0;
+            handData[guid][1].value +=1;
+            handData[guid][0].value = handData[guid][1].value/60;
+        }
     }
 };
 
@@ -443,7 +842,7 @@ var alarm = {
     },
     flashTaskbar : function(){
         var msg = "----";
-        setInterval(function() {
+        TBFlasher = setInterval(function() {
             document.title = document.title == msg ? '###' : msg;
         }, 1000);
     }
@@ -520,456 +919,12 @@ var digitalTimer = {
     }
 };
 
-/*Moves the hands of a clock (world clock)*/
-function moveHands(area){
-    d3.select('#clock-hands'+area).selectAll('line')
-            .data(handData)
-            .transition()
-            .attr('transform',function(d){
-                return 'rotate('+ d.scale(d.value) +')';
-            });
-}
-
-/*Moves the hands of a stopwatch*/
-function moveTimerHands(guid){
-    d3.select("#clock-hands"+guid).selectAll('line')
-            .data(handData[guid])
-            .transition()
-            .attr('transform',function(d){
-                    return 'rotate('+ d.scale(d.value) +')';
-             });
-}
-
-/*Moves the hands of a lap timer*/
-function moveLapTimerHands(guid){
-    d3.select('#clock-hands'+guid).selectAll('line')
-            .data(handData[guid])
-            .transition()
-            .attr('transform',function(d){
-                return 'rotate('+ d.scale(d.value) +')';
-            });
-}
-
-function moveCountDownHands(guid){
-    d3.select('#clock-hands'+guid).selectAll('line')
-            .data(handData[guid])
-            .transition()
-            .attr('transform',function(d){
-                return 'rotate('+ d.scale(d.value)  +')';
-            });
-}
-
-/*Updates the values of the clock (world clock) according to its offset or Timezone
-*/
-function updateData(offset,guid,type){
-    var t = new Date();
-    var localTime = t.getTime();
-    var localOffset = t.getTimezoneOffset() * 60000;
-    var utc = localTime + localOffset;
-    var result = utc + (3600000*offset); // here we get time with offset.
-    var nd = new Date(result);
-
-    if(nd.getHours() < t.getHours() && nd.getHours() < 12)
-    {
-        ampm[guid] = "AM";
-    }
-    else
-    {
-        ampm[guid] = "PM";
-    }
-
-    var tempHour = nd.getHours() % 12;
-    if(tempHour == 0)
-        tempHour = 12;
-
-    handData[0].value = tempHour + nd.getMinutes()/60;
-    handData[1].value = nd.getMinutes();
-    handData[2].value = nd.getSeconds();
-
-    //do not overwrite the text of alarm clock
-    if(type != '2')
-    {
-        if(!isNaN(handData[1].value))
-        {
-            if(handData[0].value > 9)
-                handData[1].value > 9 ? $("#"+guid+"_link .digital_display").text(Math.floor(handData[0].value)+":"+handData[1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text(Math.floor(handData[0].value)+":0"+handData[1].value+" "+ampm[guid]);
-            else
-                handData[1].value > 9 ? $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[0].value)+":"+handData[1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[0].value)+":0"+handData[1].value+" "+ampm[guid]);
-        }
-    }
-    else
-    {
-        if(handData[0].value > 9)
-            handData[1].value > 9 ? $("#"+guid+"_link .digital_display").html(Math.floor(handData[0].value)+":"+handData[1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]) : $("#"+guid+"_link .digital_display").html(Math.floor(handData[0].value)+":0"+handData[1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]);
-        else
-            handData[1].value > 9 ? $("#"+guid+"_link .digital_display").html("0"+Math.floor(handData[0].value)+":"+handData[1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]) : $("#"+guid+"_link .digital_display").html("0"+Math.floor(handData[0].value)+":0"+handData[1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]);
-    }
-}
-
-/*Updates the timerData and its values
-* guid here is an id attribute already
-*/
-function updateTimer(guid)
-{
-
-    if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
-        handData[guid] = [
-            {
-                type:'hour',
-                value:0,
-                length:-hourHandLength,
-                scale:hourScale
-            },
-            {
-                type:'minute',
-                value:0,
-                length:-minuteHandLength,
-                scale:minuteScale
-            },
-            {
-                type:'second',
-                value:0,
-                length:-secondHandLength,
-                scale:secondScale,
-                balance:secondHandBalance
-            }
-        ];
-    }
-   
-    handData[guid][2].value +=1;
-
-    if(handData[guid][2].value == 60) {
-        handData[guid][2].value = 0;
-        handData[guid][1].value +=1;
-        handData[guid][0].value = handData[guid][1].value/60;
-    }
-}
-
-function updateLapTimer(guid) 
-{
-    if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
-        handData[guid] = [
-            {
-                type:'hour',
-                value:0,
-                length:-hourHandLength,
-                scale:hourScale
-            },
-            {
-                type:'minute',
-                value:0,
-                length:-minuteHandLength,
-                scale:minuteScale
-            },
-            {
-                type:'second',
-                value:0,
-                length:-secondHandLength,
-                scale:secondScale,
-                balance:secondHandBalance
-            }
-        ];
-    }
-
-    handData[guid][2].value +=1;
-
-    if(handData[guid][2].value == 60) {
-        handData[guid][2].value = 0;
-        handData[guid][1].value +=1;
-        handData[guid][0].value = handData[guid][1].value/60;
-    }
-}
-
-function updateCountDown(guid) 
-{
-    handData[guid][2].value -=1;   //decrement the seconds
-    if(handData[guid][2].value == 0)   //check if the seconds is 0
-    {
-        if(handData[guid][0].value == 0 && handData[guid][1].value == 0 && handData[guid][2].value == 0) //time is up
-        {
-            //stop the countdown
-            countDownStarted[guid] = false;
-            clearInterval(clockObject[guid]);
-        }
-        else
-        {
-            handData[guid][2].value = 60;
-            if(handData[guid][1].value != 0)
-            {
-                handData[guid][1].value-=1;
-            }
-            else
-            {
-                if(handData[guid][0].value > 0)
-                    temp+=1;    // increment the temp for a decremented hour
-                handData[guid][1].value = 59;  //set the minutes for another hour
-            } 
-        }
-    }
-    if(handData[guid][0].value > 0)
-    {
-        handData[guid][0].value -= temp;   //decrement the hour by the previous offset
-        handData[guid][0].value += (handData[guid][1].value/60);  //update the hour data by the new offset determined by minute value
-        temp = (handData[guid][1].value/60);   //update the temp with the new offset
-    }
-    else
-        handData[guid][0].value = 0;
-
-    if(handData[guid][1].value != 0)
-        d3.select('#'+guid+'_link .digital_display').text(Math.floor(handData[guid][0].value)+"h :"+handData[guid][1].value+"m :"+handData[guid][2].value+"s");
-    else
-        d3.select('#'+guid+'_link .digital_display').text(Math.ceil(handData[guid][0].value)+"h :"+handData[guid][1].value+"m :"+handData[guid][2].value+"s");
-}
-
-//updates the time the specific stopwatch takes
-function updateStopTime(guid)
-{
-    if(stopTime[guid].seconds == 60)
-    {
-        stopTime[guid].seconds = 0;
-        if(stopTime[guid].minutes == 60)
-        {
-            stopTime[guid].minutes = 0;
-            if(stopTime[guid].hours == 12)
-            {
-                stopTime[guid].hours = 0;
-                stopTime[guid].hours++;
-            }
-            else
-            {
-                stopTime[guid].hours++;
-            }
-            stopTime[guid].minutes++;
-        }
-        else
-        {
-            stopTime[guid].minutes++;
-        }
-        stopTime[guid].seconds++;
-    }
-    else
-    {
-        stopTime[guid].seconds++;
-    }
-}
-
-function updateSplitTime(guid)
-{
-    if(splitTime[guid].seconds == 60)
-    {
-        splitTime[guid].seconds = 0;
-        if(splitTime[guid].minutes == 60)
-        {
-            splitTime[guid].minutes = 0;
-            if(splitTime[guid].hours == 12)
-            {
-                splitTime[guid].hours = 0;
-                splitTime[guid].hours++;
-            }
-            else
-            {
-                splitTime[guid].hours++;
-            }
-            splitTime[guid].minutes++;
-        }
-        else
-        {
-            splitTime[guid].minutes++;
-        }
-        splitTime[guid].seconds++;
-    }
-    else
-    {
-        splitTime[guid].seconds++;
-    }
-}
-
-
-/*
- * variables for start and end of time counter
- * */
-var stopTime = {    //for the stopwatch
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-};
-
-var splitTime = {   //for the laptimer
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-};
-
-var lapTime = {
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-};
-
-var interval;
-var timerStarted = [],
-        lapTimerStarted = [],
-        countDownStarted = [];
-
-
-//snoozes the alarm clock
-function snooze(guid){
-    alarm_time[guid.id][1]+=10;             //increment the minutes with 10 minutes
-    if(alarm_time[guid.id][1] == 60)        //check if it falls to an hour
-    {
-        alarm_time[guid.id][0] += 1;        //increment the hour by 1
-        alarm_time[guid.id][1] = 0;         //reset the minutes to 0
-    }
-    else if(alarm_time[guid.id][1] > 60)    //if minutes is greater than 60
-    {
-        alarm_time[guid.id][1] -= 60;       //get the excess value and store to minutes
-        alarm_time[guid.id][0] += 1;        //increment the hour
-    }
-    if(alarm_time[guid.id][0] == 13)        //if the hour is 13 set it to 1
-    {
-        alarm_time[guid.id][0] = 1;
-        if(alarm_time[guid.id][2] == "AM")  //check if it is am or pm after making it on one oclock
-            alarm_time[guid.id][2] = "PM";
-        else
-            alarm_time[guid.id][2] = "AM";
-    }
-
-    alarmCount[guid.id] = 0;
-    $("p > button#"+guid.id+"_snooze").remove();
-
-    //d3.select(activeTab+' .timer_box #'+guid.id+'_link .digital_display').text("Alarm time: "+alarm_time[guid.id][0]+":"+alarm_time[guid.id][1]);
-}
-
-/*Starts the stopwatch
-*Remember that guid is still an HTML element
-*/
-function startTimerOnClick(guid) {
-    if(timerStarted[guid.id] === true) {    //return 1 only if the stopwatch is already started
-        return 1;
-    }
-    timerStarted[guid.id] = true; // set the specific stopwatch to true
-
-    //define specific stopTime
-    if(typeof stopTime[guid.id] === 'undefined'){ 
-        stopTime[guid.id] = {
-            hours: 0,
-            minutes: 0,
-            seconds: 0
-        };
-    }
-
-    d3.select('#'+guid.id+'_link .digital_display').text("");
-    //set interval by 1 sec
-    clockObject[guid.id] = setInterval(function(){
-        updateTimer(guid.id);
-        moveTimerHands(guid.id);
-        updateStopTime(guid.id);
-    }, 1000);
-}
-/*Pauses the stopwatch*/
-function pauseTimerOnClick(guid) {
-    timerStarted[guid.id] = false;              //set the specific stopwatch to false to be able to start again
-
-    clearInterval(clockObject[guid.id]);     //clears the interval of specific element of stopwatch
- 
-    d3.select('#'+guid.id+'_link .digital_display').text((stopTime[guid.id].hours )
-    + 'h : ' + (stopTime[guid.id].minutes)
-    + 'm : ' +(stopTime[guid.id].seconds) + 's');
-}
-
-//resets the values of the specific stopwatch
-function resetTimerOnClick(guid)
-{
-    stopTime[guid.id].hours = 0;
-    stopTime[guid.id].minutes = 0;
-    stopTime[guid.id].seconds = 0;
-    handData[guid.id][0].value = 0;
-    handData[guid.id][1].value = 0;
-    handData[guid.id][2].value = 0;
-    moveTimerHands(guid.id);
-    clearInterval(clockObject[guid.id]);     //clears the interval of specific element of stopwatch
-    timerStarted[guid.id] = false;  //set specific timer to false
-}
-
-//starts the specific lap timer
-function startLapTimerOnClick(guid) {
-    if(lapTimerStarted[guid.id] === true) {
-        return 1;
-    }
-    lapTimerStarted[guid.id] = true;
-
-    if(typeof splitTime[guid.id] === 'undefined')
-    {
-        splitTime[guid.id] = {
-            hours: 0,
-            minutes: 0,
-            seconds: 0
-        };
-    }
-
-    clockObject[guid.id] = setInterval(function(){
-        updateLapTimer(guid.id);
-        moveLapTimerHands(guid.id);
-        updateSplitTime(guid.id);
-    }, 1000);
-}
-
-//pauses the specific lap timer
-function stopLapTimerOnClick(guid) {
-    lapTimerStarted[guid.id] = false; // set the specific lap timer to false
-
-    clearInterval(clockObject[guid.id]); //clear the interval of a specific lap timer
-
-    d3.select('#'+guid.id+'_link .digital_display').text((splitTime[guid.id].hours )
-    + 'h : ' + (splitTime[guid.id].minutes)
-    + 'm : ' +(splitTime[guid.id].seconds) + 's');
-}
-
-//displays the current splitted time on specific lap timer
-function splitTimerOnClick(guid) {
-    //append the split time
-    if(typeof lapTime[guid.id] === 'undefined')
-    {
-        lapTime[guid.id] = [{
-            hours: 0,
-            minutes: 0,
-            seconds: 0
-        }];
-    }
-
-    //record the time splitted
-    lapTime[guid.id].push([lapTime[guid.id].hours = splitTime[guid.id].hours,lapTime[guid.id].minutes = splitTime[guid.id].minutes,lapTime[guid.id].seconds = splitTime[guid.id].seconds]);
-
-    $('#'+guid.id+'_link .laptime_display').text('You successfully split '+splitTime[guid.id].hours+'h :'+splitTime[guid.id].minutes+'m :'+splitTime[guid.id].seconds+'s');
-}
-
-//starts the specific count down timer
-function startCountDownOnClick(guid) {
-    if(countDownStarted[guid.id] === true) {
-        return 1;
-    }
-
-    if(!(handData[guid.id][0].value == 0 && handData[guid.id][1].value == 0 && handData[guid.id][2].value == 0))
-    {
-        countDownStarted[guid.id] = true;
-        clockObject[guid.id] = setInterval(function(){
-            updateCountDown(guid.id);
-            moveCountDownHands(guid.id);
-        }, 1000);
-    }
-}
-
-//stops the specific countdown timer
-function stopCountDownOnClick(guid) {
-    countDownStarted[guid.id] = false;
-    clearInterval(clockObject[guid.id]);
-}
-
 //removes the clock and clear its interval
 function removeClock(guid){
     $("#"+guid.id+"_nav").show();
     $("#"+guid.id+"_nav").remove();
     $(".lapTimeHolder").html("");
+    clearInterval(TBFlasher);
     clearInterval(clockObject[guid.id]);    //clear the interval of the closed clock to stop the specific clock process
 }
 

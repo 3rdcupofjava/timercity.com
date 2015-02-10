@@ -1,12 +1,18 @@
-var newTabCount = 0;
+var newTabCount = 0,
+    tabs = [];
 
 $(function(){
     //adds a new tab
     $("#tab-adder").on("click",function(){
         newTabCount++;
         //append the new tab with its corresponding tab-pane
-        $("ul.clock-tabs").append('<li role="presentation"><a href="#newTab'+newTabCount+'" onclick="changeAT(\'#newTab'+newTabCount+'\')" ondblclick="showRename()" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">New Tab</a></li>');
+        $("ul.clock-tabs").append('<li role="presentation"><a href="#newTab'+newTabCount+'" onclick="changeAT(\'#newTab'+newTabCount+'\')" ondblclick="showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">New Tab</a></li>');
         $("div.tab-content").append("<div role='tabpanel' class='tab-pane' id='newTab"+newTabCount+"'><div class='min_clock_holder'></div><div class='clear'></div><div class='column1 timer_holder connectedColumn'></div><div class='column2 timer_holder connectedColumn'></div><div class='column3 timer_holder connectedColumn'></div></div><script>$(function() {$('.column1,.column2,.column3').sortable({connectWith:'.connectedColumn'}).disableSelection();});</script>");
+        //store the newTab in the tabs[] storage
+        tabs[newTabCount] = {
+                count: newTabCount,
+                name: "New Tab"
+            };
     });
 
     //removes the active tab
@@ -32,18 +38,21 @@ $(function(){
 });
 
 //shows the rename field
-function showRename()
+function showRename(newTab)
 {
     $("ul.clock-tabs > li.active > a").hide(); 
-    $("ul.clock-tabs > li.active").append("<div class='rnm-holder'><input type='text' id='nt-name' placeholder='Tab new name'><button onclick='renameTab()' type='button'>Rename</button></div>");
+    $("ul.clock-tabs > li.active").append("<div class='rnm-holder'><input type='text' id='nt-name' placeholder='Tab new name'><button onclick='renameTab("+newTab+")' type='button'>Rename</button></div>");
 }
 
 //renames tab
-function renameTab()
+function renameTab(newTab)
 {
-    if($("#nt-name").val() != '') $("ul.clock-tabs > li.active > a").text($("#nt-name").val());
+    if($("#nt-name").val() != ''){
+        $("ul.clock-tabs > li.active > a").text($("#nt-name").val());
+        tabs[newTab].name = $("#nt-name").val();    //rename the entry for this tab in the tabs[] storage
+    }
     $("ul.clock-tabs > li.active > a").show();
-    $("div.rnm-holder").remove();   
+    $("div.rnm-holder").remove();
 }
 
 //changes the activeTab
