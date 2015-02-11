@@ -142,64 +142,18 @@
         <div class="col-md-9 right-col">
             <?php include('sub_navs.php') ?>
             
-            <div role="tabpanel">
+            <div id="tabs" role="tabpanel">
 
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs clock-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#home" onclick="changeAT('#home')" ondblclick="showRename()" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-                    <li role="presentation"><a href="#worldClockTab" onclick="changeAT('#worldClockTab')" ondblclick="showRename()" aria-controls="worldClockTab" role="tab" data-toggle="tab">World Clocks</a></li>
-                    <li role="presentation"><a href="#alarmClockTab" onclick="changeAT('#alarmClockTab')" ondblclick="showRename()" aria-controls="alarmClockTab" role="tab" data-toggle="tab">Alarm Clocks</a></li>
-                    <li role="presentation"><a href="#countDownTab" onclick="changeAT('#countDownTab')" ondblclick="showRename()" aria-controls="countDownTab" role="tab" data-toggle="tab">Countdown Timers</a></li>
-                    <li role="presentation"><a href="#stopWatchTab" onclick="changeAT('#stopWatchTab')" ondblclick="showRename()" aria-controls="stopWatchTab" role="tab" data-toggle="tab">Stopwatches</a></li>
-                    <li role="presentation"><a href="#lapTimeTab" onclick="changeAT('#lapTimeTab')" ondblclick="showRename()" aria-controls="lapTimeTab" role="tab" data-toggle="tab">Lap Timers</a></li>
-                    <li class="pull-right" role="presentation"><a id="tab-adder" title="Add New Tab" class="glyphicon glyphicon-plus-sign" href="#"></a></li>
-                    <li class="pull-right" role="presentation"><a id="tab-remover" title="Remove Active Tab" class="glyphicon glyphicon-minus-sign" href="#"></a></li>
+                    <li id="ntm"><span>Click the + button at the side to add tabs.</span></li>
+                    <div class="pull-right" role="presentation"><a id="tab-adder" title="Add New Tab" class="glyphicon glyphicon-plus-sign" href="#"></a></div>
+                    <div class="pull-right" role="presentation"><a id="tab-remover" title="Remove Active Tab" class="glyphicon glyphicon-minus-sign" href="#"></a></div>
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="tab-content">
-                  <div role="tabpanel" class="tab-pane active" id="home">
-                      <div class="min_clock_holder"></div>
-                      <div class="clear"></div>
-                      <div class="column1 timer_holder connectedColumn"></div>
-                      <div class="column2 timer_holder connectedColumn"></div>
-                      <div class="column3 timer_holder connectedColumn"></div>
-                  </div>
-                  <div role="tabpanel" class="tab-pane" id="worldClockTab">
-                      <div class="min_clock_holder"></div>
-                      <div class="clear"></div>
-                      <div class="column1 timer_holder connectedColumn"></div>
-                      <div class="column2 timer_holder connectedColumn"></div>
-                      <div class="column3 timer_holder connectedColumn"></div>
-                  </div>
-                  <div role="tabpanel" class="tab-pane" id="alarmClockTab">
-                      <div class="min_clock_holder"></div>
-                      <div class="clear"></div>
-                      <div class="column1 timer_holder connectedColumn"></div>
-                      <div class="column2 timer_holder connectedColumn"></div>
-                      <div class="column3 timer_holder connectedColumn"></div>
-                  </div>
-                  <div role="tabpanel" class="tab-pane" id="countDownTab">
-                      <div class="min_clock_holder"></div>
-                      <div class="clear"></div>
-                      <div class="column1 timer_holder connectedColumn"></div>
-                      <div class="column2 timer_holder connectedColumn"></div>
-                      <div class="column3 timer_holder connectedColumn"></div>
-                  </div>
-                  <div role="tabpanel" class="tab-pane" id="stopWatchTab">
-                      <div class="min_clock_holder"></div>
-                      <div class="clear"></div>
-                      <div class="column1 timer_holder connectedColumn"></div>
-                      <div class="column2 timer_holder connectedColumn"></div>
-                      <div class="column3 timer_holder connectedColumn"></div>
-                  </div>
-                  <div role="tabpanel" class="tab-pane" id="lapTimeTab">
-                      <div class="min_clock_holder"></div>
-                      <div class="clear"></div>
-                      <div class="column1 timer_holder connectedColumn"></div>
-                      <div class="column2 timer_holder connectedColumn"></div>
-                      <div class="column3 timer_holder connectedColumn"></div>
-                  </div>
+                  <div class="min_clock_holder"></div> <!-- Minimized clocks will be seen everywhere on tabs but when restored the clock will only appear to the tab where it belongs -->
                 </div>
                 <!-- end of Tab panes -->
             </div>

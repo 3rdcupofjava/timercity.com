@@ -237,63 +237,68 @@ function preDraw(view){
 
 $(document).ready(function(){
     $('#add').on('click', function(){
-        var title = $('#title').val();
-        var size = $('#size').val();
-        var timezone = $("#timezone").val();
-        var time = $('#countdown_time').val();
-        var alarm_time = $('#alarm_time').val();
+        if($("div.tab-pane.active").length > 0)
+        {
+            var title = $('#title').val();
+            var size = $('#size').val();
+            var timezone = $("#timezone").val();
+            var time = $('#countdown_time').val();
+            var alarm_time = $('#alarm_time').val();
 
-        if(size < 100) size = 100; //minimum size will be 100
-        if(title !== '' && size !== '' && !isNaN(size)) {
-            if(timer_type != 2) //not alarm clock
-            {
-                if(timer_type == 3) //if count down
+            if(size < 100) size = 100; //minimum size will be 100
+            if(title !== '' && size !== '' && !isNaN(size)) {
+                if(timer_type != 2) //not alarm clock
                 {
-                    if(time.match(/:/g) != null && time.match(/:/g).length == 2) //check if it contains 2 :
+                    if(timer_type == 3) //if count down
                     {
-                        var tempSplit = time.split(":");
-                        if(tempSplit[0] == '' || tempSplit[1] == '' || tempSplit[2] == '' ||
-                            isNaN(tempSplit[0]) || isNaN(tempSplit[1]) || isNaN(tempSplit[2]))
+                        if(time.match(/:/g) != null && time.match(/:/g).length == 2) //check if it contains 2 :
                         {
-                            alert("Invalid Countdown value");
+                            var tempSplit = time.split(":");
+                            if(tempSplit[0] == '' || tempSplit[1] == '' || tempSplit[2] == '' ||
+                                isNaN(tempSplit[0]) || isNaN(tempSplit[1]) || isNaN(tempSplit[2]))
+                            {
+                                alert("Invalid Countdown value");
+                                return 0;
+                            }
+                        }
+                        else
+                        {
+                            alert("Invalid Countdown value.");
+                            return 0;
+                        }
+                    }
+                    var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time, 'type_name' : type_name};
+                }
+                else //if alarm clock
+                {
+                    if(alarm_time.match(/:/g) != null && alarm_time.match(/:/g).length == 1)
+                    {
+                        var tempSplit = alarm_time.split(":");
+                        if(tempSplit[0] == '' || tempSplit[1] == '' ||
+                            isNaN(tempSplit[0]) || isNaN(tempSplit[1]))
+                        {
+                            alert("Invalid alarm time.");
                             return 0;
                         }
                     }
                     else
                     {
-                        alert("Invalid Countdown value.");
-                        return 0;
-                    }
-                }
-                var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time, 'type_name' : type_name};
-            }
-            else //if alarm clock
-            {
-                if(alarm_time.match(/:/g) != null && alarm_time.match(/:/g).length == 1)
-                {
-                    var tempSplit = alarm_time.split(":");
-                    if(tempSplit[0] == '' || tempSplit[1] == '' ||
-                        isNaN(tempSplit[0]) || isNaN(tempSplit[1]))
-                    {
                         alert("Invalid alarm time.");
                         return 0;
                     }
+                    var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'alarm_time': alarm_time, 'type_name' : type_name};
                 }
-                else
-                {
-                    alert("Invalid alarm time.");
-                    return 0;
-                }
-                var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'alarm_time': alarm_time, 'type_name' : type_name};
+                timer_count++;
+                preDraw(view);
+                return 0;
             }
-            timer_count++;
-            preDraw(view);
-            return 0;
-        }
-        else
-        {
-            alert('Please enter a valid value.');
-            return 0;
+            else
+            {
+                alert('Please enter a valid value.');
+                return 0;
+            }
+        }else{
+            alert("No Active Tab.");
         }
     });
 

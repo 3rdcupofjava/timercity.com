@@ -11,8 +11,6 @@
 
     <link href="<?=URL::base()?>css/bootstrap.css" rel="stylesheet">
     <link href="<?=URL::base()?>css/main.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     
     <script type="text/javascript" src="<?=URL::base()?>js/d3.js"></script>
     
