@@ -4,7 +4,8 @@ if(typeof(timer_count) === "undefined")
 }
 var timer_type = '1';
 var type_name = "";
-var temporary_storage = [];
+var temporary_storage = [],
+    ts_count = 0;   //counter for the index of the temporary_storage
 
 var ui = {
     toggleNav: function(li, navbar){
@@ -194,6 +195,15 @@ var ui = {
         
         $('#alarm_time').timepicker({'timeFormat':'H:i'});
         $('#countdown_time').timepicker({'timeFormat':'H:i:s'});
+
+        tabs.updateStorageIndex();          //update the index
+        tabs.store(newTabCount,"Home");     //store the Home
+        tabs.updateTabsDroppable();         //update the droppables
+
+        //check if there are last session tabs
+        if(sessionStorage.getItem('lst') != null){
+            tabs.loadTabs(JSON.parse(sessionStorage.getItem('lst')),true);
+        }
     }
 };
 
@@ -302,6 +312,4 @@ $(document).ready(function(){
         }
     });
 
-
-    
 });

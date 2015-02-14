@@ -147,6 +147,7 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs clock-tabs" role="tablist">
                     <li id="ntm"><span>Click the + button at the side to add tabs.</span></li>
+                    <li role="presentation" class="active"><a href="#home--0" onclick="tabs.changeAT('#home--0')" ondblclick="tabs.showRename(0)" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
                     <div class="pull-right" role="presentation"><a id="tab-adder" title="Add New Tab" class="glyphicon glyphicon-plus-sign" href="#"></a></div>
                     <div class="pull-right" role="presentation"><a id="tab-remover" title="Remove Active Tab" class="glyphicon glyphicon-minus-sign" href="#"></a></div>
                 </ul>
@@ -154,6 +155,12 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                   <div class="min_clock_holder"></div> <!-- Minimized clocks will be seen everywhere on tabs but when restored the clock will only appear to the tab where it belongs -->
+                  <div role="tabpanel" class="tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom active" id="home--0">
+                    <div class="clear"></div>
+                    <div class="column1 timer_holder connectedColumn"></div>
+                    <div class="column2 timer_holder connectedColumn"></div>
+                    <div class="column3 timer_holder connectedColumn"></div>
+                  </div>
                 </div>
                 <!-- end of Tab panes -->
             </div>
