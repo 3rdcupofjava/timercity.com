@@ -25,8 +25,24 @@ var storage = {
                     timer_type = result[i].type;
 
                     var str = "#"+ value["guid"];
+
+                    /*
+                        Check if there are other clocks with the same ID's.
+                        Remove the specific clock object.
+                        Also remove the navigation of the specific clock.
+                    */
+                    // if($(str).length > 0) alert("Some Clocks are removed with same ID's.");
+                    $(str+"_nav").show();
+                    $(str+"_nav").remove();
+                    $(".lapTimeHolder").html("");
+                    clearInterval(clockObject[value["guid"]]);
+                    //remove the clock from the canvas
                     $(str).remove();
 
+                /*
+                    Generate the result of the query and automatically push the value to temporary_storage
+                    and increment the timer_count to update the value.
+                */
                 switch(timer_type) {
                     case '1':
                         clock.render(value);
@@ -61,23 +77,27 @@ var storage = {
     }
     },
     local : {
-        save : function() {
+        save : function() { //save locally
             localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
+            localStorage.setItem($('#storage_key_save').val()+"_tabs", JSON.stringify(tabs));
            // maybe store last value in session and load after page reload.
            // or need track somehow from which name of local \ global storage get timers after page reload.
            // sessionStorage.setItem('last_timer', JSON.stringify(temporary_storage));
         },
-        load : function() {
+        load : function() { //load from the local storage
+            //get the items from the localStorage based from the inputted value
             var result = JSON.parse(localStorage.getItem($('#storage_key_load').val()));
-
+            var loadedTabs = JSON.parse(localStorage.getItem($("#storage_key_load").val()+"_tabs"));
+            console.log(JSON.stringify(loadedTabs));
+            //generate the result
             storage.generate(result);
         }
     },
-    global : {
-        save : function() {
+    global : { //save globally in the e.znotez
+        save : function() { //save globally all the clocks as a string from the temporary_storage
             $.ajax({
                 type: "POST",
-                url: "/storage/save",
+                url: "index.php/storage/save",
                 data: 'padID=' + $('#storage_key_save').val() + '&text=' + JSON.stringify(temporary_storage), // not working
                 cache: false,
                 success: function(msg) {
@@ -85,17 +105,19 @@ var storage = {
                 }
             });
         },
-        load : function() {
+        load : function() { //load globally based from the inputted key
             $.ajax({
                 type: "POST",
-                url: "/storage/load",
+                url: "index.php/storage/load",
                 data: 'padID=' + $('#storage_key_load').val(),
                 cache: false,
                 success: function(msg) {
-                    //alert(msg);
-                    var result = JSON.parse(msg);
-
-                    storage.generate(result);
+                    if(msg){ //check if there are data that are retrieved
+                        var result = JSON.parse(msg);
+                        storage.generate(result);  
+                    }
+                    else //alert if there are no data from the search
+                        alert("No data.");
                 }
             });
         }
@@ -109,3 +131,10 @@ var storage = {
         }
     },
 };
+
+/*
+    Show a loading animated icon when ajax call is started
+*/
+$(document).ajaxStart(function () {
+    $("div.tab-pane.active > div.clear").append("<span class='loading' alt='loading'>Loading......</span><script>$(document).ajaxStop(function(){$('span.loading').remove();});</script>");
+});
