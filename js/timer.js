@@ -79,7 +79,7 @@ var timerStarted = [],
 
 
 var holder=0;
-var activeTab = "#home";
+var activeTab = "#home--0";
 var TBFlasher;
 
 var clockObject = [];
@@ -90,6 +90,7 @@ var clock = {
         var clockRadius = parseInt(view['clockSize']);
         var offset = parseInt(view['timezone']);
         var guid = view['guid'];
+        view['ts_count'] = ts_count++;
         clocks[guid] = view;
         seconds = 0, minutes = 0, hours = 0;
 
@@ -243,6 +244,14 @@ var clock = {
             $('#timezone').val(clocks[guid].timezone);
             $(".lapTimeHolder").html("");
             ui.set_type(clocks[guid].type, true);
+        }).bind("mousedown",function (event){
+            $cl = $(this);
+            $cl.on("mousemove",function(){
+                $(".timer_box#"+guid).css({"opacity":"0.5"});
+            });
+        }).bind("mouseup",function(){
+            $cl.unbind("mousemove");
+            $(".timer_box#"+guid).css({"opacity":"1"});
         });
 
         $('#' + guid + '_link.5').on('click', function(){
@@ -539,7 +548,6 @@ var stopWatchClock = {
             };
         }
 
-        d3.select('#'+guid.id+'_link .digital_display').text("");
         //set interval by 1 sec
         clockObject[guid.id] = setInterval(function(){
             stopWatchClock.updateTimer(guid.id);
@@ -632,29 +640,62 @@ var stopWatchClock = {
     }
 };
 
+var cd_params = [{
+    set: null,
+    hour: null,
+    minutes: null,
+    seconds: null,
+    stopped: null
+}];
+
 var countDownClock = {
     postRender : function(guid){
         $(activeTab+' .timer_box #'+guid+'_link').append(' \
             <p><button onclick="countDownClock.start('+guid+');">Start</button> \
             <button onclick="countDownClock.stop('+guid+');">Stop</button></p>');
     },
+    setParams : function (hours,minutes,seconds,guid){   //set the parameters for retrieving
+        cd_params[guid].set = true;
+        cd_params[guid].hour = hours;
+        cd_params[guid].minutes = minutes;
+        cd_params[guid].seconds = seconds;
+    },
     start: function (guid){     //starts the countdown timer
-        if(countDownStarted[guid.id] === true) {
-            return 1;
+        if(typeof cd_params[guid.id] === 'undefined'){
+            cd_params[guid.id] = [{
+                set: false,
+                hour: null,
+                minutes: null,
+                seconds: null,
+                stopped: false
+            }];
+        }
+        if(typeof cd_params[guid.id].set === 'undefined' || cd_params[guid.id].set == false){
+            this.setParams(handData[guid.id][0].value,handData[guid.id][1].value,handData[guid.id][2].value,guid.id);
         }
 
-        if(!(handData[guid.id][0].value == 0 && handData[guid.id][1].value == 0 && handData[guid.id][2].value == 0))
-        {
-            countDownStarted[guid.id] = true;
-            clockObject[guid.id] = setInterval(function(){
-                countDownClock.updateCountDown(guid.id);
-                countDownClock.moveHands(guid.id);
-            }, 1000);
+        if((countDownStarted[guid.id] === true || countDownStarted[guid.id] === false) && !cd_params[guid.id].stopped) {
+            handData[guid.id][0].value = cd_params[guid.id].hour;
+            handData[guid.id][1].value = cd_params[guid.id].minutes;
+            handData[guid.id][2].value = cd_params[guid.id].seconds;
+        }
+        cd_params[guid.id].stopped = false;
+
+        if(!(handData[guid.id][0].value == 0 && handData[guid.id][1].value == 0 && handData[guid.id][2].value == 0)){
+            //check if it is already started so that it won't give another interval to the clock 
+            if(typeof countDownStarted[guid.id] === 'undefined' || countDownStarted[guid.id] === false){
+                countDownStarted[guid.id] = true;
+                clockObject[guid.id] = setInterval(function(){
+                    countDownClock.updateCountDown(guid.id);
+                    countDownClock.moveHands(guid.id);
+                }, 1000);
+            }
         }
     },
     stop: function (guid){      //stops the countdown timer
         countDownStarted[guid.id] = false;
         clearInterval(clockObject[guid.id]);
+        cd_params[guid.id].stopped = true;
     },
     updateCountDown: function (guid){
         handData[guid][2].value -=1;   //decrement the seconds
@@ -665,6 +706,8 @@ var countDownClock = {
                 //stop the countdown
                 countDownStarted[guid] = false;
                 clearInterval(clockObject[guid]);
+                countDownStarted[guid] === false;
+                alarm.playSound();
             }
             else
             {
@@ -825,7 +868,6 @@ var alarm = {
         audioElement.addEventListener("load", function() {
             audioElement.play();
         }, true);
-
         audioElement.play();
 
         /* uncomment it and add to view buttons play / pause for controls
@@ -920,7 +962,8 @@ var digitalTimer = {
 };
 
 //removes the clock and clear its interval
-function removeClock(guid){
+function removeClock(guid,ts_count){
+    temporary_storage[ts_count] = null;     //remove the specific clock from the temporary_storage
     $("#"+guid.id+"_nav").show();
     $("#"+guid.id+"_nav").remove();
     $(".lapTimeHolder").html("");

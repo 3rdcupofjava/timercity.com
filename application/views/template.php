@@ -57,14 +57,12 @@
         {
           if(confirm('Load last timers?'))
           {
-            for(var i = 0; i < localStorage.length; i++)
-            {
-              var result = JSON.parse(localStorage.getItem(localStorage.key(i)));
-              if(result !== null){
-                for(var j = 0; j < result.length; j++) {
-                  var str = "#"+ result[j]["guid"];
-                  $(str).empty();
-                }
+            //access only the clocks, and not the tabs to prevent timer_types error
+            var i = 0;
+            for(var prop in localStorage){
+              var result = JSON.parse(localStorage.getItem(localStorage.key(prop)));
+              if(typeof result[i] != 'undefined' && result != null){
+                var str = "#"+result[i++]["guid"];
                 storage.generate(result);
               }
             }
