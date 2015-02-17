@@ -114,6 +114,7 @@ var tabs = {
                 this.updateTabsDroppable();
             }
         }
+        updateSession('lst',JSON.stringify(loadedTabs));
     },
     updateStorageIndex : function(){    //updates the index for tabs_storage where it finds a NULL element
         newTabCount = 0;

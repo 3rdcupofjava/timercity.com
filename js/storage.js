@@ -17,7 +17,6 @@
 //
 //}
 
-var randomCtr = 2;
 var storage = {
     generate: function(result) {
         if($("div.tab-pane.active").length > 0)
@@ -121,23 +120,6 @@ var storage = {
         load : function() { //load globally based from the inputted key
             $.ajax({
                 type: "POST",
-                url: "index.php/storage/load",
-                data: 'padID=' + $('#storage_key_load').val(),
-                cache: false,
-                success: function(msg) {
-                    if(msg){ //check if there are data that are retrieved
-                        var result = JSON.parse(msg);
-                        storage.generate(result);  
-                    }
-                    else //alert if there are no data from the search
-                        alert("No data.");
-                },
-                error: function(){
-                    console.log('error');
-                }
-            });
-            $.ajax({
-                type: "POST",
                 url: "index.php/storage/loadTabs",
                 data: 'tabID=' + $('#storage_key_load').val(),
                 cache: false,
@@ -146,8 +128,22 @@ var storage = {
                         var result = JSON.parse(msg);
                         tabs.loadTabs(result,false);
                     }
+                    $.ajax({
+                        type: "POST",
+                        url: "index.php/storage/load",
+                        data: 'padID=' + $('#storage_key_load').val(),
+                        cache: false,
+                        success: function(msg) {
+                            if(msg){ //check if there are data that are retrieved
+                                var result = JSON.parse(msg);
+                                storage.generate(result);  
+                            }
+                            else //alert if there are no data from the search
+                                alert("No data.");
+                        }
+                    });
                 }
-            });
+            }); 
         }
     },
     user : { // TODO: after auth, login, etc...
@@ -164,5 +160,5 @@ var storage = {
     Show a loading animated icon when ajax call is started
 */
 $(document).ajaxStart(function () {
-    $("div.tab-pane.active > div.clear").append("<span class='loading' alt='loading'>Loading......</span><script>$(document).ajaxStop(function(){$('span.loading').remove();});</script>");
+    $("div.tab-content").append("<span class='loading' alt='loading'>Loading......</span><script>$(document).ajaxStop(function(){$('span.loading').remove();});</script>");
 });
