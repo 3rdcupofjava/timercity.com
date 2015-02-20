@@ -144,13 +144,12 @@ svg{
 #ntm{padding: 10px;}
 #tab-adder,#tab-remover{padding: 13px 5px 0px 5px;}
 
-
 /* PHOTO STUFF */ 
 .min_clock_holder{border-top: 1px solid #FFF;}
-#buttons_lap_timer/{float:left; display:none;}
+#buttons_lap_timer{float:left; display:none;}
 .lapTimeHolder{margin-top: 10px;}
 .lapTimeHolder > div{padding: 10px;}
-.timer_holder{display: block;float:left;min-width:30%; padding:5px 0px; min-height: 550px;} 
+.timer_holder{display: block;float:left;min-width:33.2%; padding:5px 0px; min-height: 550px;} 
 .timer_box{margin-top:20px;margin-left: 3px;display: block;position: relative;}/*min-width: 250px;}*/
 .tb_nav{background-color: #fff; padding:2px;border:1px solid #e1e1e1;float:left;width:200px;}
 .tb_nav a:hover{text-decoration: none;}
@@ -161,10 +160,11 @@ li.timer_box{display:block;}
 .timer_box a:hover {
     text-decoration: none;}
 .timer_box .title{
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
+    color: #428bca; 
     overflow: hidden;
     white-space: nowrap;
-    width: 80%; position:absolute;     top:2px;     left:10px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
+    width: 80%;     top:2px;     left:10px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
 .digital_display{
     margin-top:5px;
     margin-right: 4px;

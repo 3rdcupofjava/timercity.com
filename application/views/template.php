@@ -60,11 +60,13 @@
             //access only the clocks, and not the tabs to prevent timer_types error
             var i = 0;
             for(var prop in localStorage){
-              var result = JSON.parse(localStorage.getItem(localStorage.key(prop)));
-              if(typeof result[i] != 'undefined' && result != null){
-                var str = "#"+result[i++]["guid"];
-                storage.generate(result);
+              var result = JSON.parse(localStorage.getItem(localStorage.key(i)));
+              if(result != null){
+                if(typeof result[i] != 'undefined'){
+                  storage.generate(result);
+                }
               }
+              i++;
             }
           }
         }

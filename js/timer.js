@@ -248,10 +248,12 @@ var clock = {
             $cl = $(this);
             $cl.on("mousemove",function(){
                 $(".timer_box#"+guid).css({"opacity":"0.5"});
+                $(".timer_box#"+guid+" > #"+guid+"_link").removeClass("pull-left");
             });
         }).bind("mouseup",function(){
             $cl.unbind("mousemove");
             $(".timer_box#"+guid).css({"opacity":"1"});
+            $(".timer_box#"+guid+" > #"+guid+"_link").addClass("pull-left");
         });
 
         $('#' + guid + '_link.5').on('click', function(){
@@ -259,11 +261,15 @@ var clock = {
             if(typeof lapTime[guid] !== "undefined")
             {
                 var t = "<div>Splitted Times:</div>";
+                var lt_counter = 1;
                 
                 //get every lap time recorded and append it to the t variable as a string 
-                for(var i=1; i<lapTime[guid].length; i++)
+                for(var i=0; i<lapTime[guid].length; i++)
                 {
-                    t += "<div class=lapTime"+i+">"+i+") "+lapTime[guid][i][0]+":"+lapTime[guid][i][1]+":"+lapTime[guid][i][2]+"</div>";   
+                    if(lapTime[guid][i] != null){
+                        t += "<div class='lapTime"+i+"'>"+lt_counter+") "+lapTime[guid][i][0]+":"+lapTime[guid][i][1]+":"+lapTime[guid][i][2]+"<button type='button' onclick='lapTimerClock.deleteLapTime("+guid+","+i+");' class='close'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button></div>";   
+                        lt_counter++;
+                    }
                 }
                 $(".lapTimeHolder").html(t); //append the final lap times to the lapTimeHolder
             }
@@ -292,12 +298,13 @@ var clock = {
                             if(handData[guid][2].value%10==0) //play the alarm sound every 10 seconds of the alarm time
                             {
                                 alarm.playSound(); //play the alarm sound if it's time
-                                alarm.flashTaskbar(); // also flash the task bar
+                                if(alarmCount[guid] == 1)
+                                    alarm.flashTaskbar(); // also flash the task bar
                             }
                             if(alarmCount[guid] == 1)
                             {
-                                $(activeTab+' .timer_box #'+guid+'_link').append(' \
-                                    <p><button id="'+guid+'_snooze" onclick="timerClock.snooze('+guid+');">Snooze (10 min)</button></p>');
+                                $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
+                                    <button id="'+guid+'_snooze" onclick="timerClock.snooze('+guid+');">Snooze (10 min)</button>');
                             }
                         }
                     }
@@ -522,16 +529,16 @@ var timerClock = {
         document.title = "TimerCity - For all your timing needs. We have lap timers, countdown timers, count-up timers, big timers, little timers, and plenty of clocks for any part of the world.";
 
         alarmCount[guid.id] = 0;
-        $("p > button#"+guid.id+"_snooze").remove();
+        $(".btns > button#"+guid.id+"_snooze").remove();
     }
 };
 
 var stopWatchClock = {
     postRender : function(guid){
-        $(activeTab+' .timer_box #'+guid+'_link').append(' \
-            <p><button onclick="stopWatchClock.start('+guid+');">Start</button> \
+        $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
+            <button onclick="stopWatchClock.start('+guid+');">Start</button> \
             <button onclick="stopWatchClock.pause('+guid+');">Pause</button> \
-            <button onclick="stopWatchClock.reset('+guid+');">Reset</button></p>');
+            <button onclick="stopWatchClock.reset('+guid+');">Reset</button>');
     }, 
     start: function (guid){     //starts the stopwatch
         if(timerStarted[guid.id] === true) {    //return 1 only if the stopwatch is already started
@@ -650,9 +657,9 @@ var cd_params = [{
 
 var countDownClock = {
     postRender : function(guid){
-        $(activeTab+' .timer_box #'+guid+'_link').append(' \
-            <p><button onclick="countDownClock.start('+guid+');">Start</button> \
-            <button onclick="countDownClock.stop('+guid+');">Stop</button></p>');
+        $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
+            <button onclick="countDownClock.start('+guid+');">Start</button> \
+            <button onclick="countDownClock.stop('+guid+');">Stop</button>');
     },
     setParams : function (hours,minutes,seconds,guid){   //set the parameters for retrieving
         cd_params[guid].set = true;
@@ -743,10 +750,10 @@ var countDownClock = {
 var lapTimerClock = {
     postRender : function(guid){
         //append the buttons in every clock
-        $(activeTab+' .timer_box #'+guid+'_link').append(' \
-            <button onclick="lapTimerClock.start('+guid+');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
-            <button onclick="lapTimerClock.stop('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
-            <button onclick="lapTimerClock.split('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap</button>');
+        $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
+            <button onclick="lapTimerClock.start('+guid+');" type="button"><span class="glyphicon glyphicon-ok"></span> Start</button> \
+            <button onclick="lapTimerClock.stop('+guid+');"type="button"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button onclick="lapTimerClock.split('+guid+');"type="button"><span class="glyphicon glyphicon-ok"></span> Lap</button>');
     },
     start: function (guid){     //starts the lap timer
         if(lapTimerStarted[guid.id] === true) {
@@ -773,26 +780,33 @@ var lapTimerClock = {
         lapTimerStarted[guid.id] = false; // set the specific lap timer to false
 
         clearInterval(clockObject[guid.id]); //clear the interval of a specific lap timer
-
-        d3.select('#'+guid.id+'_link .digital_display').text((splitTime[guid.id].hours )
-        + 'h : ' + (splitTime[guid.id].minutes)
-        + 'm : ' +(splitTime[guid.id].seconds) + 's');
     },
     split: function (guid){     //appends the splitted time
         //append the split time
         if(typeof lapTime[guid.id] === 'undefined')
         {
-            lapTime[guid.id] = [{
-                hours: 0,
-                minutes: 0,
-                seconds: 0
-            }];
+            lapTime[guid.id] = [];
         }
 
         //record the time splitted
         lapTime[guid.id].push([lapTime[guid.id].hours = splitTime[guid.id].hours,lapTime[guid.id].minutes = splitTime[guid.id].minutes,lapTime[guid.id].seconds = splitTime[guid.id].seconds]);
 
         $('#'+guid.id+'_link .laptime_display').text('You successfully split '+splitTime[guid.id].hours+'h :'+splitTime[guid.id].minutes+'m :'+splitTime[guid.id].seconds+'s');
+    },
+    deleteLapTime : function (guid,i){
+        lapTime[guid.id][i] = null;
+        var lt_counter = 1;
+        var t = "<div>Splitted Times:</div>";
+                
+        //get every lap time recorded and append it to the t variable as a string 
+        for(var i=0; i<lapTime[guid.id].length; i++)
+        {
+            if(lapTime[guid.id][i] != null){
+                t += "<div class='lapTime"+i+"'>"+lt_counter+") "+lapTime[guid.id][i][0]+":"+lapTime[guid.id][i][1]+":"+lapTime[guid.id][i][2]+"<button type='button' onclick='lapTimerClock.deleteLapTime("+guid.id+","+i+");' class='close'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button></div>";   
+                lt_counter++;
+            }
+        }
+        $(".lapTimeHolder").html(t); //append the final lap times to the lapTimeHolder
     },
     updateSplitTime: function (guid){       //updates the split time
         if(splitTime[guid].seconds == 60)
@@ -822,6 +836,9 @@ var lapTimerClock = {
         {
             splitTime[guid].seconds++;
         }
+        d3.select('#'+guid+'_link .digital_display').text((splitTime[guid].hours )
+        + 'h : ' + (splitTime[guid].minutes)
+        + 'm : ' +(splitTime[guid].seconds) + 's');
     },
     updateLapTimer: function (guid){
         if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
@@ -966,6 +983,7 @@ function removeClock(guid,ts_count){
     temporary_storage[ts_count] = null;     //remove the specific clock from the temporary_storage
     $("#"+guid.id+"_nav").show();
     $("#"+guid.id+"_nav").remove();
+    $("#"+guid.id+".timer_box").remove();
     $(".lapTimeHolder").html("");
     clearInterval(TBFlasher);
     clearInterval(clockObject[guid.id]);    //clear the interval of the closed clock to stop the specific clock process

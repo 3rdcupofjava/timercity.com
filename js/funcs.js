@@ -54,7 +54,7 @@ var tabs = {
         //process so that the clocks can be drag/drop between tabs
         $tabs = $('#tabs');
         $tab_items = $('ul:first li',$tabs).droppable({
-                accept: '.connectedColumn div',
+                accept: '.connectedColumn div.timer_box',
                 hoverClass: 'ui-state-hover',
                 drop: function (event, ui){
                     var $item = $(this);
