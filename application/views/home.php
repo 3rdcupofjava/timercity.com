@@ -126,8 +126,9 @@
 
             <br />
             <div id="buttons_edit_mode" style="display:none;">
-                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save</button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+                <button id="save" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save</button>
+                <button id="delete" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+                <button id="cancel" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
             </div>
             <div id="buttons_not_edit_mode">
                 <button id="add" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Add</button>

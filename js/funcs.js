@@ -48,14 +48,14 @@ $(function(){
 
 var tabs = {
     updateTabsDroppable : function(){       //updates the tabs and new tabs to be droppable
-        //hide the message after adding clock
+        //hide the message after adding tab
         if($("div.tab-pane").length > 0) $("ul.nav.nav-tabs.clock-tabs > li#ntm").hide();
 
         //process so that the clocks can be drag/drop between tabs
         $tabs = $('#tabs');
         $tab_items = $('ul:first li',$tabs).droppable({
                 accept: '.connectedColumn div.timer_box',
-                hoverClass: 'ui-state-hover',
+                hoverClass: 'highlight',
                 drop: function (event, ui){
                     var $item = $(this);
                     var $list = $($item.find('a').attr('href')).find('.connectedColumn:first');

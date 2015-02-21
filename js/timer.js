@@ -126,9 +126,11 @@ var clock = {
             switch(view['type'])
             {
                 case '1':
+                case 1:
                     $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 case '2':
+                case 2:
                     /**
                      * if isset alarm_time, send post request with given time.
                      * maybe also need send date?
@@ -153,9 +155,10 @@ var clock = {
                     alarm_time[guid][1] = parseInt(alarm_time[guid][1]);
 
                     //afternoon time
-                    if(alarm_time[guid][0] > 12)
+                    if(alarm_time[guid][0] >= 12)
                     {
-                        alarm_time[guid][0] = alarm_time[guid][0]%12;
+                        if(alarm_time[guid][0] != 12)
+                            alarm_time[guid][0] = alarm_time[guid][0]%12;
                         alarm_time[guid][2] = "PM";
                     }
                     else    //morning time
@@ -166,57 +169,56 @@ var clock = {
                     alarm[guid] = alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2];
                     break;
                 case '3':
-
+                case 3:
                     $(activeTab+' > .timer_holder.column'+holder).append(output);
 
                     //initialize first the countdown data
-                    if(typeof handData[guid] === 'undefined')
+                    var formattedTime = view['time'].split(":"); //split the inputted time to an array
+                    //check if seconds is 0 while the others are not
+                    if(parseInt(formattedTime[2]) == 0 &&
+                        (parseInt(formattedTime[1]) != 0 ||
+                        parseInt(formattedTime[0]) != 0))
                     {
-                        var formattedTime = view['time'].split(":"); //split the inputted time to an array
-                        //check if seconds is 0 while the others are not
-                        if(parseInt(formattedTime[2]) == 0 &&
-                            (parseInt(formattedTime[1]) != 0 ||
-                            parseInt(formattedTime[0]) != 0))
+                        formattedTime[2] = 60;
+                        //check if the minute is not 0
+                        if(formattedTime[1] > 0)
+                            formattedTime[1] -= 1;  //decrement if not 0
+                        else if(formattedTime[1] == 0)  //check if minute is 0
                         {
-                            formattedTime[2] = 60;
-                            //check if the minute is not 0
-                            if(formattedTime[1] > 0)
-                                formattedTime[1] -= 1;  //decrement if not 0
-                            else if(formattedTime[1] == 0)  //check if minute is 0
+                            if(formattedTime[0] > 0)    //check if hour is not 0
                             {
-                                if(formattedTime[0] > 0)    //check if hour is not 0
-                                {
-                                    formattedTime[0]-=1;    //decrement hour
-                                    formattedTime[1] = 59;  //set the minutes to 59
-                                }
+                                formattedTime[0]-=1;    //decrement hour
+                                formattedTime[1] = 59;  //set the minutes to 59
                             }
                         }
-                        handData[guid] = [{
-                                type:'hour',
-                                value:parseInt(formattedTime[0]),
-                                length:-hourHandLength,
-                                scale:hourScale
-                            },
-                            {
-                                type:'minute',
-                                value:parseInt(formattedTime[1]),
-                                length:-minuteHandLength,
-                                scale:minuteScale
-                            },
-                            {
-                                type:'second',
-                                value:parseInt(formattedTime[2]),
-                                length:-secondHandLength,
-                                scale:secondScale,
-                                balance:secondHandBalance
-                            }];
                     }
+                    handData[guid] = [{
+                            type:'hour',
+                            value:parseInt(formattedTime[0]),
+                            length:-hourHandLength,
+                            scale:hourScale
+                        },
+                        {
+                            type:'minute',
+                            value:parseInt(formattedTime[1]),
+                            length:-minuteHandLength,
+                            scale:minuteScale
+                        },
+                        {
+                            type:'second',
+                            value:parseInt(formattedTime[2]),
+                            length:-secondHandLength,
+                            scale:secondScale,
+                            balance:secondHandBalance
+                        }];
 
                     break;
                 case '4':
+                case 4:
                     $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 case '5':
+                case 5:
                     $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 default:
@@ -225,13 +227,11 @@ var clock = {
             }//end switch
 
             //check if the clock is minimized or not after loading then load again
-            if($("#"+view['guid']+"_nav").hasClass("hidden"))
-            {
+            if($("#"+view['guid']+"_nav").hasClass("hidden")){
                 //do nothing if the minimize navigation of the clock is not visible
                 //just append the clock
             }
-            else
-            {
+            else{
                 //hide the minimize navigation of the specific clock
                 $("#"+view['guid']+"_nav").addClass("hidden");
             }
@@ -243,22 +243,40 @@ var clock = {
             $('#size').val(clocks[guid].clockSize);
             $('#timezone').val(clocks[guid].timezone);
             $(".lapTimeHolder").html("");
-            ui.set_type(clocks[guid].type, true);
+            ui.set_type(null,clocks[guid].type,false);
+            
+            $("#buttons_not_edit_mode").hide();
+            $("#buttons_edit_mode").show();
+
+            $("button#save").attr("onclick","ui.set_type("+guid+","+clocks[guid].type+",true)")
+                            .bind("click",function(){
+                                $("#buttons_edit_mode").hide();
+                                $("#buttons_not_edit_mode").show();
+                            });
+
+            $("button#delete").attr("onclick","removeClock("+guid+","+clocks[guid].ts_count+")")
+                                .bind('click',function(){
+                                    $("#buttons_edit_mode").hide();
+                                    $("#buttons_not_edit_mode").show();
+                                });
+
+            $("button#cancel").on("click",function(){   
+                $("#buttons_not_edit_mode").show();
+                $("#buttons_edit_mode").hide();
+            });
         }).bind("mousedown",function (event){
             $cl = $(this);
             $cl.on("mousemove",function(){
-                $(".timer_box#"+guid).css({"opacity":"0.5"});
-                $(".timer_box#"+guid+" > #"+guid+"_link").removeClass("pull-left");
+                $(".timer_box#"+guid).css({"opacity":"0.3"});
             });
         }).bind("mouseup",function(){
             $cl.unbind("mousemove");
             $(".timer_box#"+guid).css({"opacity":"1"});
-            $(".timer_box#"+guid+" > #"+guid+"_link").addClass("pull-left");
         });
 
         $('#' + guid + '_link.5').on('click', function(){
             //check if the there are laptime recorded for the specific laptimer and then append it
-            if(typeof lapTime[guid] !== "undefined")
+            if(typeof lapTime[guid] !== "undefined" && lapTime[guid] !== null)
             {
                 var t = "<div>Splitted Times:</div>";
                 var lt_counter = 1;
@@ -418,8 +436,27 @@ var clock = {
                 });
                 
         //calls the postRender of every type of clock
-        if(this.postRender !== undefined)
-            this.postRender(guid);
+        switch(view['type']){
+            case 1:
+            case '1':
+                break;
+            case 2:
+            case '2':
+                timerClock.postRender(guid);
+                break;
+            case 3:
+            case '3':
+                countDownClock.postRender(guid);
+                break;
+            case 4:
+            case '4':
+                stopWatchClock.postRender(guid);
+                break;
+            case 5:
+            case '5':
+                lapTimerClock.postRender(guid);
+                break;
+        }
     },
     moveHands: function(area){
         d3.select('#clock-hands'+area).selectAll('line')
@@ -447,7 +484,7 @@ var clock = {
         }
 
         var tempHour = nd.getHours() % 12;
-        if(tempHour == 0)
+        if(tempHour == 0 && ampm[guid] == "PM")
             tempHour = 12;
 
         if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
@@ -568,13 +605,17 @@ var stopWatchClock = {
         clearInterval(clockObject[guid.id]);     //clears the interval of specific element of stopwatch
     },
     reset: function (guid){     //resets the specific stopwatch
-        stopTime[guid.id].hours = 0;
-        stopTime[guid.id].minutes = 0;
-        stopTime[guid.id].seconds = 0;
-        handData[guid.id][0].value = 0;
-        handData[guid.id][1].value = 0;
-        handData[guid.id][2].value = 0;
-        stopWatchClock.moveHands(guid.id);
+        if(typeof stopTime[guid.id] !== "undefined"){
+            stopTime[guid.id].hours = 0;
+            stopTime[guid.id].minutes = 0;
+            stopTime[guid.id].seconds = 0;
+        }
+        if(typeof handData[guid.id] !== "undefined"){
+            handData[guid.id][0].value = 0;
+            handData[guid.id][1].value = 0;
+            handData[guid.id][2].value = 0;
+            stopWatchClock.moveHands(guid.id);
+        }
         clearInterval(clockObject[guid.id]);     //clears the interval of specific element of stopwatch
         timerStarted[guid.id] = false;  //set specific timer to false
         d3.select('#'+guid.id+'_link .digital_display').text('0h : 0m : 0s');
@@ -668,7 +709,7 @@ var countDownClock = {
         cd_params[guid].seconds = seconds;
     },
     start: function (guid){     //starts the countdown timer
-        if(typeof cd_params[guid.id] === 'undefined'){
+        if(typeof cd_params[guid.id] === 'undefined' || cd_params[guid.id] === null){
             cd_params[guid.id] = [{
                 set: false,
                 hour: null,
@@ -702,7 +743,8 @@ var countDownClock = {
     stop: function (guid){      //stops the countdown timer
         countDownStarted[guid.id] = false;
         clearInterval(clockObject[guid.id]);
-        cd_params[guid.id].stopped = true;
+        if(typeof cd_params[guid.id] !== "undefined")
+            cd_params[guid.id].stopped = true;
     },
     updateCountDown: function (guid){
         handData[guid][2].value -=1;   //decrement the seconds
@@ -781,9 +823,23 @@ var lapTimerClock = {
 
         clearInterval(clockObject[guid.id]); //clear the interval of a specific lap timer
     },
+    reset: function (guid){
+        this.stop(guid);
+        if(typeof handData[guid.id] !== "undefined"){
+            handData[guid.id][0].value = 0;
+            handData[guid.id][1].value = 0;
+            handData[guid.id][2].value = 0;
+        }
+        if(typeof handData[guid.id] !== "undefined"){
+            splitTime[guid.id].hours = 0;
+            splitTime[guid.id].minutes = 0;
+            splitTime[guid.id].seconds = 0;
+        }
+        lapTime[guid.id] = null;
+    },
     split: function (guid){     //appends the splitted time
         //append the split time
-        if(typeof lapTime[guid.id] === 'undefined')
+        if(typeof lapTime[guid.id] === 'undefined' || lapTime[guid.id] === null)
         {
             lapTime[guid.id] = [];
         }
