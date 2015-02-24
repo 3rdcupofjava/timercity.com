@@ -4,7 +4,7 @@ var newTabCount = 0,
 $(function(){
     //adds a new tab
     $("#tab-adder").on("click",function(){
-        tabs.updateStorageIndex();
+        newTabCount = tabs.updateStorageIndex();
         //append the new tab with its corresponding tab-pane
         $("ul.clock-tabs").append('<li role="presentation"><a href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">New Tab</a></li>');
         $("div.tab-content").append("<div role='tabpanel' class='tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom' id='newTab"+newTabCount+"'><div class='min_clock_holder'></div><div class='clear'></div><div class='column1 timer_holder connectedColumn'></div><div class='column2 timer_holder connectedColumn'></div><div class='column3 timer_holder connectedColumn'></div></div><script>$(function() {$('.column1,.column2,.column3').sortable({connectWith:'.connectedColumn'}).disableSelection();});</script>");
@@ -98,7 +98,7 @@ var tabs = {
         for(var count in loadedTabs){                   //loop to every values of loadedTabs
             if(loadedTabs[count] != null){              //check if the current item != null
                 
-                this.updateStorageIndex();
+                newTabCount = this.updateStorageIndex();
                 if($("ul.clock-tabs > li.active").length > 0){
                     //append the new tab with its corresponding tab-pane
                     $("ul.clock-tabs").append('<li role="presentation"><a href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">'+loadedTabs[count].name+'</a></li>');
@@ -109,18 +109,19 @@ var tabs = {
                     $("div.tab-content").append("<div role='tabpanel' class='tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom active' id='newTab"+newTabCount+"'><div class='min_clock_holder'></div><div class='clear'></div><div class='column1 timer_holder connectedColumn'></div><div class='column2 timer_holder connectedColumn'></div><div class='column3 timer_holder connectedColumn'></div></div><script>$(function() {$('.column1,.column2,.column3').sortable({connectWith:'.connectedColumn'}).disableSelection();});</script>");
                     activeTab = "#newTab"+newTabCount;  //update the activeTab
                 }
-                
+
                 this.store(newTabCount,loadedTabs[count].name);
                 this.updateTabsDroppable();
             }
         }
-        updateSession('lst',JSON.stringify(loadedTabs));
+        updateSession('lst',JSON.stringify(tabs_storage));
     },
     updateStorageIndex : function(){    //updates the index for tabs_storage where it finds a NULL element
-        newTabCount = 0;
-        while(tabs_storage[newTabCount] != null){
-            newTabCount++;
+        var count = 0;
+        while(tabs_storage[count] != null){
+            count++;
         }
+        return count;
     },
     store : function (index,name){      //stores the new tab
         tabs_storage[index] = {

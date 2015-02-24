@@ -4,8 +4,7 @@ if(typeof(timer_count) === "undefined")
 }
 var timer_type = '1';
 var type_name = "";
-var temporary_storage = [],
-    ts_count = 0;   //counter for the index of the temporary_storage
+var temporary_storage = [];
 
 var ui = {
     toggleNav: function(li, navbar){
@@ -140,6 +139,8 @@ var ui = {
 
         $("input:radio[name='timer_types']").on('change', function(){
             timer_type = $("input:radio[name='timer_types']:checked").val();
+            $("#buttons_edit_mode").hide();
+            $("#buttons_not_edit_mode").show();
             ui.set_type(null,timer_type, false);
         });
     },
@@ -218,9 +219,9 @@ var ui = {
         $('#alarm_time').timepicker({'timeFormat':'H:i'});
         $('#countdown_time').timepicker({'timeFormat':'H:i:s'});
 
-        tabs.updateStorageIndex();          //update the index
-        tabs.store(newTabCount,"Home");     //store the Home
-        tabs.updateTabsDroppable();         //update the droppables
+        // newTabCount = tabs.updateStorageIndex();            //update the index
+        // tabs.store(newTabCount,"Home");                     //store the Home
+        tabs.updateTabsDroppable();                         //update the droppables
 
         //check if there are last session tabs
         if(sessionStorage.getItem('lst') != null){
@@ -238,28 +239,27 @@ function preDraw(view){
         case '1':
         case 1:
             clock.render(view);
-
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         case '2':
         case 2:
             timerClock.render(view);
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         case '3':
         case 3:
             countDownClock.render(view);
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         case '4':
         case 4:
             stopWatchClock.render(view);
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         case '5':
         case 5:
             lapTimerClock.render(view);
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         default :
             alert('error, unknown type');
@@ -322,6 +322,7 @@ $(document).ready(function(){
                     var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'alarm_time': alarm_time, 'type_name' : type_name};
                 }
                 timer_count++;
+                view['ts_count'] = storage.getIndex();      // Get the index where the new clock will be store in the temporary_storage.
                 preDraw(view);
                 return 0;
             }

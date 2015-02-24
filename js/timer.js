@@ -90,7 +90,6 @@ var clock = {
         var clockRadius = parseInt(view['clockSize']);
         var offset = parseInt(view['timezone']);
         var guid = view['guid'];
-        view['ts_count'] = ts_count++;
         clocks[guid] = view;
         seconds = 0, minutes = 0, hours = 0;
 
@@ -237,43 +236,48 @@ var clock = {
             }
         }
         
-        // clicking on a timer to edit
+        // Clicking on all timer to edit.
         $('#' + guid + '_link').on('click', function(){
             $('#title').val(clocks[guid].title);
             $('#size').val(clocks[guid].clockSize);
             $('#timezone').val(clocks[guid].timezone);
             $(".lapTimeHolder").html("");
-            ui.set_type(null,clocks[guid].type,false);
-            
-            $("#buttons_not_edit_mode").hide();
-            $("#buttons_edit_mode").show();
 
-            $("button#save").attr("onclick","ui.set_type("+guid+","+clocks[guid].type+",true)")
+            $("#timer_types > label").siblings().removeClass('active');                                             // Remove the active radio buttons
+            $("#timer_types > label input:radio[value='"+clocks[guid].type+"']").attr('checked','true');            // Set the radio button according to the clock selected
+            $("#timer_types > label input:radio[value='"+clocks[guid].type+"']").parent().addClass('active');       // Add a class active to the parent of the radio button to make it highlighted
+            ui.set_type(null,clocks[guid].type,false);                                                              // Call this function to set the timer_type
+            
+            $("#buttons_not_edit_mode").hide();         // Show the basic buttons.
+            $("#buttons_edit_mode").show();             // Show the buttons for editing mode.
+
+            $("button#save").attr("onclick","ui.set_type("+guid+","+clocks[guid].type+",true)")                     // Saving the new value.
                             .bind("click",function(){
                                 $("#buttons_edit_mode").hide();
                                 $("#buttons_not_edit_mode").show();
                             });
 
-            $("button#delete").attr("onclick","removeClock("+guid+","+clocks[guid].ts_count+")")
+            $("button#delete").attr("onclick","removeClock("+guid+","+clocks[guid].ts_count+")")                    // Removing the clock selected.
                                 .bind('click',function(){
                                     $("#buttons_edit_mode").hide();
                                     $("#buttons_not_edit_mode").show();
                                 });
 
-            $("button#cancel").on("click",function(){   
+            $("button#cancel").on("click",function(){       // Cancels the editing mode.
                 $("#buttons_not_edit_mode").show();
                 $("#buttons_edit_mode").hide();
             });
         }).bind("mousedown",function (event){
             $cl = $(this);
             $cl.on("mousemove",function(){
-                $(".timer_box#"+guid).css({"opacity":"0.3"});
+                $(".timer_box#"+guid).css({"opacity":"0.3"});       // Make the clock less visible when dragging.
             });
         }).bind("mouseup",function(){
             $cl.unbind("mousemove");
-            $(".timer_box#"+guid).css({"opacity":"1"});
+            $(".timer_box#"+guid).css({"opacity":"1"});             // Make the clock visible when it is dropped.
         });
 
+        // Clicking on a lap timer.
         $('#' + guid + '_link.5').on('click', function(){
             //check if the there are laptime recorded for the specific laptimer and then append it
             if(typeof lapTime[guid] !== "undefined" && lapTime[guid] !== null)

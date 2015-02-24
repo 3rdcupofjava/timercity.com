@@ -18,6 +18,17 @@
 //}
 
 var storage = {
+    storeClock : function (value){                                  // Stores the new clock to the temporary_storage.
+        temporary_storage[this.getIndex()] = value;                 // Store  the new clock to the storage.
+    },
+    getIndex : function(){                                          // Gets an empty index.
+        var index = 0;
+
+        while(temporary_storage[index] != null){                    // Find a null or empty index so that it won't waste any memory.
+            index++;
+        }
+        return index;                                               // Return the empty index value.
+    },
     generate: function(result) {
         if($("div.tab-pane.active").length > 0)
         {
@@ -33,6 +44,7 @@ var storage = {
                             Remove the specific clock object.
                             Also remove the navigation of the specific clock.
                         */
+
                         $(str+"_nav").show();
                         $(str+"_nav").remove();
                         $(".lapTimeHolder").html("");
@@ -47,27 +59,27 @@ var storage = {
                     switch(timer_type) {
                         case '1':
                             clock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         case '2':
                             timerClock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         case '3':
                             countDownClock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         case '4':
                             stopWatchClock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         case '5':
                             lapTimerClock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         default :
@@ -82,9 +94,19 @@ var storage = {
     },
     local : {
         save : function() { //save locally
-            localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
-            localStorage.setItem($('#storage_key_save').val()+"_tabs", JSON.stringify(tabs_storage));
-            alert("Saved!");
+            if(localStorage.getItem($("#storage_key_save").val())){       // Check if there are items saved of the key.
+                if(localStorage.getItem($("#storage_key_save").val()).length > 0){                                         // Check if there are current contents with the specified key value.
+                    if(confirm("There are current saved contents with your specified name. Reset it?")){
+                        localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));             // Save the clocks.
+                        localStorage.setItem($('#storage_key_save').val()+"_tabs", JSON.stringify(tabs_storage));          // Save the tabs.
+                        alert("Saved!");
+                    }
+                }
+            }else{
+                localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));             // Save the clocks.
+                localStorage.setItem($('#storage_key_save').val()+"_tabs", JSON.stringify(tabs_storage));          // Save the tabs.
+                alert("Saved!");
+            }
            // maybe store last value in session and load after page reload.
            // or need track somehow from which name of local \ global storage get timers after page reload.
            // sessionStorage.setItem('last_timer', JSON.stringify(temporary_storage));
@@ -93,7 +115,7 @@ var storage = {
             //get the items from the localStorage based from the inputted value
             var result = JSON.parse(localStorage.getItem($('#storage_key_load').val()));
             var loadedTabs = JSON.parse(localStorage.getItem($("#storage_key_load").val()+"_tabs"));
-            if(loadedTabs != null)
+            if(loadedTabs != null && loadedTabs.length != 0)
                 tabs.loadTabs(loadedTabs,false);   //load the tabs
             if(result != null){
                 //generate the result
