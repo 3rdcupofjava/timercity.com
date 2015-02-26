@@ -150,7 +150,7 @@ svg{
 #buttons_lap_timer/{float:left; display:none;}
 .lapTimeHolder{margin-top: 10px;}
 .lapTimeHolder > div{padding: 10px;}
-.timer_holder{display: block;float:left;min-width:30%; padding:5px 0px; min-height: 550px;} 
+.timer_holder{display: block;float:left;min-width:20%; padding:5px 0px; min-height: 550px;}
 .timer_box{margin-top:20px;margin-left: 3px;display: block;position: relative;}/*min-width: 250px;}*/
 .tb_nav{background-color: #fff; padding:2px;border:1px solid #e1e1e1;float:left;width:200px;}
 .tb_nav a:hover{text-decoration: none;}
