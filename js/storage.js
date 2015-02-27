@@ -133,37 +133,31 @@ var storage = {
                 data: 'padID=' + $('#storage_key_save').val() + '&text=' + JSON.stringify(temporary_storage) + '&tabID=' + $('#storage_key_save').val()+'tabs'+'&tabs='+JSON.stringify(tabs_storage), // not working
                 cache: false,
                 success: function(msg) {
-                    alert('saved!');
+                    $("div.tab-content").prepend("<span class='success' alt='loading'>Your data has been saved.</span><script id='tempscr'>$(function(){setTimeout(function(){$('.success').remove();$('#tempscr').remove();},2000);});</script>");
                 },error: function(){
-                    alert("error");
+                    $("div.tab-content").prepend("<span class='error' alt='loading'>Error saving your data.</span><script id='tempscr'>$(function(){setTimeout(function(){$('.error').remove();$('#tempscr').remove();},2000);});</script>");
                 }
             });
         },
         load : function() { //load globally based from the inputted key
             $.ajax({
                 type: "POST",
-                url: "index.php/storage/loadTabs",
-                data: 'tabID=' + $('#storage_key_load').val(),
+                url: "index.php/storage/load",
+                data: 'padID=' + $('#storage_key_load').val(),
                 cache: false,
                 success: function(msg) {
-                    if(msg){ //check if there are data that are retrieved
-                        var result = JSON.parse(msg);
-                        tabs.loadTabs(result,false);
-                    }
-                    $.ajax({
-                        type: "POST",
-                        url: "index.php/storage/load",
-                        data: 'padID=' + $('#storage_key_load').val(),
-                        cache: false,
-                        success: function(msg) {
-                            if(msg){ //check if there are data that are retrieved
-                                var result = JSON.parse(msg);
-                                storage.generate(result);  
-                            }
-                            else //alert if there are no data from the search
-                                alert("No data.");
+                    var result = JSON.parse(msg);
+                    if(result.data['tabs'] !== null && result.data['clocks'] !== null){ //check if there are data that are retrieved
+                        if(result.data['tabs'] !== null){                               // Check if there are tabs.
+                            tabs.loadTabs(JSON.parse(result.data['tabs']),false);       // Loads the tabs.
                         }
-                    });
+
+                        if(result.data['clocks'] !== null){                             // Check if there are clocks.
+                            storage.generate(JSON.parse(result.data['clocks']));        // Load the clocks.
+                        }
+                    }else{
+                        $("div.tab-content").prepend("<span class='error' alt='loading'>Error. No data.</span><script id='tempscr'>$(function(){setTimeout(function(){$('.error').remove();$('#tempscr').remove();},2000);});</script>");
+                    }
                 }
             }); 
         }
@@ -179,8 +173,9 @@ var storage = {
 };
 
 /*
-    Show a loading animated icon when ajax call is started
+    Show a loading message when ajax call is started.
+    Remove the temporary script after the process.
 */
 $(document).ajaxStart(function () {
-    $("div.tab-content").append("<span class='loading' alt='loading'>Loading......</span><script>$(document).ajaxStop(function(){$('span.loading').remove();});</script>");
+    $("div.tab-content").prepend("<span class='loading' alt='loading'>Loading......</span><script id='tempscr'>$(document).ajaxStop(function(){$('span.loading').remove();$('#tempscr').remove();});</script>");
 });

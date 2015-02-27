@@ -10,6 +10,7 @@ class Controller_Storage extends Controller {
             $this->response->body('this page does nothing');
 	}
 
+	// Creates a new pad based on the padID.
 	public function create_pad($padID)
 	{
 		$url = 'http://e.znotez.com/api/1/createPad';
@@ -27,6 +28,8 @@ class Controller_Storage extends Controller {
 		$result = file_get_contents($url, false, $context);
 	}
         
+
+    // Saves the clocks.
 	public function action_save()
 	{
 			if($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -69,6 +72,7 @@ class Controller_Storage extends Controller {
 			}
 	}
         
+    // Loads the clocks and the tabs. Called by ajax call.
 	public function action_load()
 	{
 		if(isset($_POST['padID'])) {
@@ -85,13 +89,16 @@ class Controller_Storage extends Controller {
 			$context  = stream_context_create($options);
 			$result = file_get_contents($url, false, $context);
 
-			$data = json_decode($result, true);
+			$clocks = json_decode($result, true);							// Get the data for the clocks.
+			$tabs = $this->loadTabs($_POST['padID']);						// Get the data for the tabs. The data passed is already decoded.
 
-			$res = $data['data']['text'];
-			$this->response->body($res);
+			$response['data']['clocks'] = $clocks['data']['text'];			// Store the data of the clocks to the response.
+			$response['data']['tabs'] = $tabs['data']['text'];				// Store the data of the tabs to the response.
+			echo json_encode($response);									// Return te response to ajax call.
 		}
 	}
 
+	// Saves the tabs to other pad.
 	private function saveTabs(){
 		if(isset($_POST['tabID']))
 		{
@@ -119,26 +126,24 @@ class Controller_Storage extends Controller {
 		}
 	}
 
-	public function action_loadTabs(){
-		if(isset($_POST['tabID'])) {
-			$url = 'http://e.znotez.com/api/1/getText';
-			$data = array('apikey' => $this->api_key,
-						  'padID' => 'my_timers_' . $_POST['tabID'].'tabs');
-			$options = array(
-				'http' => array(
-					'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-					'method'  => 'POST',
-					'content' => http_build_query($data),
-				),
-			);
-			$context  = stream_context_create($options);
-			$result = file_get_contents($url, false, $context);
+	// Loads the tabs.
+	private function loadTabs($id){
+		$url = 'http://e.znotez.com/api/1/getText';
+		$data = array('apikey' => $this->api_key,
+					  'padID' => 'my_timers_'.$id.'tabs');
+		$options = array(
+			'http' => array(
+				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+				'method'  => 'POST',
+				'content' => http_build_query($data),
+			),
+		);
+		$context  = stream_context_create($options);
+		$result = file_get_contents($url, false, $context);
 
-			$data = json_decode($result, true);
+		$data = json_decode($result, true);
 
-			$res = $data['data']['text'];
-			$this->response->body($res);
-		}
+		return $data;
 	}
 
 } // End Storage

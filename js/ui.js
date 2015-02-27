@@ -214,13 +214,11 @@ var ui = {
         this.timer_types();
         this.set_type(null,'1', false);
         
-        //digitalTimer.render();
+        // digitalTimer.render();
         
         $('#alarm_time').timepicker({'timeFormat':'H:i'});
         $('#countdown_time').timepicker({'timeFormat':'H:i:s'});
 
-        // newTabCount = tabs.updateStorageIndex();            //update the index
-        // tabs.store(newTabCount,"Home");                     //store the Home
         tabs.updateTabsDroppable();                         //update the droppables
 
         //check if there are last session tabs
