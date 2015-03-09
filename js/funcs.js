@@ -60,7 +60,12 @@ var tabs = {
                     var $item = $(this);
                     var $list = $($item.find('a').attr('href')).find('.connectedColumn:first');
                     ui.draggable.hide('slow', function (){
-                      $(this).appendTo($list).show('slow');
+                        $("#"+this.id+"_nav").remove();
+                        var template = $("#min_clocks").html();
+                        Mustache.parse(template);
+                        var output = Mustache.render(template,clocks[this.id]);
+                        $($item.find('a').attr('href')+".tab-pane .min_clock_holder").append(output);
+                        $(this).appendTo($list).show('slow');
                     });
                 }
             });         

@@ -120,7 +120,7 @@ var clock = {
             // next line is fix
 
             //append the minimize button
-            $('.min_clock_holder').append(output2);
+            $('.tab-pane.active .min_clock_holder').append(output2);
 
             switch(view['type'])
             {

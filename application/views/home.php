@@ -157,6 +157,7 @@
                 <div class="tab-content">
                   <div class="min_clock_holder"></div> <!-- Minimized clocks will be seen everywhere on tabs but when restored the clock will only appear to the tab where it belongs -->
                   <div role="tabpanel" class="tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom active" id="home--0">
+                    <div class="min_clock_holder"></div> <!-- Minimized clocks will be seen everywhere on tabs but when restored the clock will only appear to the tab where it belongs -->
                     <div class="clear"></div>
                     <div class="column1 timer_holder connectedColumn"></div>
                     <div class="column2 timer_holder connectedColumn"></div>
