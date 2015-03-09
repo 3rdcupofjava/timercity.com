@@ -1040,13 +1040,14 @@ var digitalTimer = {
 
 //removes the clock and clear its interval
 function removeClock(guid,ts_count){
-    temporary_storage[ts_count] = null;     //remove the specific clock from the temporary_storage
+    temporary_storage[ts_count] = null;         // Remove the specific clock from the temporary_storage.
+    updateSession('lsc',temporary_storage);     // Update the session for lsc.
     $("#"+guid.id+"_nav").show();
     $("#"+guid.id+"_nav").remove();
     $("#"+guid.id+".timer_box").remove();
     $(".lapTimeHolder").html("");
     clearInterval(TBFlasher);
-    clearInterval(clockObject[guid.id]);    //clear the interval of the closed clock to stop the specific clock process
+    clearInterval(clockObject[guid.id]);        // Clear the interval of the closed clock to stop the specific clock process
 }
 
 //minimizes the specific clock

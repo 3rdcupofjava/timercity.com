@@ -60,12 +60,12 @@ var tabs = {
                     var $item = $(this);
                     var $list = $($item.find('a').attr('href')).find('.connectedColumn:first');
                     ui.draggable.hide('slow', function (){
-                        $("#"+this.id+"_nav").remove();
-                        var template = $("#min_clocks").html();
-                        Mustache.parse(template);
-                        var output = Mustache.render(template,clocks[this.id]);
-                        $($item.find('a').attr('href')+".tab-pane .min_clock_holder").append(output);
-                        $(this).appendTo($list).show('slow');
+                        $("#"+this.id+"_nav").remove();                                                         // Remove the current minimize navigation for the clock to be moved.
+                        var template = $("#min_clocks").html();                                                 // Initialize the template.
+                        Mustache.parse(template);                                                               // Parse the template.
+                        var output = Mustache.render(template,clocks[this.id]);                                 // Render the data from the clock that is moved.
+                        $($item.find('a').attr('href')+".tab-pane .min_clock_holder").append(output);           // Append the new minimize navigation to where the clock is moved.
+                        $(this).appendTo($list).show('slow');                                                   // Drop the clock.
                     });
                 }
             });         
@@ -136,8 +136,8 @@ var tabs = {
     }
 };
 
-function updateSession (name, value){       //updates the session based on the name and value
-    if(name == 'lst'){
+function updateSession (name, value){       // Updates the session based on the name and value
+    if(name == 'lst'){                      // LST means "Last Session Tabs".
         var temp=[];
         value = JSON.parse(value);
         for(var count in value){
@@ -147,5 +147,7 @@ function updateSession (name, value){       //updates the session based on the n
             }
         }
         sessionStorage.setItem(name,JSON.stringify(temp));
+    }else if(name == 'lsc'){                // LSC means "Last sesssion clocks."
+        sessionStorage.setItem(name,JSON.stringify(value));
     }
 }

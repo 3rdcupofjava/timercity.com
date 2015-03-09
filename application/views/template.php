@@ -55,18 +55,11 @@
       $(function(){
         if(typeof(Storage) !== 'undefined') // check if browser supports local storage
         {
-          if(confirm('Load last timers?'))
-          {
-            //access only the clocks, and not the tabs to prevent timer_types error
-            var i = 0;
-            for(var prop in localStorage){
-              var result = JSON.parse(localStorage.getItem(localStorage.key(i)));
-              if(result != null){
-                if(typeof result[i] != 'undefined'){
-                  storage.generate(result);
-                }
-              }
-              i++;
+          if(confirm('Load last session timers?'))                        // Ask if to load the last session timers.
+          {       
+            var result = JSON.parse(sessionStorage.getItem('lsc'));       // Get the clocks based on session.
+            if(result != null){                                           // Check if the session is not null.
+                storage.generate(result);                                 // Generate the result if it is not null.
             }
           }
         }

@@ -19,7 +19,10 @@
 
 var storage = {
     storeClock : function (value){                                  // Stores the new clock to the temporary_storage.
-        temporary_storage[this.getIndex()] = value;                 // Store  the new clock to the storage.
+        var index = this.getIndex();
+        temporary_storage[index] = value;                           // Store  the new clock to the storage.
+        value['ts_count'] = index;                                  // Change the ts_count for future updates.
+        updateSession('lsc',temporary_storage);                     // Update the session for lsc.
     },
     getIndex : function(){                                          // Gets an empty index.
         var index = 0;
