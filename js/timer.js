@@ -81,6 +81,7 @@ var timerStarted = [],
 var holder=0;
 var activeTab = "#home--0";
 var TBFlasher;
+var useAnimatedClock;
 
 var clockObject = [];
 var clocks = [];
@@ -92,7 +93,8 @@ var clock = {
         var guid = view['guid'];
         clocks[guid] = view;
         seconds = 0, minutes = 0, hours = 0;
-
+        
+        useAnimatedClock = $("#clockTypeDisplay").is(":checked");
         //for the clock
         var template = $('#template_timer_box').html();
         Mustache.parse(template);
@@ -126,7 +128,7 @@ var clock = {
             {
                 case '1':
                 case 1:
-                    $(activeTab+' > .timer_holder.column'+holder).append(output);
+                        $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 case '2':
                 case 2:
@@ -303,7 +305,9 @@ var clock = {
             {
                 clockObject[guid] = setInterval(function(){
                     clock.updateData(offset,guid,view['type']);
-                    clock.moveHands(guid);
+                    if(useAnimatedClock){
+                        clock.moveHands(guid);
+                    }
 
                     //check if it is an alarm clock
                     if(view['type'] == '2')
@@ -344,12 +348,22 @@ var clock = {
 
         var svg = d3.select('#' + guid + ' .svg_placeholder').append("svg")
                 .attr("width", width)
-                .attr("height", height)
+                .attr("height", function(){
+                    if(useAnimatedClock){
+                        return height;
+                    }else{
+                        return "30";
+                    }
+                })
                 .attr('class', 'img-thumbnail');
-
 
         var face = svg.append('g')
                 .attr('id','clock-face')
+                .attr('class',function(){
+                    if(!useAnimatedClock){
+                        return "hidden";
+                    }
+                })
                 .attr('transform','translate(' + (clockRadius + margin) + ',' + (clockRadius + margin) + ')');
 
         //add marks for seconds
@@ -438,7 +452,7 @@ var clock = {
                 .attr('transform',function(d){
                     return 'rotate('+ d.scale(d.value) +')';
                 });
-                
+            
         //calls the postRender of every type of clock
         switch(view['type']){
             case 1:
@@ -461,6 +475,17 @@ var clock = {
                 lapTimerClock.postRender(guid);
                 break;
         }
+
+        $("#clockTypeDisplay").on('change',function(){
+            useAnimatedClock = $("#clockTypeDisplay").is(':checked');
+            if(useAnimatedClock){
+                $('.svg_placeholder > svg').attr('height',height);
+                face.attr('class','');
+            }else{
+                $('.svg_placeholder > svg').attr('height','30');
+                face.attr('class','hidden');
+            }
+        });
     },
     moveHands: function(area){
         d3.select('#clock-hands'+area).selectAll('line')
@@ -524,18 +549,28 @@ var clock = {
         {
             if(!isNaN(handData[guid][1].value))
             {
-                if(handData[guid][0].value > 9)
-                    handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
-                else
-                    handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+                if(handData[guid][0].value > 9){
+                    // if(useAnimatedClock){
+                        handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+                    // }else{
+                    //     handData[guid][1].value > 9 ? $("#"+guid+"_link .digitalOutput").text(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digitalOutput").text(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+                    // }
+                }else{
+                    // if(useAnimatedClock){
+                        handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+                    // }else{
+                    //     handData[guid][1].value > 9 ? $("#"+guid+"_link .digitalOutput").text("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digitalOutput").text("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]); 
+                    // }
+                }
             }
         }
         else
         {
-            if(handData[guid][0].value > 9)
+            if(handData[guid][0].value > 9){
                 handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").html(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]) : $("#"+guid+"_link .digital_display").html(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]);
-            else
+            }else{
                 handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").html("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]) : $("#"+guid+"_link .digital_display").html("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]);
+            }
         }
     }
 };
@@ -704,6 +739,7 @@ var countDownClock = {
     postRender : function(guid){
         $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
             <button onclick="countDownClock.start('+guid+');">Start</button> \
+            <button onclick="countDownClock.pause('+guid+');">Pause</button> \
             <button onclick="countDownClock.stop('+guid+');">Stop</button>');
     },
     setParams : function (hours,minutes,seconds,guid){   //set the parameters for retrieving
@@ -744,11 +780,20 @@ var countDownClock = {
             }
         }
     },
-    stop: function (guid){      //stops the countdown timer
+    pause: function(guid){       //pauses the countdown timer
         countDownStarted[guid.id] = false;
         clearInterval(clockObject[guid.id]);
         if(typeof cd_params[guid.id] !== "undefined")
             cd_params[guid.id].stopped = true;
+    },
+    stop: function (guid){      //stops the countdown timer
+        handData[guid.id][0].value = 0;
+        handData[guid.id][1].value = 0;
+        handData[guid.id][2].value = 1;
+        // checked if timer is paused
+        if(cd_params[guid.id].stopped){
+            this.start(guid);
+        }
     },
     updateCountDown: function (guid){
         handData[guid][2].value -=1;   //decrement the seconds
@@ -759,7 +804,7 @@ var countDownClock = {
                 //stop the countdown
                 countDownStarted[guid] = false;
                 clearInterval(clockObject[guid]);
-                countDownStarted[guid] === false;
+                countDownStarted[guid] = false;
                 alarm.playSound();
             }
             else

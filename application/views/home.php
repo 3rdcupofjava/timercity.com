@@ -124,6 +124,11 @@
             <input id="countdown_time" type="text" class="form-control" placeholder="00:00:00" style="display:none;">
             <input id="alarm_time" type="text" data-time-format="H:i:s" class="form-control" placeholder="00:00:00" style="display:none;">
 
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="clockTypeDisplay"> Use Analog Clock
+              </label>
+            </div>
             <br />
             <div id="buttons_edit_mode" style="display:none;">
                 <button id="save" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save</button>
