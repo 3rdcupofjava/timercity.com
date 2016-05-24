@@ -82,6 +82,7 @@ var holder=0;
 var activeTab = "#home--0";
 var TBFlasher;
 var useAnimatedClock;
+var activeClock;
 
 var clockObject = [];
 var clocks = [];
@@ -93,8 +94,7 @@ var clock = {
         var guid = view['guid'];
         clocks[guid] = view;
         seconds = 0, minutes = 0, hours = 0;
-        
-        useAnimatedClock = $("#clockTypeDisplay").is(":checked");
+
         //for the clock
         var template = $('#template_timer_box').html();
         Mustache.parse(template);
@@ -240,6 +240,7 @@ var clock = {
         
         // Clicking on all timer to edit.
         $('#' + guid + '_link').on('click', function(){
+            activeClock = guid;
             $('#title').val(clocks[guid].title);
             $('#size').val(clocks[guid].clockSize);
             $('#timezone').val(clocks[guid].timezone);
@@ -296,6 +297,7 @@ var clock = {
                     }
                 }
                 $(".lapTimeHolder").html(t); //append the final lap times to the lapTimeHolder
+                $('#'+guid+'_link .laptime_display').html(t);
             }
         });
 
@@ -305,7 +307,7 @@ var clock = {
             {
                 clockObject[guid] = setInterval(function(){
                     clock.updateData(offset,guid,view['type']);
-                    if(useAnimatedClock){
+                    if(clocks[guid].displayAnalog){
                         clock.moveHands(guid);
                     }
 
@@ -349,7 +351,7 @@ var clock = {
         var svg = d3.select('#' + guid + ' .svg_placeholder').append("svg")
                 .attr("width", width)
                 .attr("height", function(){
-                    if(useAnimatedClock){
+                    if(clocks[guid].displayAnalog){
                         return height;
                     }else{
                         return "30";
@@ -358,9 +360,9 @@ var clock = {
                 .attr('class', 'img-thumbnail');
 
         var face = svg.append('g')
-                .attr('id','clock-face')
+                .attr('id','clock-face-'+guid)
                 .attr('class',function(){
-                    if(!useAnimatedClock){
+                    if(!clocks[guid].displayAnalog){
                         return "hidden";
                     }
                 })
@@ -475,17 +477,6 @@ var clock = {
                 lapTimerClock.postRender(guid);
                 break;
         }
-
-        $("#clockTypeDisplay").on('change',function(){
-            useAnimatedClock = $("#clockTypeDisplay").is(':checked');
-            if(useAnimatedClock){
-                $('.svg_placeholder > svg').attr('height',height);
-                face.attr('class','');
-            }else{
-                $('.svg_placeholder > svg').attr('height','30');
-                face.attr('class','hidden');
-            }
-        });
     },
     moveHands: function(area){
         d3.select('#clock-hands'+area).selectAll('line')
@@ -789,7 +780,7 @@ var countDownClock = {
     stop: function (guid){      //stops the countdown timer
         handData[guid.id][0].value = 0;
         handData[guid.id][1].value = 0;
-        handData[guid.id][2].value = 1;
+        handData[guid.id][2].value = 0;
         // checked if timer is paused
         if(cd_params[guid.id].stopped){
             this.start(guid);

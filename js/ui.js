@@ -146,14 +146,16 @@ var ui = {
     },
     set_type: function(guid, type, edit_mode){
         if(edit_mode){
-            this.set_type(null,type,false);
+            // this.set_type(null,type,false);
             var title = $('#title').val();
             var size = $('#size').val();
             var timezone = $("#timezone").val();
             var time = $('#countdown_time').val();
             var alarm_time = $('#alarm_time').val();
+            var displayAnalog = $("#clockTypeDisplay").is(":checked");
 
             var view = {
+                'displayAnalog' : displayAnalog,
                 'guid' : guid.id,
                 'type' : type,
                 'timezone' : timezone,
@@ -165,6 +167,7 @@ var ui = {
                 'ts_count' : clocks[guid.id].ts_count
             };
             if(type == 3){
+                countDownClock.pause(guid);
                 countDownClock.stop(guid);
                 cd_params[guid.id] = null;
             }else if(type == 4){
@@ -275,6 +278,7 @@ $(document).ready(function(){
             var timezone = $("#timezone").val();
             var time = $('#countdown_time').val();
             var alarm_time = $('#alarm_time').val();
+            var displayAnalog = $("#clockTypeDisplay").is(":checked");
 
             if(size < 100) size = 100; //minimum size will be 100
             if(title !== '' && size !== '' && !isNaN(size)) {
@@ -298,7 +302,7 @@ $(document).ready(function(){
                             return 0;
                         }
                     }
-                    var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time, 'type_name' : type_name};
+                    var view = {'displayAnalog':displayAnalog,'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time, 'type_name' : type_name};
                 }
                 else //if alarm clock
                 {
@@ -317,7 +321,7 @@ $(document).ready(function(){
                         alert("Invalid alarm time.");
                         return 0;
                     }
-                    var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'alarm_time': alarm_time, 'type_name' : type_name};
+                    var view = {'displayAnalog':displayAnalog,'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'alarm_time': alarm_time, 'type_name' : type_name};
                 }
                 timer_count++;
                 view['ts_count'] = storage.getIndex();      // Get the index where the new clock will be store in the temporary_storage.

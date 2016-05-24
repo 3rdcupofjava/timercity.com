@@ -4,7 +4,7 @@ var newTabCount = 0,
 $(function(){
     //adds a new tab
     $("#tab-adder").on("click",function(){
-        newTabCount = tabs.updateStorageIndex();
+        tabs.updateStorageIndex();
         //append the new tab with its corresponding tab-pane
         $("ul.clock-tabs").append('<li role="presentation"><a href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">New Tab</a></li>');
         $("div.tab-content").append("<div role='tabpanel' class='tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom' id='newTab"+newTabCount+"'><div class='min_clock_holder'></div><div class='clear'></div><div class='column1 timer_holder connectedColumn'></div><div class='column2 timer_holder connectedColumn'></div><div class='column3 timer_holder connectedColumn'></div></div><script>$(function() {$('.column1,.column2,.column3').sortable({connectWith:'.connectedColumn'}).disableSelection();});</script>");
@@ -48,24 +48,19 @@ $(function(){
 
 var tabs = {
     updateTabsDroppable : function(){       //updates the tabs and new tabs to be droppable
-        //hide the message after adding tab
+        //hide the message after adding clock
         if($("div.tab-pane").length > 0) $("ul.nav.nav-tabs.clock-tabs > li#ntm").hide();
 
         //process so that the clocks can be drag/drop between tabs
         $tabs = $('#tabs');
         $tab_items = $('ul:first li',$tabs).droppable({
-                accept: '.connectedColumn div.timer_box',
-                hoverClass: 'highlight',
+                accept: '.connectedColumn div',
+                hoverClass: 'ui-state-hover',
                 drop: function (event, ui){
                     var $item = $(this);
                     var $list = $($item.find('a').attr('href')).find('.connectedColumn:first');
                     ui.draggable.hide('slow', function (){
-                        $("#"+this.id+"_nav").remove();                                                         // Remove the current minimize navigation for the clock to be moved.
-                        var template = $("#min_clocks").html();                                                 // Initialize the template.
-                        Mustache.parse(template);                                                               // Parse the template.
-                        var output = Mustache.render(template,clocks[this.id]);                                 // Render the data from the clock that is moved.
-                        $($item.find('a').attr('href')+".tab-pane .min_clock_holder").append(output);           // Append the new minimize navigation to where the clock is moved.
-                        $(this).appendTo($list).show('slow');                                                   // Drop the clock.
+                      $(this).appendTo($list).show('slow');
                     });
                 }
             });         
@@ -103,7 +98,7 @@ var tabs = {
         for(var count in loadedTabs){                   //loop to every values of loadedTabs
             if(loadedTabs[count] != null){              //check if the current item != null
                 
-                newTabCount = this.updateStorageIndex();
+                this.updateStorageIndex();
                 if($("ul.clock-tabs > li.active").length > 0){
                     //append the new tab with its corresponding tab-pane
                     $("ul.clock-tabs").append('<li role="presentation"><a href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">'+loadedTabs[count].name+'</a></li>');
@@ -114,19 +109,17 @@ var tabs = {
                     $("div.tab-content").append("<div role='tabpanel' class='tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom active' id='newTab"+newTabCount+"'><div class='min_clock_holder'></div><div class='clear'></div><div class='column1 timer_holder connectedColumn'></div><div class='column2 timer_holder connectedColumn'></div><div class='column3 timer_holder connectedColumn'></div></div><script>$(function() {$('.column1,.column2,.column3').sortable({connectWith:'.connectedColumn'}).disableSelection();});</script>");
                     activeTab = "#newTab"+newTabCount;  //update the activeTab
                 }
-
+                
                 this.store(newTabCount,loadedTabs[count].name);
                 this.updateTabsDroppable();
             }
         }
-        updateSession('lst',JSON.stringify(tabs_storage));
     },
     updateStorageIndex : function(){    //updates the index for tabs_storage where it finds a NULL element
-        var count = 0;
-        while(tabs_storage[count] != null){
-            count++;
+        newTabCount = 0;
+        while(tabs_storage[newTabCount] != null){
+            newTabCount++;
         }
-        return count;
     },
     store : function (index,name){      //stores the new tab
         tabs_storage[index] = {
@@ -136,8 +129,8 @@ var tabs = {
     }
 };
 
-function updateSession (name, value){       // Updates the session based on the name and value
-    if(name == 'lst'){                      // LST means "Last Session Tabs".
+function updateSession (name, value){       //updates the session based on the name and value
+    if(name == 'lst'){
         var temp=[];
         value = JSON.parse(value);
         for(var count in value){
@@ -147,7 +140,5 @@ function updateSession (name, value){       // Updates the session based on the 
             }
         }
         sessionStorage.setItem(name,JSON.stringify(temp));
-    }else if(name == 'lsc'){                // LSC means "Last sesssion clocks."
-        sessionStorage.setItem(name,JSON.stringify(value));
     }
 }

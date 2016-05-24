@@ -140,7 +140,7 @@
                 <button onclick="resetFields();" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Reset</button>
             </div>
             
-            <div class="lapTimeHolder"></div>
+            <!--<div class="lapTimeHolder"></div>-->
 
         </div>
         <!-- >>> LEFT COLUMN >>> -->
