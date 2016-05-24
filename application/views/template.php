@@ -62,7 +62,7 @@
       });
 
       $(function() {
-        $("#tab-clocks").tab();
+        $(".clock-tabs a:first").tab('show');
         $( ".column1,.column2,.column3" ).sortable({connectWith:".connectedColumn"}).disableSelection();
       });
 
