@@ -1,0 +1,18 @@
+<div id="{{guid}}" class="timer_box">
+    <a id="{{guid}}_link" href="#/" class="{{type}} thumbnail">
+        <div class="title pull-left">{{title}} {{type_name}}</div>
+        <button onclick="removeClock({{guid}},{{ts_count}});" type="button" class="close" data-dismiss="alert" title="Remove Clock">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <button onclick="minimizeClock({{guid}});" type="button" class="close" title="Minimize Clock">
+            <span aria-hidden="true">&minus;</span>
+            <span class="sr-only">Minimize</span>
+        </button>
+        <div class="svg_placeholder"></div>
+        <div class="laptime_display"></div>
+        <div class="digital_display pull-right"></div>
+        <div class="btns pull-left"></div>
+        <div class="clear"></div>
+    </a>
+</div>

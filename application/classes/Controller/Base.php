@@ -29,9 +29,11 @@ class Controller_Base extends Controller_Template {
                 $pos = strpos($this->request->url(), '/index.php/'.$nav['path']);
                 if($pos !== false)
                 {
-                    $nav_list .= ' class="active"';
+                    $nav_list .= ' class="active nav-item"';
+                }else{
+                     $nav_list .= ' class="nav-item"';
                 }
-                $nav_list .= '><a href="/'.$nav['path'].'">';
+                $nav_list .= '><a class="nav-link" href="/'.$nav['path'].'">';
                 if(isset($nav['mini_icon']))
                 {
                     $nav_list .= '<i class="glyphicon glyphicon-'.$nav['mini_icon'].'"></i> ';
@@ -43,7 +45,7 @@ class Controller_Base extends Controller_Template {
 
         $nav_list = '';
         foreach (Kohana::$config->load('main.admin') as $admin_nav) {
-            $nav_list .= '<li><a href="/'.$admin_nav['url'].'">'.$admin_nav['title'].'</a></li>';
+            $nav_list .= '<a class="dropdown-item" href="/'.$admin_nav['url'].'">'.$admin_nav['title'].'</a>';
         }
         $this->template->admin_nav = $nav_list;
         # >>> NAVIGATION >>>

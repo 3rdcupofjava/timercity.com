@@ -26,7 +26,6 @@
     <script type="text/javascript" src="<?=URL::base()?>js/jquery-2.1.0.min.js"></script>
     <script type="text/javascript" src="<?=URL::base()?>js/jquery-ui.min.js"></script>
     <script src="<?=URL::base()?>js/jquery.timepicker.js"></script>
-    <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
     <!-- <script type="text/javascript" src="<?=URL::base()?>js/bootstrap.min.js"></script> -->
     <script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script><!-- Tether for Bootstrap --> 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous"></script>
@@ -63,6 +62,7 @@
       });
 
       $(function() {
+        $("#tab-clocks").tab();
         $( ".column1,.column2,.column3" ).sortable({connectWith:".connectedColumn"}).disableSelection();
       });
 

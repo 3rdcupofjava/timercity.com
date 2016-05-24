@@ -78,26 +78,28 @@ var ui = {
             $('#registration_form').hide();
 
         });
-        
-        $('#log_in a').on('click', function(){
 
-            var parent = $(this).parent();
-            if(parent.hasClass('active')){
-                parent.removeClass('active');
-                $('#registration_form').hide();
+        $('#log_in a').on({
+            click: function(event) {
+                event.preventDefault();
+                var parent = $(this).parent();
+                if(parent.hasClass('active')){
+                    parent.removeClass('active');
+                    $('#registration_form').hide();
+                }
+                else{
+                    parent.addClass('active')
+                        .siblings().removeClass('active');
+                    $('#registration_form').show();
+                    $('#button_request').hide();
+                    $('#button_log_in').show();
+                }
+                $('#registration_sorry').hide();
+
+                $('#password').show();
+                $('#why').hide();
+                $("#nav_login").show();
             }
-            else{
-                parent.addClass('active')
-                    .siblings().removeClass('active');
-                $('#registration_form').show();
-                $('#button_request').hide();
-                $('#button_log_in').show();
-            }
-            $('#registration_sorry').hide();
-
-            $('#password').show();
-            $('#why').hide();
-
         });
         
         $('#early_registration').on('click', function(){

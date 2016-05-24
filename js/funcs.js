@@ -6,7 +6,7 @@ $(function(){
     $("#tab-adder").on("click",function(){
         tabs.updateStorageIndex();
         //append the new tab with its corresponding tab-pane
-        $("ul.clock-tabs").append('<li role="presentation"><a href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">New Tab</a></li>');
+        $("ul.clock-tabs").append('<li class="nav-item" role="presentation"><a href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">New Tab</a></li>');
         $("div.tab-content").append("<div role='tabpanel' class='tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom' id='newTab"+newTabCount+"'><div class='min_clock_holder'></div><div class='clear'></div><div class='column1 timer_holder connectedColumn'></div><div class='column2 timer_holder connectedColumn'></div><div class='column3 timer_holder connectedColumn'></div></div><script>$(function() {$('.column1,.column2,.column3').sortable({connectWith:'.connectedColumn'}).disableSelection();});</script>");
 
         tabs.store(newTabCount,"New Tab");
