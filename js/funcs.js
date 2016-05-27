@@ -36,6 +36,7 @@ $(function(){
                 }
                 $("div.tab-content > div.tab-pane.active").remove(); //remove the active tab-pane
                 updateSession('lst',JSON.stringify(tabs_storage));
+                $(".clock-tabs li a:last").trigger("click"); // Set active tab
             }
         }
         else    //Show alert if there is no active tab

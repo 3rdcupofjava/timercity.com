@@ -151,7 +151,7 @@
 
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs clock-tabs" id="tab-clocks" role="tablist">
-                    <li id="ntm"><span>Click the + button at the side to add tabs.</span></li>
+                    <li id="ntm" class="nav-item hidden"><span class="nav-link">Click the + button at the side to add tabs.</span></li>
                     <li class="nav-item"><a class="nav-link active" href="#home--0" onclick="tabs.changeAT('#home--0')" ondblclick="tabs.showRename(0)" aria-controls="home--0" role="tab" data-toggle="tab">Home</a></li>
                     <div class="pull-xs-right nav-item tab-nav" role="presentation"><a id="tab-adder" title="Add New Tab" href="#"><i class="fa fa-plus-circle"></i></a></div>
                     <div class="pull-xs-right nav-item tab-nav" role="presentation"><a id="tab-remover" title="Remove Active Tab" href="#"><i class="fa fa-minus-circle"></i></a></div>
