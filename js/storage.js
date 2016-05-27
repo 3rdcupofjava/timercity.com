@@ -149,15 +149,20 @@ var storage = {
                 data: 'padID=' + $('#storage_key_load').val(),
                 cache: false,
                 success: function(msg) {
-                    var result = JSON.parse(msg);
-                    if(result.data['tabs'] !== null && result.data['clocks'] !== null){ //check if there are data that are retrieved
-                        if(result.data['tabs'] !== null){                               // Check if there are tabs.
-                            tabs.loadTabs(JSON.parse(result.data['tabs']),false);       // Loads the tabs.
-                        }
+                    if(msg !== ''){
+                        var result = JSON.parse(msg);
+                        // if(result.data['tabs'] !== null && result.data['clocks'] !== null){ //check if there are data that are retrieved
+                        //     if(result.data['tabs'] !== null){                               // Check if there are tabs.
+                        //         tabs.loadTabs(JSON.parse(result.data['tabs']),false);       // Loads the tabs.
+                        //     }
 
-                        if(result.data['clocks'] !== null){                             // Check if there are clocks.
-                            storage.generate(JSON.parse(result.data['clocks']));        // Load the clocks.
-                        }
+                        //     if(result.data['clocks'] !== null){                             // Check if there are clocks.
+                        //         storage.generate(JSON.parse(result.data['clocks']));        // Load the clocks.
+                        //     }
+                        // }else{
+                        //     $("div.tab-content").prepend("<span class='error' alt='loading'>Error. No data.</span><script id='tempscr'>$(function(){setTimeout(function(){$('.error').remove();$('#tempscr').remove();},2000);});</script>");
+                        // }
+                        storage.generate(result);        // Load the clocks.
                     }else{
                         $("div.tab-content").prepend("<span class='error' alt='loading'>Error. No data.</span><script id='tempscr'>$(function(){setTimeout(function(){$('.error').remove();$('#tempscr').remove();},2000);});</script>");
                     }
