@@ -124,7 +124,7 @@ var ui = {
         var view = {
             'id': 'timer_types',
             'name': 'timer_types',
-            'type': 'radio',
+            'type': 'button',
             'options':[
                 {'oid': 1, 'title': 'Clock', 'checked': true},
                 {'oid': 2, 'title': 'Alarm', 'checked': false},
@@ -139,8 +139,8 @@ var ui = {
         var output = Mustache.render(template, view);
         $('#left_col').prepend(output);
 
-        $("input:radio[name='timer_types']").on('change', function(){
-            timer_type = $("input:radio[name='timer_types']:checked").val();
+        $("div#timer_types > button").on('click', function(){
+            timer_type = $(this).attr('value');
             $("#buttons_edit_mode").hide();
             $("#buttons_not_edit_mode").show();
             ui.set_type(null,timer_type, false);

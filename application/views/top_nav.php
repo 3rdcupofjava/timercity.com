@@ -22,7 +22,7 @@
                             <span class="glyphicon glyphicon-th-list"></span>
                             <b class="caret"></b>
                         </a>
-                        <div class="dropdown-menu pull-right" aria-labelledby="settings">
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settings">
                             <a class="dropdown-item" href="/settings"><?= __('Settings') ?></a>
                             <h6 class="dropdown-header dropdown-item"><?= __('Administration') ?></h6>
                             <?=$admin_nav?>

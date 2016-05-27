@@ -129,17 +129,16 @@
                 <input type="checkbox" id="clockTypeDisplay"> Use Analog Clock
               </label>
             </div>
-            <br />
             <div id="buttons_edit_mode" style="display:none;">
-                <button id="save" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save</button>
-                <button id="delete" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</button>
-                <button id="cancel" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                <button id="save" type="button" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
+                <button id="delete" type="button" class="btn btn-danger"><i class="fa fa-remove"></i> Delete</button>
+                <button id="cancel" type="button" class="btn btn-danger"><i class="fa fa-remove"></i> Cancel</button>
             </div>
             <div id="buttons_not_edit_mode">
-                <button id="add" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Add</button>
-                <button onclick="resetFields();" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Reset</button>
+                <button id="add" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add</button>
+                <button onclick="resetFields();" type="button" class="btn btn-danger"><i class="fa fa-remove"></i> Reset</button>
             </div>
-            
+            <br/>
             <!--<div class="lapTimeHolder"></div>-->
 
         </div>
@@ -151,17 +150,17 @@
             <div id="tabs" role="tabpanel">
 
                 <!-- Nav tabs -->
-                <ul class="nav nav-tabs clock-tabs" id="tab-clocks" role="tablist" style="padding:5px;">
+                <ul class="nav nav-tabs clock-tabs" id="tab-clocks" role="tablist">
                     <li id="ntm"><span>Click the + button at the side to add tabs.</span></li>
                     <li class="nav-item"><a class="nav-link active" href="#home--0" onclick="tabs.changeAT('#home--0')" ondblclick="tabs.showRename(0)" aria-controls="home--0" role="tab" data-toggle="tab">Home</a></li>
-                    <div class="pull-xs-right nav-item" role="presentation"><a id="tab-adder" title="Add New Tab" class="glyphicon glyphicon-plus-sign" href="#"></a>+</div>
-                    <div class="pull-xs-right nav-item" role="presentation"><a id="tab-remover" title="Remove Active Tab" class="glyphicon glyphicon-minus-sign" href="#"></a>-</div>
+                    <div class="pull-xs-right nav-item tab-nav" role="presentation"><a id="tab-adder" title="Add New Tab" href="#"><i class="fa fa-plus-circle"></i></a></div>
+                    <div class="pull-xs-right nav-item tab-nav" role="presentation"><a id="tab-remover" title="Remove Active Tab" href="#"><i class="fa fa-minus-circle"></i></a></div>
                 </ul>
 
                 <!-- Tab panes -->
-                <div class="tab-content" style="background-color:#fff">
+                <div class="tab-content">
                   <div class="min_clock_holder"></div> <!-- Minimized clocks will be seen everywhere on tabs but when restored the clock will only appear to the tab where it belongs -->
-                  <div role="tabpanel" style="background-color:#fff" class="tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom active" id="home--0">
+                  <div role="tabpanel" class="tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom active" id="home--0">
                     <div class="min_clock_holder"></div> <!-- Minimized clocks will be seen everywhere on tabs but when restored the clock will only appear to the tab where it belongs -->
                     <div class="clear"></div>
                     <div class="column1 timer_holder connectedColumn"></div>

@@ -11,6 +11,7 @@
 
     <!-- <link href="<?=URL::base()?>css/bootstrap.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+    <link href="<?=URL::base()?>css/font-awesome-4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <link href="<?=URL::base()?>css/main.css" rel="stylesheet">
     
     <script type="text/javascript" src="<?=URL::base()?>js/d3.js"></script>
@@ -44,11 +45,9 @@
     </script>
     
     <script id="template_select" type="x-tmpl-mustache">
-        <div id="{{id}}" class="btn-group" data-toggle="buttons">
+        <div id="{{id}}" role="group" class="btn-group">
             {{#options}}
-                <label class="btn btn-default {{#checked}}active{{/checked}}">
-                  <input type="{{type}}" id="{{id}}_{{oid}}" name="{{id}}" autocomplete="off" value="{{oid}}" {{#checked}}checked{{/checked}}> {{title}}
-                </label>
+                <button type="{{type}}" class="btn btn-secondary" id="{{id}}_{{oid}}" name="{{id}}" autocomplete="off" value="{{oid}}" {{#checked}}checked{{/checked}}> {{title}}</button>
             {{/options}}
         </div>
     </script>
