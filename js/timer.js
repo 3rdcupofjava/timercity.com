@@ -494,7 +494,7 @@ var clock = {
         var result = utc + (3600000*offset); // here we get time with offset.
         var nd = new Date(result);
 
-        if(nd.getHours() < t.getHours() && nd.getHours() < 12)
+        if(nd.getHours() <= t.getHours() && nd.getHours() < 12)
         {
             ampm[guid] = "AM";
         }
@@ -780,10 +780,12 @@ var countDownClock = {
     stop: function (guid){      //stops the countdown timer
         handData[guid.id][0].value = 0;
         handData[guid.id][1].value = 0;
-        handData[guid.id][2].value = 0;
+        handData[guid.id][2].value = 1;
         // checked if timer is paused
-        if(cd_params[guid.id].stopped){
-            this.start(guid);
+        if(typeof cd_params[guid.id] !== "undefined"){
+            if(cd_params[guid.id].stopped){
+                this.start(guid);
+            }
         }
     },
     updateCountDown: function (guid){
