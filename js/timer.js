@@ -974,9 +974,15 @@ var lapTimerClock = {
 };
 
 var alarm = {
+    alarmSound : $("select#alarm_sound").val(),
     playSound : function() {
         var audioElement = document.createElement('audio');
-        audioElement.setAttribute('src', 'http://www.kessels.com/CatSounds/tweety4.wav');
+        audioElement.setAttribute('src', this.alarmSound);
+
+        if($("#alarm_loop").is(":checked")){
+            audioElement.setAttribute("loop","true");
+        }
+
         //audioElement.setAttribute('autoplay', 'autoplay');
         audioElement.load();
         $.get();
@@ -985,6 +991,13 @@ var alarm = {
         }, true);
         audioElement.play();
 
+        $("#alarm_loop").on("change",function(){
+            audioElement.removeAttribute("loop");
+        });
+
+        $("select#alarm_sound").on("change",function (evt){
+            audioElement.pause();
+        });
         /* uncomment it and add to view buttons play / pause for controls
 
         $('.play').click(function() {

@@ -180,7 +180,7 @@ var ui = {
             removeClock(guid,view['ts_count']);
             preDraw(view);
         }else{
-            $('#timezone,#alarm_time,#countdown_time,#buttons_stopwatch,#buttons_lap_timer').hide();
+            $('#timezone,#alarm_time,#countdown_time,#buttons_stopwatch,#buttons_lap_timer,#alarm_sound_wrapper').hide();
             switch(type) {
                 case '1':
                 case 1:
@@ -191,6 +191,12 @@ var ui = {
                 case 2:
                     $('#alarm_time').show();
                     $('#timezone').show();
+                    $("#alarm_sound_wrapper").show();
+
+                    $("select#alarm_sound").on("change",function (evt){
+                        alarm.alarmSound = $(this).val();
+                    });
+
                     type_name = "( Alarm Clock )";
                     break;
                 case '3':

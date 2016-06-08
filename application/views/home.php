@@ -2,7 +2,6 @@
     <div class="row">
         <!-- <<< LEFT COLUMN <<< -->
         <div id="left_col" class="col-md-3 mx">
-            
             <input id="title" type="text" class="form-control" placeholder="Title">
             <input id="size" type="text" class="form-control" placeholder="Size" value="100">
             
@@ -121,13 +120,27 @@
               <option value="12">Pacific/Auckland (UTC+12)</option>
               <option value="12">Pacific/Fiji (UTC+12)</option>
             </select>
-            <input id="countdown_time" type="text" class="form-control" placeholder="00:00:00" style="display:none;">
-            <input id="alarm_time" type="text" data-time-format="H:i:s" class="form-control" placeholder="00:00:00" style="display:none;">
-
+            <input id="countdown_time" type="text" class="form-control hidden" placeholder="00:00:00">
+            <input id="alarm_time" type="text" data-time-format="H:i:s" class="form-control hidden" placeholder="00:00:00">
             <div class="checkbox">
               <label>
                 <input type="checkbox" id="clockTypeDisplay"> Use Analog Clock
               </label>
+            </div>
+            <div id="alarm_sound_wrapper" class="hidden">
+              <select name="alarm_sound" id="alarm_sound" class="form-control">
+                <option selected>Select Alarm Sound</option>
+                <option value="http://soundbible.com/grab.php?id=2070&type=wav">Alarm Sound 1</option>
+                <option value="http://soundbible.com/grab.php?id=1061&type=wav">Alarm Sound 2</option>
+                <option value="http://soundbible.com/grab.php?id=843&type=wav">Alarm Sound 3</option>
+              </select>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="alarm_loop"> Loop Alarm
+                </label>
+              </div>
+              <button type="button" class="btn btn-success col-xs-12" onclick="alarm.playSound()" id="test_alarm">Test Alarm Sound</button>
+              <br/><br/>
             </div>
             <div id="buttons_edit_mode" style="display:none;">
                 <button id="save" type="button" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>

@@ -130,6 +130,7 @@ var storage = {
     },
     global : { //save globally in the e.znotez
         save : function() { //save globally all the clocks as a string from the temporary_storage
+            notice("Fetching data...",1); 
             $.ajax({
                 type: "POST",
                 url: "index.php/storage/save",
@@ -143,6 +144,7 @@ var storage = {
             });
         },
         load : function() { //load globally based from the inputted key
+            notice("Fetching data...",1); 
             $.ajax({
                 type: "POST",
                 url: "index.php/storage/load",
@@ -212,5 +214,5 @@ function notice(str,type)
 */
 $(document).ajaxStart(function () {
     // $("div.tab-content").prepend("<span class='loading' alt='loading'>Loading......</span><script id='tempscr'>$(document).ajaxStop(function(){$('span.loading').remove();$('#tempscr').remove();});</script>");
-   notice("Fetching data...",1); 
+   //notice("Fetching data...",1); 
 });
