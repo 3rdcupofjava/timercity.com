@@ -151,6 +151,23 @@ svg{
     width: 100%;
 }
 
+.remove-notice{
+    cursor: pointer;
+}
+
+.loading,
+.error{
+    display: block;
+    float: left;
+    width: 100%;
+    background-color:rgb(2,117,216);padding: 3px; border-bottom-left-radius:5px;border-bottom-right-radius:5px;
+    color: #fff;font-size: 13px;font-weight: 300;
+}
+
+.error{
+    background-color: rgb(217,83,79);
+}
+
 /* PHOTO STUFF */ 
 .min_clock_holder{border-top: 1px solid #FFF;}
 #buttons_lap_timer{float:left; display:none;}

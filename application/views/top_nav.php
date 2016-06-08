@@ -1,13 +1,13 @@
 <div class="navbar navbar-dark bg-inverse navbar-full navbar-fixed-top">
 
-        <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
+        <button class="navbar-toggler hidden-sm-up pull-xs-right" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
         &#9776;
         </button>
 
+        <a class="navbar-brand" href="<?= URL::base(); ?>"><?= $title ?></a>
         <div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
-            <a class="navbar-brand" href="<?= URL::base(); ?>"><?= $title ?></a>
 
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav pull-xs-left">
               <?=$nav_list?>
             </ul><!--/.nav -->
 

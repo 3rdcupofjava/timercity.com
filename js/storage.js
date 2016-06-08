@@ -151,6 +151,7 @@ var storage = {
                 success: function(msg) {
                     if(msg !== ''){
                         var result = JSON.parse(msg);
+                        $("div.tab-content").find(".notice").remove();
                         // if(result.data['tabs'] !== null && result.data['clocks'] !== null){ //check if there are data that are retrieved
                         //     if(result.data['tabs'] !== null){                               // Check if there are tabs.
                         //         tabs.loadTabs(JSON.parse(result.data['tabs']),false);       // Loads the tabs.
@@ -164,7 +165,7 @@ var storage = {
                         // }
                         storage.generate(result);        // Load the clocks.
                     }else{
-                        $("div.tab-content").prepend("<span class='error' alt='loading'>Error. No data.</span><script id='tempscr'>$(function(){setTimeout(function(){$('.error').remove();$('#tempscr').remove();},2000);});</script>");
+                        notice("There is no data of your search.",2);
                     }
                 }
             }); 
@@ -180,10 +181,36 @@ var storage = {
     },
 };
 
+/**
+ * Function for showing a notice message at the bottom of the panels
+ * @param String str, int type
+ * @return void
+ */
+function notice(str,type)
+{
+    $("div.tab-content").find(".notice").remove();
+    switch(type){
+        case 1:     // Loading
+        case '1':
+            $("div.tab-content").prepend("<div class='notice loading'><span class='pull-xs-left'>"+str+"</span><span class='pull-xs-right'><i class='fa fa-remove remove-notice'></i> </span></div>");
+            break;
+        case 2:     // Error
+        case '2': 
+            $("div.tab-content").prepend("<div class='notice error'><span class='pull-xs-left'>"+str+"</span><span class='pull-xs-right'><i class='fa fa-remove remove-notice'></i> </span></div>");
+            break;
+    }
+
+    $("div.tab-content").find(".remove-notice").on("click", function (evt){
+        $("div.tab-content").find(".notice").remove();
+    });
+}
+
+
 /*
     Show a loading message when ajax call is started.
     Remove the temporary script after the process.
 */
 $(document).ajaxStart(function () {
-    $("div.tab-content").prepend("<span class='loading' alt='loading'>Loading......</span><script id='tempscr'>$(document).ajaxStop(function(){$('span.loading').remove();$('#tempscr').remove();});</script>");
+    // $("div.tab-content").prepend("<span class='loading' alt='loading'>Loading......</span><script id='tempscr'>$(document).ajaxStop(function(){$('span.loading').remove();$('#tempscr').remove();});</script>");
+   notice("Fetching data...",1); 
 });
