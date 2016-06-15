@@ -323,16 +323,12 @@ var clock = {
                             handData[guid][1].value == alarm_time[guid][1] && alarm_time[guid][2] == ampm[guid])
                         {
                             alarmCount[guid]++;
-                            if(handData[guid][2].value%10==0) //play the alarm sound every 10 seconds of the alarm time
+                            if(alarmCount[guid] == 1 && parseInt(handData[guid][2].value) == 0)
                             {
                                 alarm.playSound(); //play the alarm sound if it's time
-                                if(alarmCount[guid] == 1)
-                                    alarm.flashTaskbar(); // also flash the task bar
-                            }
-                            if(alarmCount[guid] == 1)
-                            {
+                                alarm.flashTaskbar(); // also flash the task bar
                                 $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
-                                    <button id="'+guid+'_snooze" onclick="timerClock.snooze('+guid+');">Snooze (10 min)</button>');
+                                    <button style="display:block;" id="'+guid+'_snooze" onclick="timerClock.snooze('+guid+');">Snooze (10 min)</button><button style="display:block;" id="'+guid+'_stop" onclick="timerClock.stop('+guid+');">Stop</button>');
                             }
                         }
                     }
@@ -569,6 +565,19 @@ var clock = {
 var timerClock = {
     postRender : function(guid){
         d3.select(activeTab+' .timer_box #'+guid+'_link .digital_display').text("Alarm time: "+alarm[guid]);
+        
+        if(typeof alarmCount[guid] !== "undefined"){
+            alarmCount[guid] = 0;
+        }
+    },
+    stop    : function(guid){
+        alarm.stop();
+        //Stop the flashTaskbar and replace the document's title
+        clearInterval(TBFlasher);
+        document.title = "TimerCity - For all your timing needs. We have lap timers, countdown timers, count-up timers, big timers, little timers, and plenty of clocks for any part of the world.";
+
+        alarmCount[guid.id] = 0;
+        $(".btns > button#"+guid.id+"_stop,.btns > button#"+guid.id+"_snooze").remove();
     },
     snooze: function (guid){
         alarm_time[guid.id][1]+=10;             //increment the minutes with 10 minutes
@@ -974,29 +983,30 @@ var lapTimerClock = {
 };
 
 var alarm = {
+    audioElement : null,
     alarmSound : $("select#alarm_sound").val(),
     playSound : function() {
-        var audioElement = document.createElement('audio');
-        audioElement.setAttribute('src', this.alarmSound);
+        alarm.audioElement = document.createElement('audio');
+        alarm.audioElement.setAttribute('src', this.alarmSound);
 
         if($("#alarm_loop").is(":checked")){
-            audioElement.setAttribute("loop","true");
+            alarm.audioElement.setAttribute("loop","true");
         }
 
         //audioElement.setAttribute('autoplay', 'autoplay');
-        audioElement.load();
+        alarm.audioElement.load();
         $.get();
-        audioElement.addEventListener("load", function() {
-            audioElement.play();
+        alarm.audioElement.addEventListener("load", function() {
+            alarm.audioElement.play();
         }, true);
-        audioElement.play();
+        alarm.audioElement.play();
 
         $("#alarm_loop").on("change",function(){
-            audioElement.removeAttribute("loop");
+            alarm.audioElement.removeAttribute("loop");
         });
 
         $("select#alarm_sound").on("change",function (evt){
-            audioElement.pause();
+            alarm.audioElement.pause();
         });
         /* uncomment it and add to view buttons play / pause for controls
 
@@ -1009,6 +1019,11 @@ var alarm = {
         });
         */
 
+    },
+    stop    : function(){
+        alarm.audioElement.pause();
+        clearInterval(TBFlasher);
+        document.title = "TimerCity - For all your timing needs. We have lap timers, countdown timers, count-up timers, big timers, little timers, and plenty of clocks for any part of the world.";
     },
     flashTaskbar : function(){
         var msg = "----";
