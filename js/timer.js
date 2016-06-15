@@ -145,7 +145,29 @@ var clock = {
                             data: "time=" + view['alarm_time'],
                             cache: false,
                             success: function(msg) {
-                                alert('Alarm time: ' + view['alarm_time']);
+                                //alert('Alarm time: ' + view['alarm_time']);
+                                    $("body").append('<div class="modal fade" id="alarm-modal" tabindex="-1" role="dialog" aria-labelledby="alarm-modal-label" aria-hidden="true">'+
+                                          '<div class="modal-dialog modal-sm" role="document">'+
+                                           '<div class="modal-content">'+
+                                              '<div class="modal-header">'+
+                                                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                                                  '<span aria-hidden="true">&times;</span>'+
+                                                '</button>'+
+                                                '<h4 class="modal-title" id="alarm-modal-label">Alarm Clock</h4>'+
+                                              '</div>'+
+                                              '<div class="modal-body">'+
+                                                'Alarm Time: '+view["alarm_time"]+
+                                              '</div>'+
+                                              '<div class="modal-footer">'+
+                                                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>'+
+                                              '</div>'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>');
+                                $(document).find("#alarm-modal").modal("show");
+                                $(document).find("#alarm-modal").on("hide.bs.modal",function (e){
+                                    $(document).find("#alarm-modal").remove();
+                                });
                             }
                         });
                     }
@@ -328,7 +350,7 @@ var clock = {
                                 alarm.playSound(); //play the alarm sound if it's time
                                 alarm.flashTaskbar(); // also flash the task bar
                                 $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
-                                    <button style="display:block;" id="'+guid+'_snooze" onclick="timerClock.snooze('+guid+');">Snooze (10 min)</button><button style="display:block;" id="'+guid+'_stop" onclick="timerClock.stop('+guid+');">Stop</button>');
+                                    <button class="clock-button block" id="'+guid+'_snooze" onclick="timerClock.snooze('+guid+');">Snooze (10 min)</button><button class="clock-button block stop" id="'+guid+'_stop" onclick="timerClock.stop('+guid+');">Stop</button>');
                             }
                         }
                     }
@@ -605,16 +627,16 @@ var timerClock = {
         document.title = "TimerCity - For all your timing needs. We have lap timers, countdown timers, count-up timers, big timers, little timers, and plenty of clocks for any part of the world.";
 
         alarmCount[guid.id] = 0;
-        $(".btns > button#"+guid.id+"_snooze").remove();
+        $(".btns > button#"+guid.id+"_stop,.btns > button#"+guid.id+"_snooze").remove();
     }
 };
 
 var stopWatchClock = {
     postRender : function(guid){
         $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
-            <button onclick="stopWatchClock.start('+guid+');">Start</button> \
-            <button onclick="stopWatchClock.pause('+guid+');">Pause</button> \
-            <button onclick="stopWatchClock.reset('+guid+');">Reset</button>');
+            <button class="clock-button inline" onclick="stopWatchClock.start('+guid+');">Start</button> \
+            <button class="clock-button inline pause" onclick="stopWatchClock.pause('+guid+');">Pause</button> \
+            <button class="clock-button inline reset" onclick="stopWatchClock.reset('+guid+');">Reset</button>');
     }, 
     start: function (guid){     //starts the stopwatch
         if(timerStarted[guid.id] === true) {    //return 1 only if the stopwatch is already started
@@ -738,9 +760,9 @@ var cd_params = [{
 var countDownClock = {
     postRender : function(guid){
         $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
-            <button onclick="countDownClock.start('+guid+');">Start</button> \
-            <button onclick="countDownClock.pause('+guid+');">Pause</button> \
-            <button onclick="countDownClock.stop('+guid+');">Stop</button>');
+            <button class="clock-button inline" onclick="countDownClock.start('+guid+');">Start</button> \
+            <button class="clock-button inline pause" onclick="countDownClock.pause('+guid+');">Pause</button> \
+            <button class="clock-button inline stop" onclick="countDownClock.stop('+guid+');">Stop</button>');
     },
     setParams : function (hours,minutes,seconds,guid){   //set the parameters for retrieving
         cd_params[guid].set = true;
@@ -844,9 +866,9 @@ var lapTimerClock = {
     postRender : function(guid){
         //append the buttons in every clock
         $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
-            <button onclick="lapTimerClock.start('+guid+');" type="button"><span class="glyphicon glyphicon-ok"></span> Start</button> \
-            <button onclick="lapTimerClock.stop('+guid+');"type="button"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
-            <button onclick="lapTimerClock.split('+guid+');"type="button"><span class="glyphicon glyphicon-ok"></span> Lap</button>');
+            <button class="clock-button inline" onclick="lapTimerClock.start('+guid+');" type="button"><span class="glyphicon glyphicon-ok"></span> Start</button> \
+            <button class="clock-button inline stop" onclick="lapTimerClock.stop('+guid+');"type="button"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button class="clock-button inline" onclick="lapTimerClock.split('+guid+');"type="button"><span class="glyphicon glyphicon-ok"></span> Lap</button>');
     },
     start: function (guid){     //starts the lap timer
         if(lapTimerStarted[guid.id] === true) {
