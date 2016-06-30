@@ -10,7 +10,7 @@ body {
 .clear{clear:both;}
 
 #left_col{background-color:#f5f5f5; padding-top: 1em; min-height: 250px;}
-.right-col{height:100%; padding: 0;}
+.right-col{height:100%; padding: 0; border-left: 1px solid #fff;}
 
 .ui-timepicker-list {
     height: auto;
@@ -141,15 +141,42 @@ svg{
 }
 
 #tabs{background-color: #e1e1e1;}
-#ntm{padding: 10px;}
 #tab-adder,#tab-remover{padding: 13px 5px 0px 5px;}
+.tab-nav{
+    margin-top: 10px;
+}
+.tab-pane{
+    float:left;
+    background-color: #fff;
+    width: 100%;
+}
 
+.remove-notice{
+    cursor: pointer;
+}
+
+.warning,
+.loading,
+.error{
+    display: block;
+    float: left;
+    width: 100%;
+    background-color:rgb(2,117,216);padding: 3px; border-bottom-left-radius:5px;border-bottom-right-radius:5px;
+    color: #fff;font-size: 13px;font-weight: 300;
+}
+.warning{
+    background-color: rgb(242, 139, 23);
+}
+.error{
+    background-color: rgb(217,83,79);
+}
 
 /* PHOTO STUFF */ 
 .min_clock_holder{border-top: 1px solid #FFF;}
-#buttons_lap_timer/{float:left; display:none;}
+#buttons_lap_timer{float:left; display:none;}
 .lapTimeHolder{margin-top: 10px;}
 .lapTimeHolder > div{padding: 10px;}
+.timer_holder{display: block;float:left;min-width:33.2%; padding:5px 0px; min-height: 550px;} 
 .timer_holder{display: block;float:left;min-width:20%; padding:5px 0px; min-height: 550px;}
 .timer_box{margin-top:20px;margin-left: 3px;display: block;position: relative;}/*min-width: 250px;}*/
 .tb_nav{background-color: #fff; padding:2px;border:1px solid #e1e1e1;float:left;width:200px;}
@@ -161,22 +188,26 @@ li.timer_box{display:block;}
 .timer_box a:hover {
     text-decoration: none;}
 .timer_box .title{
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
+    color: #428bca; 
     overflow: hidden;
     white-space: nowrap;
-    width: 80%; position:absolute;     top:2px;     left:10px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
+    width: 80%;     top:2px;     left:10px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
 .digital_display{
- 	position: absolute;
+    margin-top:5px;
+ 	/*position: relative;*/
     bottom: 5%;
     right: 5%;
-    /*margin-top:5px;*/
     float: right;
     margin-right: 4px;
     text-align: right;
     background-color: #FFFFFF;
-    z-index: 999999999;
+    z-index: 99;
     display: block;
     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; 
+}
+.highlight{
+    background-color: rgba(27,118,90,0.3);
 }
 
 .photo_header{     margin-bottom:10px;     margin-right:10px;     margin-left:10px; } 
@@ -190,3 +221,38 @@ li.timer_box{display:block;}
 #photo_link{     text-align:center; }
 .thumbnail{ padding: 5px; }
 .rnm-holder{padding: 8px; background-color: #fff;}
+
+/** -- Custom Clock Buttons -- **/
+button.clock-button{
+    border-radius: 3px;
+    border: none;
+    padding: 3px;
+    font-size: 12px;
+    color: #fff;
+    background-color: #446CB3;
+    margin-bottom: 3px;
+    min-width: 45px;
+}
+
+button.clock-button.block{
+    display: block;
+}
+
+button.clock-button.inline{
+    display: inline-block;
+}
+
+button.clock-button.stop,
+button.clock-button.reset{
+    background-color: #D91E18;
+}
+
+button.clock-button.pause{
+    background-color: #F89406;
+}
+
+/** -- Dialog -- **/
+.ui-dialog{
+    background-color: #fff;
+    z-index: 99999999999999999;
+}

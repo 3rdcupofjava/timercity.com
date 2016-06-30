@@ -6,7 +6,7 @@ $(function(){
     $("#tab-adder").on("click",function(){
         tabs.updateStorageIndex();
         //append the new tab with its corresponding tab-pane
-        $("ul.clock-tabs").append('<li role="presentation"><a href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">New Tab</a></li>');
+        $("ul.clock-tabs").append('<li class="nav-item" role="presentation"><a class="nav-link" href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">New Tab</a></li>');
         $("div.tab-content").append("<div role='tabpanel' class='tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom' id='newTab"+newTabCount+"'><div class='min_clock_holder'></div><div class='clear'></div><div class='column1 timer_holder connectedColumn'></div><div class='column2 timer_holder connectedColumn'></div><div class='column3 timer_holder connectedColumn'></div></div><script>$(function() {$('.column1,.column2,.column3').sortable({connectWith:'.connectedColumn'}).disableSelection();});</script>");
 
         tabs.store(newTabCount,"New Tab");
@@ -17,7 +17,7 @@ $(function(){
 
     //removes the active tab
     $("#tab-remover").on("click",function(){
-        if($("ul.clock-tabs > li.active").length > 0)//check if there is an active tab
+        if($("ul.clock-tabs > li a.active").length > 0)//check if there is an active tab
         {
             if(confirm("Delete Active Tab?")) //if confirmed then remove the tab as well as its container for the clocks
             {
@@ -28,7 +28,7 @@ $(function(){
                 }
                 tabs_storage[tabId] = null;
 
-                $("ul.clock-tabs > li.active").remove(); //remove the active tab
+                $("ul.clock-tabs > li > a.active").remove(); //remove the active tab
                 var ct = $("div.tab-content > div.tab-pane.active > div.timer_holder").children(); //get the children of the active tab-pane
                 for(var i=0; i<ct.length; i++)
                 {
@@ -36,6 +36,7 @@ $(function(){
                 }
                 $("div.tab-content > div.tab-pane.active").remove(); //remove the active tab-pane
                 updateSession('lst',JSON.stringify(tabs_storage));
+                $(".clock-tabs li a:last").trigger("click"); // Set active tab
             }
         }
         else    //Show alert if there is no active tab
@@ -66,23 +67,23 @@ var tabs = {
             });         
     },
     showRename : function (newTab){     //shows the rename form
-        $("ul.clock-tabs > li.active > a").hide(); 
-        $("ul.clock-tabs > li.active").append("<div class='rnm-holder'><input type='text' id='nt-name' placeholder='Tab new name'><button onclick='tabs.renameTab("+newTab+")' type='button'>Rename</button></div>");
+        $("ul.clock-tabs > li > a.active").hide(); 
+        $("ul.clock-tabs > li > a.active").parent().append("<div class='rnm-holder inline-form'><input class='form-control' type='text' id='nt-name' placeholder='Tab new name'><button type='button' class='form-control btn btn-secondary' onclick='tabs.renameTab("+newTab+")' type='button'>Rename</button></div>");
     },
     renameTab : function (newTab){      //renames the tab
         if($("#nt-name").val() != ''){
-            $("ul.clock-tabs > li.active > a").text($("#nt-name").val());
+            $("ul.clock-tabs > li > a.active").text($("#nt-name").val());
             tabs_storage[newTab].name = $("#nt-name").val();    //rename the entry for this tab in the tabs[] storage
             updateSession('lst',JSON.stringify(tabs_storage));
         }
-        $("ul.clock-tabs > li.active > a").show();
+        $("ul.clock-tabs > li > a.active").show();
         $("div.rnm-holder").remove();
     },
     changeAT : function (tab){      //changes the value of the activeTab
         activeTab = tab;
         //check if there are rename options that are visible and hide them
         if($("div.rnm-holder").length > 0){
-            $("ul.clock-tabs > li.active > a").show();
+            $("ul.clock-tabs > li > a.active").show();
             $("div.rnm-holder").remove();   
         }
     },
@@ -99,13 +100,13 @@ var tabs = {
             if(loadedTabs[count] != null){              //check if the current item != null
                 
                 this.updateStorageIndex();
-                if($("ul.clock-tabs > li.active").length > 0){
+                if($("ul.clock-tabs > li > a.active").length > 0){
                     //append the new tab with its corresponding tab-pane
-                    $("ul.clock-tabs").append('<li role="presentation"><a href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">'+loadedTabs[count].name+'</a></li>');
+                    $("ul.clock-tabs").append('<li class="nav-item"><a class="nav-link" href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">'+loadedTabs[count].name+'</a></li>');
                     $("div.tab-content").append("<div role='tabpanel' class='tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom' id='newTab"+newTabCount+"'><div class='min_clock_holder'></div><div class='clear'></div><div class='column1 timer_holder connectedColumn'></div><div class='column2 timer_holder connectedColumn'></div><div class='column3 timer_holder connectedColumn'></div></div><script>$(function() {$('.column1,.column2,.column3').sortable({connectWith:'.connectedColumn'}).disableSelection();});</script>");    
                 }else{
                     //append the new tab with its corresponding tab-pane and make it active
-                    $("ul.clock-tabs").append('<li class="active" role="presentation"><a href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">'+loadedTabs[count].name+'</a></li>');
+                    $("ul.clock-tabs").append('<li class="nav-item"><a class="nav-link active" href="#newTab'+newTabCount+'" onclick="tabs.changeAT(\'#newTab'+newTabCount+'\')" ondblclick="tabs.showRename('+newTabCount+')" aria-controls="newTab'+newTabCount+'" role="tab" data-toggle="tab">'+loadedTabs[count].name+'</a></li>');
                     $("div.tab-content").append("<div role='tabpanel' class='tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom active' id='newTab"+newTabCount+"'><div class='min_clock_holder'></div><div class='clear'></div><div class='column1 timer_holder connectedColumn'></div><div class='column2 timer_holder connectedColumn'></div><div class='column3 timer_holder connectedColumn'></div></div><script>$(function() {$('.column1,.column2,.column3').sortable({connectWith:'.connectedColumn'}).disableSelection();});</script>");
                     activeTab = "#newTab"+newTabCount;  //update the activeTab
                 }

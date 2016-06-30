@@ -1,42 +1,38 @@
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-        
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="<?= URL::base(); ?>"><?= $title ?></a>
-        </div>
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
+<div class="navbar navbar-dark bg-inverse navbar-full navbar-fixed-top">
+
+        <button class="navbar-toggler hidden-sm-up pull-xs-right" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
+        &#9776;
+        </button>
+
+        <a class="navbar-brand" href="<?= URL::base(); ?>"><?= $title ?></a>
+        <div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
+
+            <ul class="nav navbar-nav pull-xs-left">
               <?=$nav_list?>
             </ul><!--/.nav -->
-            
-            <ul class="nav navbar-nav pull-right">
-                <li id="save_nav"><a id="save" href="#"><?= __('Save') ?></a></li>
-                <li id="save_nav"><a id="load" href="#"><?= __('Load') ?></a></li>
+
+            <ul class="nav navbar-nav pull-xs-right">
+                <li id="save_nav" class="nav-item"><a class="nav-link" id="save" href="#"><?= __('Save') ?></a></li>
+                <li id="save_nav" class="nav-item"><a class="nav-link" id="load" href="#"><?= __('Load') ?></a></li>
                 <?php if ($show_login): ?>
-                    <?php /*<li id="sign_up"><a href="#"><?= __('Sign Up') ?></a></li>*/?>
-                    <li id="log_in"><a href="#"><?= __('Log In') ?></a></li>
+                    <li id="log_in" class="nav-item"><a class="nav-link" href="#"><?= __('Log In') ?></a></li>
                 <?php else: ?>
-                    <li id="settings" class="dropdown" title="<?= __('Settings') ?>">
-                        <a href="#" class="dropdown-toggle " data-toggle="dropdown">
+                    <li id="settings" class="dropdown nav-item" title="<?= __('Settings') ?>">
+                        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-th-list"></span>
                             <b class="caret"></b>
                         </a>
-                        <ul class="dropdown-menu pull-right">
-                            <li><a href="/settings"><?= __('Settings') ?></a></li>
-                            <li class="dropdown-header"><?= __('Administration') ?></li>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="settings">
+                            <a class="dropdown-item" href="/settings"><?= __('Settings') ?></a>
+                            <h6 class="dropdown-header dropdown-item"><?= __('Administration') ?></h6>
                             <?=$admin_nav?>
-                            <li class="divider"></li>
-                            <li><a href="/user/logout"><?= __('Log Out') ?></a></li>
-                        </ul>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/user/logout"><?= __('Log Out') ?></a>
+                        </div>
                     </li>
                 <?php endif; ?>
-            </ul><!--/.nav -->
-        </div><!--/.nav-collapse -->
+            </ul>
+        </div>
 
         <div id="pagination" class="nav-collapse collapse">
             <ul class="nav navbar-nav">
@@ -46,5 +42,5 @@
 
         <div class="clear"></div>
         
-    </div>
+    <!-- </div> -->
 </div>

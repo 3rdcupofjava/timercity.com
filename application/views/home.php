@@ -2,7 +2,6 @@
     <div class="row">
         <!-- <<< LEFT COLUMN <<< -->
         <div id="left_col" class="col-md-3 mx">
-            
             <input id="title" type="text" class="form-control" placeholder="Title">
             <input id="size" type="text" class="form-control" placeholder="Size" value="100">
             
@@ -121,20 +120,39 @@
               <option value="12">Pacific/Auckland (UTC+12)</option>
               <option value="12">Pacific/Fiji (UTC+12)</option>
             </select>
-            <input id="countdown_time" type="text" class="form-control" placeholder="00:00:00" style="display:none;">
-            <input id="alarm_time" type="text" data-time-format="H:i:s" class="form-control" placeholder="00:00:00" style="display:none;">
-
-            <br />
+            <input id="countdown_time" type="text" class="form-control hidden" placeholder="00:00:00">
+            <input id="alarm_time" type="text" data-time-format="H:i:s" class="form-control hidden" placeholder="00:00:00">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="clockTypeDisplay"> Use Analog Clock
+              </label>
+            </div>
+            <div id="alarm_sound_wrapper" class="hidden">
+              <select name="alarm_sound" id="alarm_sound" class="form-control">
+                <option selected>Select Alarm Sound</option>
+                <option value="http://soundbible.com/grab.php?id=2070&type=wav">Alarm Sound 1</option>
+                <option value="http://soundbible.com/grab.php?id=1061&type=wav">Alarm Sound 2</option>
+                <option value="http://soundbible.com/grab.php?id=843&type=wav">Alarm Sound 3</option>
+              </select>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="alarm_loop"> Loop Alarm
+                </label>
+              </div>
+              <button type="button" class="btn btn-success col-xs-12" onclick="alarm.playSound()" id="test_alarm">Test Alarm Sound</button>
+              <br/><br/>
+            </div>
             <div id="buttons_edit_mode" style="display:none;">
-                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Save</button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+                <button id="save" type="button" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
+                <button id="delete" type="button" class="btn btn-danger"><i class="fa fa-remove"></i> Delete</button>
+                <button id="cancel" type="button" class="btn btn-danger"><i class="fa fa-remove"></i> Cancel</button>
             </div>
             <div id="buttons_not_edit_mode">
-                <button id="add" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Add</button>
-                <button onclick="resetFields();" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Reset</button>
+                <button id="add" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Add</button>
+                <button onclick="resetFields();" type="button" class="btn btn-danger"><i class="fa fa-remove"></i> Reset</button>
             </div>
-            
-            <div class="lapTimeHolder"></div>
+            <br/>
+            <!--<div class="lapTimeHolder"></div>-->
 
         </div>
         <!-- >>> LEFT COLUMN >>> -->
@@ -145,17 +163,18 @@
             <div id="tabs" role="tabpanel">
 
                 <!-- Nav tabs -->
-                <ul class="nav nav-tabs clock-tabs" role="tablist">
-                    <li id="ntm"><span>Click the + button at the side to add tabs.</span></li>
-                    <li role="presentation" class="active"><a href="#home--0" onclick="tabs.changeAT('#home--0')" ondblclick="tabs.showRename(0)" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-                    <div class="pull-right" role="presentation"><a id="tab-adder" title="Add New Tab" class="glyphicon glyphicon-plus-sign" href="#"></a></div>
-                    <div class="pull-right" role="presentation"><a id="tab-remover" title="Remove Active Tab" class="glyphicon glyphicon-minus-sign" href="#"></a></div>
+                <ul class="nav nav-tabs clock-tabs" id="tab-clocks" role="tablist">
+                    <li id="ntm" class="nav-item hidden"><span class="nav-link">Click the + button at the side to add tabs.</span></li>
+                    <li class="nav-item"><a class="nav-link active" href="#home--0" onclick="tabs.changeAT('#home--0')" ondblclick="tabs.showRename(0)" aria-controls="home--0" role="tab" data-toggle="tab">Home</a></li>
+                    <div class="pull-xs-right nav-item tab-nav" role="presentation"><a id="tab-adder" title="Add New Tab" href="#"><i class="fa fa-plus-circle"></i></a></div>
+                    <div class="pull-xs-right nav-item tab-nav" role="presentation"><a id="tab-remover" title="Remove Active Tab" href="#"><i class="fa fa-minus-circle"></i></a></div>
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="tab-content">
                   <div class="min_clock_holder"></div> <!-- Minimized clocks will be seen everywhere on tabs but when restored the clock will only appear to the tab where it belongs -->
                   <div role="tabpanel" class="tab-pane ui-tabs-panel ui-widget-content ui-corner-bottom active" id="home--0">
+                    <div class="min_clock_holder"></div> <!-- Minimized clocks will be seen everywhere on tabs but when restored the clock will only appear to the tab where it belongs -->
                     <div class="clear"></div>
                     <div class="column1 timer_holder connectedColumn"></div>
                     <div class="column2 timer_holder connectedColumn"></div>

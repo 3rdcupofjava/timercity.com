@@ -81,6 +81,8 @@ var timerStarted = [],
 var holder=0;
 var activeTab = "#home--0";
 var TBFlasher;
+var useAnimatedClock;
+var activeClock;
 
 var clockObject = [];
 var clocks = [];
@@ -90,7 +92,6 @@ var clock = {
         var clockRadius = parseInt(view['clockSize']);
         var offset = parseInt(view['timezone']);
         var guid = view['guid'];
-        view['ts_count'] = ts_count++;
         clocks[guid] = view;
         seconds = 0, minutes = 0, hours = 0;
 
@@ -121,14 +122,16 @@ var clock = {
             // next line is fix
 
             //append the minimize button
-            $('.min_clock_holder').append(output2);
+            $('.tab-pane.active .min_clock_holder').append(output2);
 
             switch(view['type'])
             {
                 case '1':
-                    $(activeTab+' > .timer_holder.column'+holder).append(output);
+                case 1:
+                        $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 case '2':
+                case 2:
                     /**
                      * if isset alarm_time, send post request with given time.
                      * maybe also need send date?
@@ -142,7 +145,29 @@ var clock = {
                             data: "time=" + view['alarm_time'],
                             cache: false,
                             success: function(msg) {
-                                alert('Alarm time: ' + view['alarm_time']);
+                                //alert('Alarm time: ' + view['alarm_time']);
+                                    $("body").append('<div class="modal fade" id="alarm-modal" tabindex="-1" role="dialog" aria-labelledby="alarm-modal-label" aria-hidden="true">'+
+                                          '<div class="modal-dialog modal-sm" role="document">'+
+                                           '<div class="modal-content">'+
+                                              '<div class="modal-header">'+
+                                                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                                                  '<span aria-hidden="true">&times;</span>'+
+                                                '</button>'+
+                                                '<h4 class="modal-title" id="alarm-modal-label">Alarm Clock</h4>'+
+                                              '</div>'+
+                                              '<div class="modal-body">'+
+                                                'Alarm Time: '+view["alarm_time"]+
+                                              '</div>'+
+                                              '<div class="modal-footer">'+
+                                                '<button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>'+
+                                              '</div>'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>');
+                                $(document).find("#alarm-modal").modal("show");
+                                $(document).find("#alarm-modal").on("hide.bs.modal",function (e){
+                                    $(document).find("#alarm-modal").remove();
+                                });
                             }
                         });
                     }
@@ -153,9 +178,10 @@ var clock = {
                     alarm_time[guid][1] = parseInt(alarm_time[guid][1]);
 
                     //afternoon time
-                    if(alarm_time[guid][0] > 12)
+                    if(alarm_time[guid][0] >= 12)
                     {
-                        alarm_time[guid][0] = alarm_time[guid][0]%12;
+                        if(alarm_time[guid][0] != 12)
+                            alarm_time[guid][0] = alarm_time[guid][0]%12;
                         alarm_time[guid][2] = "PM";
                     }
                     else    //morning time
@@ -166,57 +192,56 @@ var clock = {
                     alarm[guid] = alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2];
                     break;
                 case '3':
-
+                case 3:
                     $(activeTab+' > .timer_holder.column'+holder).append(output);
 
                     //initialize first the countdown data
-                    if(typeof handData[guid] === 'undefined')
+                    var formattedTime = view['time'].split(":"); //split the inputted time to an array
+                    //check if seconds is 0 while the others are not
+                    if(parseInt(formattedTime[2]) == 0 &&
+                        (parseInt(formattedTime[1]) != 0 ||
+                        parseInt(formattedTime[0]) != 0))
                     {
-                        var formattedTime = view['time'].split(":"); //split the inputted time to an array
-                        //check if seconds is 0 while the others are not
-                        if(parseInt(formattedTime[2]) == 0 &&
-                            (parseInt(formattedTime[1]) != 0 ||
-                            parseInt(formattedTime[0]) != 0))
+                        formattedTime[2] = 60;
+                        //check if the minute is not 0
+                        if(formattedTime[1] > 0)
+                            formattedTime[1] -= 1;  //decrement if not 0
+                        else if(formattedTime[1] == 0)  //check if minute is 0
                         {
-                            formattedTime[2] = 60;
-                            //check if the minute is not 0
-                            if(formattedTime[1] > 0)
-                                formattedTime[1] -= 1;  //decrement if not 0
-                            else if(formattedTime[1] == 0)  //check if minute is 0
+                            if(formattedTime[0] > 0)    //check if hour is not 0
                             {
-                                if(formattedTime[0] > 0)    //check if hour is not 0
-                                {
-                                    formattedTime[0]-=1;    //decrement hour
-                                    formattedTime[1] = 59;  //set the minutes to 59
-                                }
+                                formattedTime[0]-=1;    //decrement hour
+                                formattedTime[1] = 59;  //set the minutes to 59
                             }
                         }
-                        handData[guid] = [{
-                                type:'hour',
-                                value:parseInt(formattedTime[0]),
-                                length:-hourHandLength,
-                                scale:hourScale
-                            },
-                            {
-                                type:'minute',
-                                value:parseInt(formattedTime[1]),
-                                length:-minuteHandLength,
-                                scale:minuteScale
-                            },
-                            {
-                                type:'second',
-                                value:parseInt(formattedTime[2]),
-                                length:-secondHandLength,
-                                scale:secondScale,
-                                balance:secondHandBalance
-                            }];
                     }
+                    handData[guid] = [{
+                            type:'hour',
+                            value:parseInt(formattedTime[0]),
+                            length:-hourHandLength,
+                            scale:hourScale
+                        },
+                        {
+                            type:'minute',
+                            value:parseInt(formattedTime[1]),
+                            length:-minuteHandLength,
+                            scale:minuteScale
+                        },
+                        {
+                            type:'second',
+                            value:parseInt(formattedTime[2]),
+                            length:-secondHandLength,
+                            scale:secondScale,
+                            balance:secondHandBalance
+                        }];
 
                     break;
                 case '4':
+                case 4:
                     $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 case '5':
+                case 5:
                     $(activeTab+' > .timer_holder.column'+holder).append(output);
                     break;
                 default:
@@ -225,48 +250,56 @@ var clock = {
             }//end switch
 
             //check if the clock is minimized or not after loading then load again
-            if($("#"+view['guid']+"_nav").hasClass("hidden"))
-            {
+            if($("#"+view['guid']+"_nav").hasClass("hidden")){
                 //do nothing if the minimize navigation of the clock is not visible
                 //just append the clock
             }
-            else
-            {
+            else{
                 //hide the minimize navigation of the specific clock
                 $("#"+view['guid']+"_nav").addClass("hidden");
             }
         }
         
-        // clicking on a timer to edit
+        // Clicking on all timer to edit.
         $('#' + guid + '_link').on('click', function(){
+            activeClock = guid;
             $('#title').val(clocks[guid].title);
             $('#size').val(clocks[guid].clockSize);
             $('#timezone').val(clocks[guid].timezone);
             $(".lapTimeHolder").html("");
-            ui.set_type(clocks[guid].type, true);
+
+            $("#timer_types > label").siblings().removeClass('active');                                             // Remove the active radio buttons
+            $("#timer_types > label input:radio[value='"+clocks[guid].type+"']").attr('checked','true');            // Set the radio button according to the clock selected
+            $("#timer_types > label input:radio[value='"+clocks[guid].type+"']").parent().addClass('active');       // Add a class active to the parent of the radio button to make it highlighted
+            ui.set_type(null,clocks[guid].type,false);                                                              // Call this function to set the timer_type
+            
+            $("#buttons_not_edit_mode").hide();         // Show the basic buttons.
+            $("#buttons_edit_mode").show();             // Show the buttons for editing mode.
+
+            $("button#save").attr("onclick","ui.set_type("+guid+","+clocks[guid].type+",true)")                     // Saving the new value.
+                            .bind("click",function(){
+                                $("#buttons_edit_mode").hide();
+                                $("#buttons_not_edit_mode").show();
+                            });
+
+            $("button#delete").attr("onclick","removeClock("+guid+","+clocks[guid].ts_count+")")                    // Removing the clock selected.
+                                .bind('click',function(){
+                                    $("#buttons_edit_mode").hide();
+                                    $("#buttons_not_edit_mode").show();
+                                });
+
+            $("button#cancel").on("click",function(){       // Cancels the editing mode.
+                $("#buttons_not_edit_mode").show();
+                $("#buttons_edit_mode").hide();
+            });
         }).bind("mousedown",function (event){
             $cl = $(this);
             $cl.on("mousemove",function(){
-                $(".timer_box#"+guid).css({"opacity":"0.5"});
+                $(".timer_box#"+guid).css({"opacity":"0.3"});       // Make the clock less visible when dragging.
             });
         }).bind("mouseup",function(){
             $cl.unbind("mousemove");
-            $(".timer_box#"+guid).css({"opacity":"1"});
-        });
-
-        $('#' + guid + '_link.5').on('click', function(){
-            //check if the there are laptime recorded for the specific laptimer and then append it
-            if(typeof lapTime[guid] !== "undefined")
-            {
-                var t = "<div>Splitted Times:</div>";
-                
-                //get every lap time recorded and append it to the t variable as a string 
-                for(var i=1; i<lapTime[guid].length; i++)
-                {
-                    t += "<div class=lapTime"+i+">"+i+") "+lapTime[guid][i][0]+":"+lapTime[guid][i][1]+":"+lapTime[guid][i][2]+"</div>";   
-                }
-                $(".lapTimeHolder").html(t); //append the final lap times to the lapTimeHolder
-            }
+            $(".timer_box#"+guid).css({"opacity":"1"});             // Make the clock visible when it is dropped.
         });
 
         if(view['type'] !== 'undefined')
@@ -275,7 +308,9 @@ var clock = {
             {
                 clockObject[guid] = setInterval(function(){
                     clock.updateData(offset,guid,view['type']);
-                    clock.moveHands(guid);
+                    if(clocks[guid].displayAnalog){
+                        clock.moveHands(guid);
+                    }
 
                     //check if it is an alarm clock
                     if(view['type'] == '2')
@@ -289,15 +324,12 @@ var clock = {
                             handData[guid][1].value == alarm_time[guid][1] && alarm_time[guid][2] == ampm[guid])
                         {
                             alarmCount[guid]++;
-                            if(handData[guid][2].value%10==0) //play the alarm sound every 10 seconds of the alarm time
+                            if(alarmCount[guid] == 1 && parseInt(handData[guid][2].value) == 0)
                             {
                                 alarm.playSound(); //play the alarm sound if it's time
                                 alarm.flashTaskbar(); // also flash the task bar
-                            }
-                            if(alarmCount[guid] == 1)
-                            {
-                                $(activeTab+' .timer_box #'+guid+'_link').append(' \
-                                    <p><button id="'+guid+'_snooze" onclick="timerClock.snooze('+guid+');">Snooze (10 min)</button></p>');
+                                $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
+                                    <button class="clock-button block" id="'+guid+'_snooze" onclick="timerClock.snooze('+guid+');">Snooze (10 min)</button><button class="clock-button block stop" id="'+guid+'_stop" onclick="timerClock.stop('+guid+');">Stop</button>');
                             }
                         }
                     }
@@ -315,12 +347,22 @@ var clock = {
 
         var svg = d3.select('#' + guid + ' .svg_placeholder').append("svg")
                 .attr("width", width)
-                .attr("height", height)
+                .attr("height", function(){
+                    if(clocks[guid].displayAnalog){
+                        return height;
+                    }else{
+                        return "30";
+                    }
+                })
                 .attr('class', 'img-thumbnail');
 
-
         var face = svg.append('g')
-                .attr('id','clock-face')
+                .attr('id','clock-face-'+guid)
+                .attr('class',function(){
+                    if(!clocks[guid].displayAnalog){
+                        return "hidden";
+                    }
+                })
                 .attr('transform','translate(' + (clockRadius + margin) + ',' + (clockRadius + margin) + ')');
 
         //add marks for seconds
@@ -409,10 +451,29 @@ var clock = {
                 .attr('transform',function(d){
                     return 'rotate('+ d.scale(d.value) +')';
                 });
-                
+            
         //calls the postRender of every type of clock
-        if(this.postRender !== undefined)
-            this.postRender(guid);
+        switch(view['type']){
+            case 1:
+            case '1':
+                break;
+            case 2:
+            case '2':
+                timerClock.postRender(guid);
+                break;
+            case 3:
+            case '3':
+                countDownClock.postRender(guid);
+                break;
+            case 4:
+            case '4':
+                stopWatchClock.postRender(guid);
+                break;
+            case 5:
+            case '5':
+                lapTimerClock.postRender(guid);
+                break;
+        }
     },
     moveHands: function(area){
         d3.select('#clock-hands'+area).selectAll('line')
@@ -430,7 +491,7 @@ var clock = {
         var result = utc + (3600000*offset); // here we get time with offset.
         var nd = new Date(result);
 
-        if(nd.getHours() < t.getHours() && nd.getHours() < 12)
+        if(nd.getHours() <= t.getHours() && nd.getHours() < 12)
         {
             ampm[guid] = "AM";
         }
@@ -440,7 +501,7 @@ var clock = {
         }
 
         var tempHour = nd.getHours() % 12;
-        if(tempHour == 0)
+        if(tempHour == 0 && ampm[guid] == "PM")
             tempHour = 12;
 
         if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
@@ -476,18 +537,28 @@ var clock = {
         {
             if(!isNaN(handData[guid][1].value))
             {
-                if(handData[guid][0].value > 9)
-                    handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
-                else
-                    handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+                if(handData[guid][0].value > 9){
+                    // if(useAnimatedClock){
+                        handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+                    // }else{
+                    //     handData[guid][1].value > 9 ? $("#"+guid+"_link .digitalOutput").text(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digitalOutput").text(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+                    // }
+                }else{
+                    // if(useAnimatedClock){
+                        handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digital_display").text("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]);
+                    // }else{
+                    //     handData[guid][1].value > 9 ? $("#"+guid+"_link .digitalOutput").text("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]) : $("#"+guid+"_link .digitalOutput").text("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]); 
+                    // }
+                }
             }
         }
         else
         {
-            if(handData[guid][0].value > 9)
+            if(handData[guid][0].value > 9){
                 handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").html(Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]) : $("#"+guid+"_link .digital_display").html(Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]);
-            else
+            }else{
                 handData[guid][1].value > 9 ? $("#"+guid+"_link .digital_display").html("0"+Math.floor(handData[guid][0].value)+":"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]) : $("#"+guid+"_link .digital_display").html("0"+Math.floor(handData[guid][0].value)+":0"+handData[guid][1].value+" "+ampm[guid]+"<br/>Alarm time: "+alarm_time[guid][0]+":"+alarm_time[guid][1]+" "+alarm_time[guid][2]);
+            }
         }
     }
 };
@@ -495,6 +566,19 @@ var clock = {
 var timerClock = {
     postRender : function(guid){
         d3.select(activeTab+' .timer_box #'+guid+'_link .digital_display').text("Alarm time: "+alarm[guid]);
+        
+        if(typeof alarmCount[guid] !== "undefined"){
+            alarmCount[guid] = 0;
+        }
+    },
+    stop    : function(guid){
+        alarm.stop();
+        //Stop the flashTaskbar and replace the document's title
+        clearInterval(TBFlasher);
+        document.title = "TimerCity - For all your timing needs. We have lap timers, countdown timers, count-up timers, big timers, little timers, and plenty of clocks for any part of the world.";
+
+        alarmCount[guid.id] = 0;
+        $(".btns > button#"+guid.id+"_stop,.btns > button#"+guid.id+"_snooze").remove();
     },
     snooze: function (guid){
         alarm_time[guid.id][1]+=10;             //increment the minutes with 10 minutes
@@ -522,16 +606,16 @@ var timerClock = {
         document.title = "TimerCity - For all your timing needs. We have lap timers, countdown timers, count-up timers, big timers, little timers, and plenty of clocks for any part of the world.";
 
         alarmCount[guid.id] = 0;
-        $("p > button#"+guid.id+"_snooze").remove();
+        $(".btns > button#"+guid.id+"_stop,.btns > button#"+guid.id+"_snooze").remove();
     }
 };
 
 var stopWatchClock = {
     postRender : function(guid){
-        $(activeTab+' .timer_box #'+guid+'_link').append(' \
-            <p><button onclick="stopWatchClock.start('+guid+');">Start</button> \
-            <button onclick="stopWatchClock.pause('+guid+');">Pause</button> \
-            <button onclick="stopWatchClock.reset('+guid+');">Reset</button></p>');
+        $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
+            <button class="clock-button inline" onclick="stopWatchClock.start('+guid+');">Start</button> \
+            <button class="clock-button inline pause" onclick="stopWatchClock.pause('+guid+');">Pause</button> \
+            <button class="clock-button inline reset" onclick="stopWatchClock.reset('+guid+');">Reset</button>');
     }, 
     start: function (guid){     //starts the stopwatch
         if(timerStarted[guid.id] === true) {    //return 1 only if the stopwatch is already started
@@ -561,13 +645,17 @@ var stopWatchClock = {
         clearInterval(clockObject[guid.id]);     //clears the interval of specific element of stopwatch
     },
     reset: function (guid){     //resets the specific stopwatch
-        stopTime[guid.id].hours = 0;
-        stopTime[guid.id].minutes = 0;
-        stopTime[guid.id].seconds = 0;
-        handData[guid.id][0].value = 0;
-        handData[guid.id][1].value = 0;
-        handData[guid.id][2].value = 0;
-        stopWatchClock.moveHands(guid.id);
+        if(typeof stopTime[guid.id] !== "undefined"){
+            stopTime[guid.id].hours = 0;
+            stopTime[guid.id].minutes = 0;
+            stopTime[guid.id].seconds = 0;
+        }
+        if(typeof handData[guid.id] !== "undefined"){
+            handData[guid.id][0].value = 0;
+            handData[guid.id][1].value = 0;
+            handData[guid.id][2].value = 0;
+            stopWatchClock.moveHands(guid.id);
+        }
         clearInterval(clockObject[guid.id]);     //clears the interval of specific element of stopwatch
         timerStarted[guid.id] = false;  //set specific timer to false
         d3.select('#'+guid.id+'_link .digital_display').text('0h : 0m : 0s');
@@ -650,9 +738,10 @@ var cd_params = [{
 
 var countDownClock = {
     postRender : function(guid){
-        $(activeTab+' .timer_box #'+guid+'_link').append(' \
-            <p><button onclick="countDownClock.start('+guid+');">Start</button> \
-            <button onclick="countDownClock.stop('+guid+');">Stop</button></p>');
+        $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
+            <button class="clock-button inline" onclick="countDownClock.start('+guid+');">Start</button> \
+            <button class="clock-button inline pause" onclick="countDownClock.pause('+guid+');">Pause</button> \
+            <button class="clock-button inline stop" onclick="countDownClock.stop('+guid+');">Stop</button>');
     },
     setParams : function (hours,minutes,seconds,guid){   //set the parameters for retrieving
         cd_params[guid].set = true;
@@ -661,7 +750,8 @@ var countDownClock = {
         cd_params[guid].seconds = seconds;
     },
     start: function (guid){     //starts the countdown timer
-        if(typeof cd_params[guid.id] === 'undefined'){
+        console.log(guid,cd_params[guid.id]);
+        if(typeof cd_params[guid.id] === 'undefined' || cd_params[guid.id] === null){
             cd_params[guid.id] = [{
                 set: false,
                 hour: null,
@@ -692,10 +782,22 @@ var countDownClock = {
             }
         }
     },
-    stop: function (guid){      //stops the countdown timer
+    pause: function(guid){       //pauses the countdown timer
         countDownStarted[guid.id] = false;
         clearInterval(clockObject[guid.id]);
-        cd_params[guid.id].stopped = true;
+        if(typeof cd_params[guid.id] !== "undefined")
+            cd_params[guid.id].stopped = true;
+    },
+    stop: function (guid){      //stops the countdown timer
+        handData[guid.id][0].value = 0;
+        handData[guid.id][1].value = 0;
+        handData[guid.id][2].value = 1;
+        // checked if timer is paused
+        if(typeof cd_params[guid.id] !== "undefined"){
+            if(cd_params[guid.id].stopped){
+                this.start(guid);
+            }
+        }
     },
     updateCountDown: function (guid){
         handData[guid][2].value -=1;   //decrement the seconds
@@ -706,7 +808,7 @@ var countDownClock = {
                 //stop the countdown
                 countDownStarted[guid] = false;
                 clearInterval(clockObject[guid]);
-                countDownStarted[guid] === false;
+                countDownStarted[guid] = false;
                 alarm.playSound();
             }
             else
@@ -743,15 +845,16 @@ var countDownClock = {
 var lapTimerClock = {
     postRender : function(guid){
         //append the buttons in every clock
-        $(activeTab+' .timer_box #'+guid+'_link').append(' \
-            <button onclick="lapTimerClock.start('+guid+');" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Start</button> \
-            <button onclick="lapTimerClock.stop('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
-            <button onclick="lapTimerClock.split('+guid+');"type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Lap</button>');
+        $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
+            <button class="clock-button inline" onclick="lapTimerClock.start('+guid+');" type="button"><span class="glyphicon glyphicon-ok"></span> Start</button> \
+            <button class="clock-button inline stop" onclick="lapTimerClock.stop('+guid+',null);"type="button"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button class="clock-button inline" onclick="lapTimerClock.split('+guid+');"type="button"><span class="glyphicon glyphicon-ok"></span> Lap</button>');
     },
     start: function (guid){     //starts the lap timer
         if(lapTimerStarted[guid.id] === true) {
             return 1;
         }
+
         lapTimerStarted[guid.id] = true;
 
         if(typeof splitTime[guid.id] === 'undefined')
@@ -768,31 +871,67 @@ var lapTimerClock = {
             lapTimerClock.moveHands(guid.id);
             lapTimerClock.updateSplitTime(guid.id);
         }, 1000);
+
+        if(typeof lapTime[guid.id] !== "undefined"){
+            setTimeout(function(){
+                lapTimerClock.displayLapTimes(guid);
+            },1100);
+        }
     },
-    stop: function (guid){      //stops the lap timer
+    stop: function (guid,_callback){      //stops the lap timer
         lapTimerStarted[guid.id] = false; // set the specific lap timer to false
 
         clearInterval(clockObject[guid.id]); //clear the interval of a specific lap timer
-
-        d3.select('#'+guid.id+'_link .digital_display').text((splitTime[guid.id].hours )
-        + 'h : ' + (splitTime[guid.id].minutes)
-        + 'm : ' +(splitTime[guid.id].seconds) + 's');
+        if(_callback !== null){
+            setTimeout(function(){_callback();},500);
+        }
+    },
+    reset: function (guid){
+        this.stop(guid);
+        if(typeof handData[guid.id] !== "undefined"){
+            handData[guid.id][0].value = 0;
+            handData[guid.id][1].value = 0;
+            handData[guid.id][2].value = 0;
+        }
+        if(typeof handData[guid.id] !== "undefined"){
+            splitTime[guid.id].hours = 0;
+            splitTime[guid.id].minutes = 0;
+            splitTime[guid.id].seconds = 0;
+        }
+        lapTime[guid.id] = null;
     },
     split: function (guid){     //appends the splitted time
         //append the split time
-        if(typeof lapTime[guid.id] === 'undefined')
+        if(typeof lapTime[guid.id] === 'undefined' || lapTime[guid.id] === null)
         {
-            lapTime[guid.id] = [{
-                hours: 0,
-                minutes: 0,
-                seconds: 0
-            }];
+            lapTime[guid.id] = [];
         }
 
         //record the time splitted
         lapTime[guid.id].push([lapTime[guid.id].hours = splitTime[guid.id].hours,lapTime[guid.id].minutes = splitTime[guid.id].minutes,lapTime[guid.id].seconds = splitTime[guid.id].seconds]);
 
-        $('#'+guid.id+'_link .laptime_display').text('You successfully split '+splitTime[guid.id].hours+'h :'+splitTime[guid.id].minutes+'m :'+splitTime[guid.id].seconds+'s');
+        // Display splitted times
+        lapTimerClock.displayLapTimes(guid);
+
+    },
+    deleteLapTime : function (guid,i){
+        lapTime[guid.id][i] = null;
+        // Update splitted times
+        lapTimerClock.displayLapTimes(guid);
+    },
+    displayLapTimes : function(guid){   // Displays the splitted times
+        var lt_counter = 1;
+        var t = "<div>Splitted Times:</div>";
+                
+        //get every lap time recorded and append it to the t variable as a string 
+        for(var i=0; i<lapTime[guid.id].length; i++)
+        {
+            if(lapTime[guid.id][i] != null){
+                t += "<div class='lapTime"+i+"'>"+lt_counter+") "+lapTime[guid.id][i][0]+":"+lapTime[guid.id][i][1]+":"+lapTime[guid.id][i][2]+"<button type='button' onclick='lapTimerClock.deleteLapTime("+guid.id+","+i+");' class='close'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button></div>";   
+                lt_counter++;
+            }
+        }
+        $('#'+guid.id+'_link .laptime_display').html(t);
     },
     updateSplitTime: function (guid){       //updates the split time
         if(splitTime[guid].seconds == 60)
@@ -822,6 +961,9 @@ var lapTimerClock = {
         {
             splitTime[guid].seconds++;
         }
+        d3.select('#'+guid+'_link .digital_display').text((splitTime[guid].hours )
+        + 'h : ' + (splitTime[guid].minutes)
+        + 'm : ' +(splitTime[guid].seconds) + 's');
     },
     updateLapTimer: function (guid){
         if(typeof handData[guid] === 'undefined') {   //check if the specific timerData is already defined
@@ -859,17 +1001,31 @@ var lapTimerClock = {
 };
 
 var alarm = {
+    audioElement : null,
+    alarmSound : $("select#alarm_sound").val(),
     playSound : function() {
-        var audioElement = document.createElement('audio');
-        audioElement.setAttribute('src', 'http://www.kessels.com/CatSounds/tweety4.wav');
-        //audioElement.setAttribute('autoplay', 'autoplay');
-        audioElement.load();
-        $.get();
-        audioElement.addEventListener("load", function() {
-            audioElement.play();
-        }, true);
-        audioElement.play();
+        alarm.audioElement = document.createElement('audio');
+        alarm.audioElement.setAttribute('src', this.alarmSound);
 
+        if($("#alarm_loop").is(":checked")){
+            alarm.audioElement.setAttribute("loop","true");
+        }
+
+        //audioElement.setAttribute('autoplay', 'autoplay');
+        alarm.audioElement.load();
+        $.get();
+        alarm.audioElement.addEventListener("load", function() {
+            alarm.audioElement.play();
+        }, true);
+        alarm.audioElement.play();
+
+        $("#alarm_loop").on("change",function(){
+            alarm.audioElement.removeAttribute("loop");
+        });
+
+        $("select#alarm_sound").on("change",function (evt){
+            alarm.audioElement.pause();
+        });
         /* uncomment it and add to view buttons play / pause for controls
 
         $('.play').click(function() {
@@ -881,6 +1037,11 @@ var alarm = {
         });
         */
 
+    },
+    stop    : function(){
+        alarm.audioElement.pause();
+        clearInterval(TBFlasher);
+        document.title = "TimerCity - For all your timing needs. We have lap timers, countdown timers, count-up timers, big timers, little timers, and plenty of clocks for any part of the world.";
     },
     flashTaskbar : function(){
         var msg = "----";
@@ -963,12 +1124,14 @@ var digitalTimer = {
 
 //removes the clock and clear its interval
 function removeClock(guid,ts_count){
-    temporary_storage[ts_count] = null;     //remove the specific clock from the temporary_storage
+    temporary_storage[ts_count] = null;         // Remove the specific clock from the temporary_storage.
+    updateSession('lsc',temporary_storage);     // Update the session for lsc.
     $("#"+guid.id+"_nav").show();
     $("#"+guid.id+"_nav").remove();
+    $("#"+guid.id+".timer_box").remove();
     $(".lapTimeHolder").html("");
     clearInterval(TBFlasher);
-    clearInterval(clockObject[guid.id]);    //clear the interval of the closed clock to stop the specific clock process
+    clearInterval(clockObject[guid.id]);        // Clear the interval of the closed clock to stop the specific clock process
 }
 
 //minimizes the specific clock

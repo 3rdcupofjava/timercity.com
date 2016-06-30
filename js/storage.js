@@ -17,8 +17,21 @@
 //
 //}
 
-var randomCtr = 2;
 var storage = {
+    storeClock : function (value){                                  // Stores the new clock to the temporary_storage.
+        var index = this.getIndex();
+        value['ts_count'] = index;                                  // Change the ts_count for future updates.
+        temporary_storage[index] = value;                           // Store  the new clock to the storage.
+        updateSession('lsc',temporary_storage);                     // Update the session for lsc.
+    },
+    getIndex : function(){                                          // Gets an empty index.
+        var index = 0;
+
+        while(temporary_storage[index] != null){                    // Find a null or empty index so that it won't waste any memory.
+            index++;
+        }
+        return index;                                               // Return the empty index value.
+    },
     generate: function(result) {
         if($("div.tab-pane.active").length > 0)
         {
@@ -34,6 +47,7 @@ var storage = {
                             Remove the specific clock object.
                             Also remove the navigation of the specific clock.
                         */
+
                         $(str+"_nav").show();
                         $(str+"_nav").remove();
                         $(".lapTimeHolder").html("");
@@ -48,27 +62,27 @@ var storage = {
                     switch(timer_type) {
                         case '1':
                             clock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         case '2':
                             timerClock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         case '3':
                             countDownClock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         case '4':
                             stopWatchClock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         case '5':
                             lapTimerClock.render(value);
-                            temporary_storage.push(value);
+                            this.storeClock(value);
                             timer_count++;
                             break;
                         default :
@@ -83,9 +97,19 @@ var storage = {
     },
     local : {
         save : function() { //save locally
-            localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));
-            localStorage.setItem($('#storage_key_save').val()+"_tabs", JSON.stringify(tabs_storage));
-            alert("Saved!");
+            if(localStorage.getItem($("#storage_key_save").val())){       // Check if there are items saved of the key.
+                if(localStorage.getItem($("#storage_key_save").val()).length > 0){                                         // Check if there are current contents with the specified key value.
+                    if(confirm("There are current saved contents with your specified name. Reset it?")){
+                        localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));             // Save the clocks.
+                        localStorage.setItem($('#storage_key_save').val()+"_tabs", JSON.stringify(tabs_storage));          // Save the tabs.
+                        alert("Saved!");
+                    }
+                }
+            }else{
+                localStorage.setItem($('#storage_key_save').val(), JSON.stringify(temporary_storage));             // Save the clocks.
+                localStorage.setItem($('#storage_key_save').val()+"_tabs", JSON.stringify(tabs_storage));          // Save the tabs.
+                alert("Saved!");
+            }
            // maybe store last value in session and load after page reload.
            // or need track somehow from which name of local \ global storage get timers after page reload.
            // sessionStorage.setItem('last_timer', JSON.stringify(temporary_storage));
@@ -94,7 +118,7 @@ var storage = {
             //get the items from the localStorage based from the inputted value
             var result = JSON.parse(localStorage.getItem($('#storage_key_load').val()));
             var loadedTabs = JSON.parse(localStorage.getItem($("#storage_key_load").val()+"_tabs"));
-            if(loadedTabs != null)
+            if(loadedTabs != null && loadedTabs.length != 0)
                 tabs.loadTabs(loadedTabs,false);   //load the tabs
             if(result != null){
                 //generate the result
@@ -106,48 +130,47 @@ var storage = {
     },
     global : { //save globally in the e.znotez
         save : function() { //save globally all the clocks as a string from the temporary_storage
+            notice("Fetching data...",1); 
             $.ajax({
                 type: "POST",
                 url: "index.php/storage/save",
                 data: 'padID=' + $('#storage_key_save').val() + '&text=' + JSON.stringify(temporary_storage) + '&tabID=' + $('#storage_key_save').val()+'tabs'+'&tabs='+JSON.stringify(tabs_storage), // not working
                 cache: false,
                 success: function(msg) {
-                    alert('saved!');
+                    $("div.tab-content").prepend("<span class='success' alt='loading'>Your data has been saved.</span><script id='tempscr'>$(function(){setTimeout(function(){$('.success').remove();$('#tempscr').remove();},2000);});</script>");
                 },error: function(){
-                    alert("error");
+                    $("div.tab-content").prepend("<span class='error' alt='loading'>Error saving your data.</span><script id='tempscr'>$(function(){setTimeout(function(){$('.error').remove();$('#tempscr').remove();},2000);});</script>");
                 }
             });
         },
         load : function() { //load globally based from the inputted key
+            notice("Fetching data...",1); 
             $.ajax({
                 type: "POST",
                 url: "index.php/storage/load",
                 data: 'padID=' + $('#storage_key_load').val(),
                 cache: false,
                 success: function(msg) {
-                    if(msg){ //check if there are data that are retrieved
+                    if(msg !== ''){
                         var result = JSON.parse(msg);
-                        storage.generate(result);  
-                    }
-                    else //alert if there are no data from the search
-                        alert("No data.");
-                },
-                error: function(){
-                    console.log('error');
-                }
-            });
-            $.ajax({
-                type: "POST",
-                url: "index.php/storage/loadTabs",
-                data: 'tabID=' + $('#storage_key_load').val(),
-                cache: false,
-                success: function(msg) {
-                    if(msg){ //check if there are data that are retrieved
-                        var result = JSON.parse(msg);
-                        tabs.loadTabs(result,false);
+                        $("div.tab-content").find(".notice").remove();
+                        // if(result.data['tabs'] !== null && result.data['clocks'] !== null){ //check if there are data that are retrieved
+                        //     if(result.data['tabs'] !== null){                               // Check if there are tabs.
+                        //         tabs.loadTabs(JSON.parse(result.data['tabs']),false);       // Loads the tabs.
+                        //     }
+
+                        //     if(result.data['clocks'] !== null){                             // Check if there are clocks.
+                        //         storage.generate(JSON.parse(result.data['clocks']));        // Load the clocks.
+                        //     }
+                        // }else{
+                        //     $("div.tab-content").prepend("<span class='error' alt='loading'>Error. No data.</span><script id='tempscr'>$(function(){setTimeout(function(){$('.error').remove();$('#tempscr').remove();},2000);});</script>");
+                        // }
+                        storage.generate(result);        // Load the clocks.
+                    }else{
+                        notice("There is no data of your search.",2);
                     }
                 }
-            });
+            }); 
         }
     },
     user : { // TODO: after auth, login, etc...
@@ -159,10 +182,3 @@ var storage = {
         }
     },
 };
-
-/*
-    Show a loading animated icon when ajax call is started
-*/
-$(document).ajaxStart(function () {
-    $("div.tab-pane.active > div.clear").append("<span class='loading' alt='loading'>Loading......</span><script>$(document).ajaxStop(function(){$('span.loading').remove();});</script>");
-});

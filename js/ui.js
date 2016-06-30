@@ -4,8 +4,7 @@ if(typeof(timer_count) === "undefined")
 }
 var timer_type = '1';
 var type_name = "";
-var temporary_storage = [],
-    ts_count = 0;   //counter for the index of the temporary_storage
+var temporary_storage = [];
 
 var ui = {
     toggleNav: function(li, navbar){
@@ -79,26 +78,28 @@ var ui = {
             $('#registration_form').hide();
 
         });
-        
-        $('#log_in a').on('click', function(){
 
-            var parent = $(this).parent();
-            if(parent.hasClass('active')){
-                parent.removeClass('active');
-                $('#registration_form').hide();
+        $('#log_in a').on({
+            click: function(event) {
+                event.preventDefault();
+                var parent = $(this).parent();
+                if(parent.hasClass('active')){
+                    parent.removeClass('active');
+                    $('#registration_form').hide();
+                }
+                else{
+                    parent.addClass('active')
+                        .siblings().removeClass('active');
+                    $('#registration_form').show();
+                    $('#button_request').hide();
+                    $('#button_log_in').show();
+                }
+                $('#registration_sorry').hide();
+
+                $('#password').show();
+                $('#why').hide();
+                $("#nav_login").show();
             }
-            else{
-                parent.addClass('active')
-                    .siblings().removeClass('active');
-                $('#registration_form').show();
-                $('#button_request').hide();
-                $('#button_log_in').show();
-            }
-            $('#registration_sorry').hide();
-
-            $('#password').show();
-            $('#why').hide();
-
         });
         
         $('#early_registration').on('click', function(){
@@ -123,7 +124,7 @@ var ui = {
         var view = {
             'id': 'timer_types',
             'name': 'timer_types',
-            'type': 'radio',
+            'type': 'button',
             'options':[
                 {'oid': 1, 'title': 'Clock', 'checked': true},
                 {'oid': 2, 'title': 'Alarm', 'checked': false},
@@ -138,67 +139,104 @@ var ui = {
         var output = Mustache.render(template, view);
         $('#left_col').prepend(output);
 
-        $("input:radio[name='timer_types']").on('change', function(){
-            timer_type = $("input:radio[name='timer_types']:checked").val();
-            ui.set_type(timer_type, false);
+        $("div#timer_types > button").on('click', function(){
+            timer_type = $(this).attr('value');
+            $("#buttons_edit_mode").hide();
+            $("#buttons_not_edit_mode").show();
+            ui.set_type(null,timer_type, false);
         });
     },
-    set_type: function(type, edit_mode){
-//        var template = $('#template_edit_box').html();
-//        Mustache.parse(template);
-//
-//        if(edit_mode){
-//            var view = {
-//                'edit_mode': true,
-//                'title': 'the title of the selected timer',
-//                'size': 'the size of the selected timer'
-//            }
-//        }
-//        else{
-//            var view = {};
-//        }
+    set_type: function(guid, type, edit_mode){
+        if(edit_mode){
+            // this.set_type(null,type,false);
+            var title = $('#title').val();
+            var size = $('#size').val();
+            var timezone = $("#timezone").val();
+            var time = $('#countdown_time').val();
+            var alarm_time = $('#alarm_time').val();
+            var displayAnalog = $("#clockTypeDisplay").is(":checked");
 
-        $('#timezone,#alarm_time,#countdown_time,#buttons_stopwatch,#buttons_lap_timer').hide();
-        switch(type) {
-            case '1':
-                $('#timezone').show();
-                type_name = "( World Clock )";
-                break;
-            case '2':
-                $('#alarm_time').show();
-                $('#timezone').show();
-                type_name = "( Alarm Clock )";
-                break;
-            case '3':
-                $('#countdown_time').show();
-                type_name = "( Countdown Timer )";
-                break;
-            case '4':
-                $('#buttons_stopwatch').show();
-                type_name = "( Stopwatch )";
-                break;
-            case '5':
-                $('#buttons_lap_timer').show();
-                type_name = "( Lap Timer )";
-                break;
-            default :
-                alert('error, unknown type');
-                break;
+            var view = {
+                'displayAnalog' : displayAnalog,
+                'guid' : guid.id,
+                'type' : type,
+                'timezone' : timezone,
+                'title' : title,
+                'clockSize' : size < 100 ? 100 : size,
+                'time' : time,
+                'type_name': type_name,
+                'alarm_time' : alarm_time,
+                'ts_count' : clocks[guid.id].ts_count
+            };
+            if(size < 100){
+                notice("The size is automatically set to 100 because it is the minimum size.",3);
+            }
+            if(type == 3){
+                delete(cd_params[guid.id]);
+                countDownClock.pause(guid);
+                countDownClock.stop(guid);
+            }else if(type == 4){
+                stopWatchClock.reset(guid);
+            }else if(type == 5){
+                // lapTimerClock.reset(guid);
+                lapTimerClock.stop(guid,function(){
+                    lapTimerClock.start(guid);
+                });
+            }
+            removeClock(guid,view['ts_count']);
+            preDraw(view);
+        }else{
+            $('#timezone,#alarm_time,#countdown_time,#buttons_stopwatch,#buttons_lap_timer,#alarm_sound_wrapper').hide();
+            switch(type) {
+                case '1':
+                case 1:
+                    $('#timezone').show();
+                    type_name = "( World Clock )";
+                    break;
+                case '2':
+                case 2:
+                    $('#alarm_time').show();
+                    $('#timezone').show();
+                    $("#alarm_sound_wrapper").show();
+
+                    $("select#alarm_sound").on("change",function (evt){
+                        alarm.alarmSound = $(this).val();
+                    });
+
+                    type_name = "( Alarm Clock )";
+                    break;
+                case '3':
+                case 3:
+                    $('#countdown_time').show();
+                    type_name = "( Countdown Timer )";
+                    break;
+                case '4':
+                case 4:
+                    $('#buttons_stopwatch').show();
+                    type_name = "( Stopwatch )";
+                    break;
+                case '5':
+                case 5:
+                    $('#buttons_lap_timer').show();
+                    type_name = "( Lap Timer )";
+                    break;
+                default :
+                    alert('error, unknown type');
+                    break;
+            }
         }
     },  
     render: function(){
         this.nav();
         this.timer_types();
-        this.set_type('1', false);
+        this.set_type(null,'1', false);
         
-        //digitalTimer.render();
+        // digitalTimer.render();
         
         $('#alarm_time').timepicker({'timeFormat':'H:i'});
         $('#countdown_time').timepicker({'timeFormat':'H:i:s'});
 
-        tabs.updateStorageIndex();          //update the index
-        tabs.store(newTabCount,"Home");     //store the Home
-        tabs.updateTabsDroppable();         //update the droppables
+        tabs.updateTabsDroppable();                         //update the droppables
 
         //check if there are last session tabs
         if(sessionStorage.getItem('lst') != null){
@@ -214,29 +252,29 @@ var ui = {
 function preDraw(view){
     switch(timer_type) {
         case '1':
+        case 1:
             clock.render(view);
-
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         case '2':
+        case 2:
             timerClock.render(view);
-
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         case '3':
+        case 3:
             countDownClock.render(view);
-
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         case '4':
+        case 4:
             stopWatchClock.render(view);
-
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         case '5':
+        case 5:
             lapTimerClock.render(view);
-
-            temporary_storage.push(view);
+            storage.storeClock(view);
             break;
         default :
             alert('error, unknown type');
@@ -254,8 +292,12 @@ $(document).ready(function(){
             var timezone = $("#timezone").val();
             var time = $('#countdown_time').val();
             var alarm_time = $('#alarm_time').val();
-
-            if(size < 100) size = 100; //minimum size will be 100
+            var displayAnalog = $("#clockTypeDisplay").is(":checked");
+ 
+            if(size < 100){
+                size = 100; // Minimum size will be 100
+                notice("The size is automatically set to 100 because it is the minimum size.",3);
+            }
             if(title !== '' && size !== '' && !isNaN(size)) {
                 if(timer_type != 2) //not alarm clock
                 {
@@ -277,7 +319,7 @@ $(document).ready(function(){
                             return 0;
                         }
                     }
-                    var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time, 'type_name' : type_name};
+                    var view = {'displayAnalog':displayAnalog,'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'time': time, 'type_name' : type_name};
                 }
                 else //if alarm clock
                 {
@@ -296,9 +338,10 @@ $(document).ready(function(){
                         alert("Invalid alarm time.");
                         return 0;
                     }
-                    var view = {'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'alarm_time': alarm_time, 'type_name' : type_name};
+                    var view = {'displayAnalog':displayAnalog,'guid' : 'timer'+timer_count, 'timezone': timezone, 'title': title, 'clockSize': size, 'type' : timer_type, 'alarm_time': alarm_time, 'type_name' : type_name};
                 }
                 timer_count++;
+                view['ts_count'] = storage.getIndex();      // Get the index where the new clock will be store in the temporary_storage.
                 preDraw(view);
                 return 0;
             }
@@ -313,3 +356,32 @@ $(document).ready(function(){
     });
 
 });
+
+
+/**
+ * Function for showing a notice message at the bottom of the panels
+ * @param String str, int type
+ * @return void
+ */
+function notice(str,type)
+{
+    $("div.tab-content").find(".notice").remove();
+    switch(type){
+        case 1:     // Loading
+        case '1':
+            $("div.tab-content").prepend("<div class='notice loading'><span class='pull-xs-left'>"+str+"</span><span class='pull-xs-right'><i class='fa fa-remove remove-notice'></i> </span></div>");
+            break;
+        case 2:     // Error
+        case '2': 
+            $("div.tab-content").prepend("<div class='notice error'><span class='pull-xs-left'>"+str+"</span><span class='pull-xs-right'><i class='fa fa-remove remove-notice'></i> </span></div>");
+            break;
+        case 3:     // Warning
+        case '3':
+            $("div.tab-content").prepend("<div class='notice warning'><span class='pull-xs-left'>"+str+"</span><span class='pull-xs-right'><i class='fa fa-remove remove-notice'></i> </span></div>");
+            break;
+    }
+
+    $("div.tab-content").find(".remove-notice").on("click", function (evt){
+        $("div.tab-content").find(".notice").remove();
+    });
+}

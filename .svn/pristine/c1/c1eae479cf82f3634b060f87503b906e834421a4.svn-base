@@ -1,0 +1,197 @@
+html {
+    height:100%;
+}
+body {
+    padding-top: 50px;
+    height:100%;
+}
+
+.hidden{display:none;}
+.clear{clear:both;}
+
+#left_col{background-color:#f5f5f5; padding-top: 1em; min-height: 250px;}
+.right-col{height:100%; padding: 0; border-left: 1px solid #fff;}
+
+.ui-timepicker-list {
+    height: auto;
+    max-height: 200px;
+    width: 200px;
+    overflow-x: hidden;
+    background-color: #b9def0;
+}
+
+.features .editor .editorwrap {
+    max-width: 2180px;
+}
+.features .editor .CodeMirror pre {
+    padding-left:10px;
+}
+.features .editor .entry-preview-content {
+    padding: 10px 20px 40px 10px;
+}
+.features .editor .entry-preview {
+    border-left:5px;
+}
+.features .editor .CodeMirror-lines {
+    padding: 10px 0 40px 0
+}
+#storage_key_load, #storage_key_save{
+    width:200px;
+}
+#nav_save, #nav_load, #nav_login, #nav_register, #nav_request{
+    background-color:#080808;
+}
+
+#nav_note{
+    padding-top:3px;
+    padding-left:3px;
+}
+
+#root_list, #root_list ul{
+    list-style-type: none;
+    padding-left: 1.4em;
+}
+#root_list li{
+    min-height: 1.4em;
+}
+
+/*
+# RANDOM OLD DEBUG CODE
+ul{
+    background-color:#DDDDDD; border:1px solid #666666;
+
+    font-family:Arial;
+}
+
+ul>li{
+    background-color:#EEEEEE;
+}
+
+*/
+
+/*background-color:#EAEFF5;
+border:solid 2px #DBE2EB;*/
+
+
+/*background-color:#EAEFF5;*/
+
+
+
+
+body {
+    background: #efefef;
+}
+
+svg{
+    stroke: #000;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+#rim {
+    fill: none;
+    stroke: #999;
+    stroke-width: 3px;
+}
+
+.second-hand{
+    stroke-width:3;
+
+}
+
+.minute-hand{
+    stroke-width:8;
+    stroke-linecap:round;
+}
+
+.hour-hand{
+    stroke-width:12;
+    stroke-linecap:round;
+}
+
+.hands-cover{
+    stroke-width:3;
+    fill:#fff;
+}
+
+.second-tick{
+    stroke-width:3;
+    fill:#000;
+}
+
+.hour-tick{
+    stroke-width:8; /*same as the miute hand*/
+}
+
+.second-label{
+    font-size: 12px;
+}
+
+.hour-label{
+    font-size: 24px;
+}
+
+#txts {
+    background-color: #ffffff;
+    border: solid;
+}
+
+
+.close{
+    margin: -3px 3px 0px 0px;
+}
+
+#tabs{background-color: #e1e1e1;}
+#ntm{padding: 10px;}
+#tab-adder,#tab-remover{padding: 13px 5px 0px 5px;}
+
+/* PHOTO STUFF */ 
+.min_clock_holder{border-top: 1px solid #FFF;}
+#buttons_lap_timer{float:left; display:none;}
+.lapTimeHolder{margin-top: 10px;}
+.lapTimeHolder > div{padding: 10px;}
+.timer_holder{display: block;float:left;min-width:33.2%; padding:5px 0px; min-height: 550px;} 
+.timer_holder{display: block;float:left;min-width:20%; padding:5px 0px; min-height: 550px;}
+.timer_box{margin-top:20px;margin-left: 3px;display: block;position: relative;}/*min-width: 250px;}*/
+.tb_nav{background-color: #fff; padding:2px;border:1px solid #e1e1e1;float:left;width:200px;}
+.tb_nav a:hover{text-decoration: none;}
+.tb_nav .title{text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 70%;display:block;}
+.tb_nav button{margin-top: -23px;}
+
+li.timer_box{display:block;}
+.timer_box a:hover {
+    text-decoration: none;}
+.timer_box .title{
+    text-overflow: ellipsis;
+    color: #428bca; 
+    overflow: hidden;
+    white-space: nowrap;
+    width: 80%;     top:2px;     left:10px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
+.digital_display{
+    margin-top:5px;
+ 	position: absolute;
+    bottom: 5%;
+    right: 5%;
+    /*margin-top:5px;*/
+    float: right;
+    margin-right: 4px;
+    text-align: right;
+    background-color: #FFFFFF;
+    z-index: 999999999;
+    display: block;
+    text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; 
+}
+.highlight{
+    background-color: rgba(27,118,90,0.3);
+}
+
+.photo_header{     margin-bottom:10px;     margin-right:10px;     margin-left:10px; } 
+
+
+.photo_header h3{     margin:0px;     margin-bottom:2px; } 
+.photo_header h5{     margin-top:-2px;     margin-bottom:3px; } 
+.right_header{     float: right;     margin-top:-12px;     margin-right:10px; } 
+.photo_header .right_header.subs{     margin-top:-78px; } 
+.breadcrumb{     margin-bottom:10px;     margin-top:15px; } 
+#photo_link{     text-align:center; }
+.thumbnail{ padding: 5px; }
+.rnm-holder{padding: 8px; background-color: #fff;}
