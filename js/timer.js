@@ -771,6 +771,7 @@ var countDownClock = {
         cd_params[guid].seconds = seconds;
     },
     start: function (guid){     //starts the countdown timer
+        console.log(guid,cd_params[guid.id]);
         if(typeof cd_params[guid.id] === 'undefined' || cd_params[guid.id] === null){
             cd_params[guid.id] = [{
                 set: false,

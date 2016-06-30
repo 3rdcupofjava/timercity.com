@@ -155,6 +155,7 @@ svg{
     cursor: pointer;
 }
 
+.warning,
 .loading,
 .error{
     display: block;
@@ -163,7 +164,9 @@ svg{
     background-color:rgb(2,117,216);padding: 3px; border-bottom-left-radius:5px;border-bottom-right-radius:5px;
     color: #fff;font-size: 13px;font-weight: 300;
 }
-
+.warning{
+    background-color: rgb(242, 139, 23);
+}
 .error{
     background-color: rgb(217,83,79);
 }
@@ -192,7 +195,7 @@ li.timer_box{display:block;}
     width: 80%;     top:2px;     left:10px;     text-shadow: -1px 0 1px #FFF, 0 1px 1px #FFF, 1px 0 1px #FFF, 0 -1px 1px #FFF; }
 .digital_display{
     margin-top:5px;
- 	position: absolute;
+ 	/*position: relative;*/
     bottom: 5%;
     right: 5%;
     float: right;

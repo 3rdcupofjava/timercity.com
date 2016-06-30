@@ -162,16 +162,19 @@ var ui = {
                 'type' : type,
                 'timezone' : timezone,
                 'title' : title,
-                'clockSize' : size,
+                'clockSize' : size < 100 ? 100 : size,
                 'time' : time,
                 'type_name': type_name,
                 'alarm_time' : alarm_time,
                 'ts_count' : clocks[guid.id].ts_count
             };
+            if(size < 100){
+                notice("The size is automatically set to 100 because it is the minimum size.",3);
+            }
             if(type == 3){
+                delete(cd_params[guid.id]);
                 countDownClock.pause(guid);
                 countDownClock.stop(guid);
-                cd_params[guid.id] = null;
             }else if(type == 4){
                 stopWatchClock.reset(guid);
             }else if(type == 5){
@@ -287,8 +290,11 @@ $(document).ready(function(){
             var time = $('#countdown_time').val();
             var alarm_time = $('#alarm_time').val();
             var displayAnalog = $("#clockTypeDisplay").is(":checked");
-
-            if(size < 100) size = 100; //minimum size will be 100
+ 
+            if(size < 100){
+                size = 100; // Minimum size will be 100
+                notice("The size is automatically set to 100 because it is the minimum size.",3);
+            }
             if(title !== '' && size !== '' && !isNaN(size)) {
                 if(timer_type != 2) //not alarm clock
                 {
@@ -347,3 +353,32 @@ $(document).ready(function(){
     });
 
 });
+
+
+/**
+ * Function for showing a notice message at the bottom of the panels
+ * @param String str, int type
+ * @return void
+ */
+function notice(str,type)
+{
+    $("div.tab-content").find(".notice").remove();
+    switch(type){
+        case 1:     // Loading
+        case '1':
+            $("div.tab-content").prepend("<div class='notice loading'><span class='pull-xs-left'>"+str+"</span><span class='pull-xs-right'><i class='fa fa-remove remove-notice'></i> </span></div>");
+            break;
+        case 2:     // Error
+        case '2': 
+            $("div.tab-content").prepend("<div class='notice error'><span class='pull-xs-left'>"+str+"</span><span class='pull-xs-right'><i class='fa fa-remove remove-notice'></i> </span></div>");
+            break;
+        case 3:     // Warning
+        case '3':
+            $("div.tab-content").prepend("<div class='notice warning'><span class='pull-xs-left'>"+str+"</span><span class='pull-xs-right'><i class='fa fa-remove remove-notice'></i> </span></div>");
+            break;
+    }
+
+    $("div.tab-content").find(".remove-notice").on("click", function (evt){
+        $("div.tab-content").find(".notice").remove();
+    });
+}
