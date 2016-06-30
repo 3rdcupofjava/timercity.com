@@ -178,7 +178,10 @@ var ui = {
             }else if(type == 4){
                 stopWatchClock.reset(guid);
             }else if(type == 5){
-                lapTimerClock.reset(guid);
+                // lapTimerClock.reset(guid);
+                lapTimerClock.stop(guid,function(){
+                    lapTimerClock.start(guid);
+                });
             }
             removeClock(guid,view['ts_count']);
             preDraw(view);

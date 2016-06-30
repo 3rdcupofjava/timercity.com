@@ -302,27 +302,6 @@ var clock = {
             $(".timer_box#"+guid).css({"opacity":"1"});             // Make the clock visible when it is dropped.
         });
 
-        // Clicking on a lap timer.
-        $('#' + guid + '_link.5').on('click', function(){
-            //check if the there are laptime recorded for the specific laptimer and then append it
-            if(typeof lapTime[guid] !== "undefined" && lapTime[guid] !== null)
-            {
-                var t = "<div>Splitted Times:</div>";
-                var lt_counter = 1;
-                
-                //get every lap time recorded and append it to the t variable as a string 
-                for(var i=0; i<lapTime[guid].length; i++)
-                {
-                    if(lapTime[guid][i] != null){
-                        t += "<div class='lapTime"+i+"'>"+lt_counter+") "+lapTime[guid][i][0]+":"+lapTime[guid][i][1]+":"+lapTime[guid][i][2]+"<button type='button' onclick='lapTimerClock.deleteLapTime("+guid+","+i+");' class='close'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button></div>";   
-                        lt_counter++;
-                    }
-                }
-                $(".lapTimeHolder").html(t); //append the final lap times to the lapTimeHolder
-                $('#'+guid+'_link .laptime_display').html(t);
-            }
-        });
-
         if(view['type'] !== 'undefined')
         {
             if(view['type'] == '1' || view['type'] == '2')
@@ -868,13 +847,14 @@ var lapTimerClock = {
         //append the buttons in every clock
         $(activeTab+' .timer_box #'+guid+'_link .btns').append(' \
             <button class="clock-button inline" onclick="lapTimerClock.start('+guid+');" type="button"><span class="glyphicon glyphicon-ok"></span> Start</button> \
-            <button class="clock-button inline stop" onclick="lapTimerClock.stop('+guid+');"type="button"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
+            <button class="clock-button inline stop" onclick="lapTimerClock.stop('+guid+',null);"type="button"><span class="glyphicon glyphicon-remove"></span> Stop</button> \
             <button class="clock-button inline" onclick="lapTimerClock.split('+guid+');"type="button"><span class="glyphicon glyphicon-ok"></span> Lap</button>');
     },
     start: function (guid){     //starts the lap timer
         if(lapTimerStarted[guid.id] === true) {
             return 1;
         }
+
         lapTimerStarted[guid.id] = true;
 
         if(typeof splitTime[guid.id] === 'undefined')
@@ -891,11 +871,20 @@ var lapTimerClock = {
             lapTimerClock.moveHands(guid.id);
             lapTimerClock.updateSplitTime(guid.id);
         }, 1000);
+
+        if(typeof lapTime[guid.id] !== "undefined"){
+            setTimeout(function(){
+                lapTimerClock.displayLapTimes(guid);
+            },1100);
+        }
     },
-    stop: function (guid){      //stops the lap timer
+    stop: function (guid,_callback){      //stops the lap timer
         lapTimerStarted[guid.id] = false; // set the specific lap timer to false
 
         clearInterval(clockObject[guid.id]); //clear the interval of a specific lap timer
+        if(_callback !== null){
+            setTimeout(function(){_callback();},500);
+        }
     },
     reset: function (guid){
         this.stop(guid);
@@ -921,10 +910,16 @@ var lapTimerClock = {
         //record the time splitted
         lapTime[guid.id].push([lapTime[guid.id].hours = splitTime[guid.id].hours,lapTime[guid.id].minutes = splitTime[guid.id].minutes,lapTime[guid.id].seconds = splitTime[guid.id].seconds]);
 
-        $('#'+guid.id+'_link .laptime_display').text('You successfully split '+splitTime[guid.id].hours+'h :'+splitTime[guid.id].minutes+'m :'+splitTime[guid.id].seconds+'s');
+        // Display splitted times
+        lapTimerClock.displayLapTimes(guid);
+
     },
     deleteLapTime : function (guid,i){
         lapTime[guid.id][i] = null;
+        // Update splitted times
+        lapTimerClock.displayLapTimes(guid);
+    },
+    displayLapTimes : function(guid){   // Displays the splitted times
         var lt_counter = 1;
         var t = "<div>Splitted Times:</div>";
                 
@@ -936,7 +931,7 @@ var lapTimerClock = {
                 lt_counter++;
             }
         }
-        $(".lapTimeHolder").html(t); //append the final lap times to the lapTimeHolder
+        $('#'+guid.id+'_link .laptime_display').html(t);
     },
     updateSplitTime: function (guid){       //updates the split time
         if(splitTime[guid].seconds == 60)
