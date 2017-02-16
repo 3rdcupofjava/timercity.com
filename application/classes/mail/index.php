@@ -3,7 +3,9 @@
 require_once './PHPMailer/PHPMailerAutoload.php'; // lib_url: https://github.com/PHPMailer/PHPMailer
 require_once '../db/db.php';
 
-$current_datetime = date('m/d/Y h:i:s a', time());
+$current_datetime = date('h:i a', time());
+$time = str_split($current_datetime, 5)[0];
+$time_prefix = str_split($current_datetime, 5)[1];
 $alarms = get_data();
 
 /**
@@ -12,7 +14,7 @@ $alarms = get_data();
  * but maybe for this we can change datetime format in database for saving not only time, but also date.
  * right now it check time string from database with something like this: '01/08/2015 06:14:13 pm'
  */
-if(gettype($alarms) == 'Array' && $alarms['time'] <= $current_datetime)
+if(gettype($alarms) == 'Array' && $alarms['time'] <= $time) // must add $time_prefix checking
 {
 //SMTP needs accurate times, and the PHP time zone MUST be set
 //This should be done in your php.ini, but this is how to do it if you don't have access to that
